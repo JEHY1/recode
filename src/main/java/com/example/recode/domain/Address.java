@@ -44,8 +44,13 @@ public class Address {
     @Column(name = "address_delivery_box_num")
     private String addressDeliveryBoxNum;
 
+    @Column(name = "address_nickname", nullable = false)
+    private String addressNickname;
+
+    @Column(name = "address_default", nullable = false)
+    private String addressDefault;
     @Builder
-    public Address(long addressId, long userId, String addressPostalCode, String addressRoadNameAddress, String addressDetailAddress, String addressRecipientName, String addressRecipientPhone, String addressDeliveryRequest, String addressFrontDoorSecret, String addressDeliveryBoxNum) {
+    public Address(long addressId, long userId, String addressPostalCode, String addressRoadNameAddress, String addressDetailAddress, String addressRecipientName, String addressRecipientPhone, String addressDeliveryRequest, String addressFrontDoorSecret, String addressDeliveryBoxNum, String addressNickname, String addressDefault) {
         this.addressId = addressId;
         this.userId = userId;
         this.addressPostalCode = addressPostalCode;
@@ -56,5 +61,7 @@ public class Address {
         this.addressDeliveryRequest = addressDeliveryRequest;
         this.addressFrontDoorSecret = addressFrontDoorSecret;
         this.addressDeliveryBoxNum = addressDeliveryBoxNum;
+        this.addressNickname = addressNickname;
+        this.addressDefault = addressDefault;
     }
 }
