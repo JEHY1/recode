@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/adminsCss/admin_header.css">
+    <link rel="stylesheet" href="/css/adminsCss/admin_user_show.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <title>관리자 - 회원정보 보기</title>
+</head>
+<body>
+    <th:block th:include="layouts/admin_header"></th:block>
+    <main>
+        <div class="box">
+            <p id="boxTitle">회원정보 보기</p>
+            <div id="showBox">
+                <ul>
+                    <li>
+                        <p>아이디</p>
+                        <p>fddkfsjke54</p>
+                    </li>
+                    <li>
+                        <p>비밀번호</p>
+                        <p>******</p>
+                    </li>
+                    <li>
+                        <p>이름</p>
+                        <p>황예지</p>
+                    </li>
+                    <li>
+                        <p>연락처</p>
+                        <p>010-1234-5678</p>
+                    </li>
+                    <li>
+                        <p>이메일</p>
+                        <p>fdksljk57@gmail.com</p>
+                    </li>
+                    <li>
+                        <p>배송지</p>
+                        <div>
+                            <div> <!-- 배송지 추가 -->
+                                <p>
+                                    <span>이름</span>
+                                    <span>
+                                        <span>황예지</span>
+                                        <span>기본배송지</span>
+                                    </span>
+                                </p>
+                                <p>
+                                    <span>연락처</span>
+                                    <span>010-1234-5678</span>
+                                </p>
+                                <p>
+                                    <span>주소</span>
+                                    <span>
+                                        <span>40125</span>
+                                        <span>부산 부산진구 중앙대로 631</span>
+                                        <span>선문빌딩 9층, 부산예일직업전문학교</span>
+                                    </span>
+                                </p>
+                                <p>
+                                    <span>요청사항</span>
+                                    <span>직접 받고 부재시 문 앞</span>
+                                </p>
+                            </div>
+                            <div> <!-- 배송지 추가 -->
+                                <p>
+                                    <span>이름</span>
+                                    <span>황예지</span>
+                                </p>
+                                <p>
+                                    <span>연락처</span>
+                                    <span>010-1234-5678</span>
+                                </p>
+                                <p>
+                                    <span>주소</span>
+                                    <span>
+                                        <span>40125</span>
+                                        <span>부산 부산진구 중앙대로 631</span>
+                                        <span>선문빌딩 9층, 부산예일직업전문학교</span>
+                                    </span>
+                                </p>
+                                <p>
+                                    <span>요청사항</span>
+                                    <span>직접 받고 부재시 문 앞</span>
+                                </p>
+                            </div>
+                        </div>
+                    </li>
+                    <li>
+                        <p>권한</p>
+                        <p>COSTOMER</p>
+                    </li>
+                    <li>
+                        <p>가입일</p>
+                        <p>2024-06-05 13:12:05</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="buttonBox">
+                <a href="/admin/user/edit">수정</a>
+                <a href="/admin/user/index">목록</a>
+            </div>
+        </div>
+    </main>
+    <th:block th:include="layouts/footer"></th:block>
+</body>
+</html>

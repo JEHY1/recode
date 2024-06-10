@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/adminsCss/admin_header.css">
+    <link rel="stylesheet" href="/css/adminsCss/admin_user_edit.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <title>관리자 - 회원정보 수정</title>
+</head>
+<body>
+    <th:block th:include="layouts/admin_header"></th:block>
+    <main>
+        <form>
+            <div class="box">
+                <p id="boxTitle">회원정보 수정</p>
+                <div id="editBox">
+                    <ul>
+                        <li>
+                            <p>아이디</p>
+                            <p>fddkfsjke54</p>
+                        </li>
+                        <li>
+                            <label for="userPw">비밀번호</label>
+                            <input type="password" id="userPw" value="1111">
+                        </li>
+                        <li>
+                            <label for="userName">이름</label>
+                            <input type="text" id="userName" value="황예지">
+                        </li>
+                        <li>
+                            <label for="userPhone">연락처</label>
+                            <input type="tel" id="userPhone" value="010-1234-5678">
+                        </li>
+                        <li>
+                            <label for="userMail">이메일</label>
+                            <input type="email" id="userMail" value="fdksljk57@gmail.com">
+                        </li>
+                        <li>
+                            <p>배송지</p>
+                            <div>
+                                <div> <!-- 배송지 추가 -->
+                                    <p>
+                                        <span>이름</span>
+                                        <span>
+                                        <input type="text" value="황예지">
+                                        <span>기본배송지</span> <!-- 일반배송지의 경우 지우기 -->
+                                    </span>
+                                    </p>
+                                    <p>
+                                        <span>연락처</span>
+                                        <input type="tel" value="010-1234-5678">
+                                    </p>
+                                    <p>
+                                        <span>주소</span>
+                                        <span>
+                                        <span>
+                                            <input type="text" value="40125">
+                                            <span>우편번호 찾기</span>
+                                        </span>
+                                        <input type="text" value="부산 부산진구 중앙대로 631">
+                                        <input type="text" value="선문빌딩 9층, 부산예일직업전문학교">
+                                    </span>
+                                    </p>
+                                    <p>
+                                        <span>요청사항</span>
+                                        <input type="text" value="직접 받고 부재시 문 앞">
+                                    </p>
+                                </div>
+                                <div> <!-- 배송지 추가 -->
+                                    <p>
+                                        <span>이름</span>
+                                        <span>
+                                        <input type="text" value="황예지">
+                                    </span>
+                                    </p>
+                                    <p>
+                                        <span>연락처</span>
+                                        <input type="tel" value="010-1234-5678">
+                                    </p>
+                                    <p>
+                                        <span>주소</span>
+                                        <span>
+                                        <span>
+                                            <input type="text" value="40125">
+                                            <span>우편번호 찾기</span>
+                                        </span>
+                                        <input type="text" value="부산 부산진구 중앙대로 631">
+                                        <input type="text" value="선문빌딩 9층, 부산예일직업전문학교">
+                                    </span>
+                                    </p>
+                                    <p>
+                                        <span>요청사항</span>
+                                        <input type="text" value="직접 받고 부재시 문 앞">
+                                    </p>
+                                </div>
+                            </div>
+                        </li>
+                        <li>
+                            <p>권한</p>
+                            <input type="text" value="COSTOMER">
+                        </li>
+                        <li>
+                            <p>가입일</p>
+                            <p>2024-06-05 13:12:05</p>
+                        </li>
+                    </ul>
+                </div>
+                <div class="buttonBox">
+                    <button type="submit">수정</button>
+                    <button type="reset">취소</button>
+                </div>
+            </div>
+        </form>
+    </main>
+    <th:block th:include="layouts/footer"></th:block>
+</body>
+</html>

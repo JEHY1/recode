@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/adminsCss/admin_header.css">
+    <link rel="stylesheet" href="/css/adminsCss/admin_notice_insert.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <title>관리자 - 공지사항 등록</title>
+</head>
+<body>
+    <th:block th:include="layouts/admin_header"></th:block>
+    <main>
+        <form>
+            <div class="box">
+                <p id="boxTitle">공지사항 등록</p>
+                <div id="insertBox">
+                    <ul>
+                        <li>
+                            <label for="title">제목</label>
+                            <input type="text" id="title">
+                        </li>
+                        <li>
+                            <label for="content">내용</label>
+                            <textarea id="content"></textarea>
+                        </li>
+                    </ul>
+                </div>
+                <div class="buttonBox">
+                    <button type="submit">등록</button>
+                    <button type="reset">취소</button>
+                </div>
+            </div>
+        </form>
+    </main>
+    <th:block th:include="layouts/footer"></th:block>
+</body>
+</html>

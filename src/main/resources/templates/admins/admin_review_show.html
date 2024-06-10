@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/adminsCss/admin_header.css">
+    <link rel="stylesheet" href="/css/adminsCss/admin_review_show.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <title>관리자 - 리뷰 보기</title>
+</head>
+<body>
+    <th:block th:include="layouts/admin_header"></th:block>
+    <main>
+        <div class="box">
+            <p id="boxTitle">리뷰 보기</p>
+            <div id="showBox">
+                <div>
+                    <img src="/images/logo_img/logo.png">
+                    <a href="/admin/product/show">크로스백 옐로우</a>
+                </div>
+                <ul>
+                    <li>
+                        <p>제목</p>
+                        <p>색상이 너무 예뻐요~</p>
+                        <p></p>
+                    </li>
+                    <li>
+                        <p>내용</p>
+                        <p>제품 사진으로 본 것보다 색상이 너무 맘에 들어요~</p>
+                    </li>
+                    <li>
+                        <p>이미지</p>
+                        <div>
+                            <img src="/images/logo_img/logo.png">
+                            <img src="/images/logo_img/logo.png">
+                        </div>
+                    </li>
+                    <li>
+                        <p>별점</p>
+                        <p>5</p>
+                    </li>
+                    <li>
+                        <p>아이디</p>
+                        <p>dkfdjks25</p>
+                    </li>
+                    <li>
+                        <p>조회수</p>
+                        <p>5</p>
+                    </li>
+                    <li>
+                        <p>등록일</p>
+                        <p>2024-06-05 13:12:05</p>
+                    </li>
+                </ul>
+            </div>
+            <div class="buttonBox">
+                <a href="#">삭제</a>
+                <a href="/admin/review/index">목록</a>
+            </div>
+        </div>
+    </main>
+    <th:block th:include="layouts/footer"></th:block>
+</body>
+</html>

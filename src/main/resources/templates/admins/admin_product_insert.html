@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/adminsCss/admin_header.css">
+    <link rel="stylesheet" href="/css/adminsCss/admin_product_insert.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <title>관리자 - 상품 등록</title>
+</head>
+<body>
+    <th:block th:include="layouts/admin_header"></th:block>
+    <main>
+        <form>
+            <div class="box">
+                <p id="boxTitle">상품 등록</p>
+                <div id="insertBox">
+                    <ul>
+                        <li>
+                            <p>구분</p>
+                            <select>
+                                <option value="" hidden>선택하세요</option>
+                                <option value="">백팩</option>
+                                <option value="">크로스백</option>
+                                <option value="">지갑</option>
+                            </select>
+                        </li>
+                        <li>
+                            <label for="name">상품명</label>
+                            <input type="text" id="name">
+                        </li>
+                        <li>
+                            <label for="mainImg">대표 이미지</label>
+                            <input type="file" id="mainImg">
+                            <div>
+                                <img src="/images/logo_img/logo.png">
+                            </div>
+                        </li>
+                        <li>
+                            <label for="price">판매가</label>
+                            <input type="text" id="price">
+                        </li>
+                        <li>
+                            <label for="sales">할인가</label>
+                            <input type="text" id="sales">
+                        </li>
+                        <li>
+                            <label for="model">모델명</label>
+                            <input type="text" id="model">
+                        </li>
+                        <li>
+                            <label for="color">색상</label>
+                            <input type="text" id="color">
+                        </li>
+                        <li>
+                            <label for="keyword">유형</label>
+                            <input type="text" id="keyword">
+                        </li>
+                        <li>
+                            <label for="size">규격</label>
+                            <input type="text" id="size">
+                        </li>
+                        <li>
+                            <label for="texture">재질</label>
+                            <input type="text" id="texture">
+                        </li>
+                        <li>
+                            <label for="detailImg">상세 이미지</label>
+                            <input type="file" id="detailImg">
+                            <div>
+                                <img src="/images/logo_img/logo.png">
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                <div class="buttonBox">
+                    <button type="submit">등록</button>
+                    <button type="reset">취소</button>
+                </div>
+            </div>
+        </form>
+    </main>
+    <th:block th:include="layouts/footer"></th:block>
+</body>
+</html>
