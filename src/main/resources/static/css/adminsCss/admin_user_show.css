@@ -4,7 +4,7 @@
 }
 #boxTitle { /* 제목 */
     text-align: center;
-    margin-top: 30px;
+    margin-top: 200px;
     margin-bottom: 50px;
     font-size: 25px;
     font-weight: bold;
@@ -67,7 +67,7 @@
     display: inline-block;
     width: 120px;
 }
-#showBox ul li > div:nth-child(2) > div > p:nth-child(1) > span:nth-child(2) > span:nth-child(2) {
+#showBox ul li > div:nth-child(2) > div > p:nth-child(1) > span:nth-child(2) > span:nth-child(2) { /* 기본 배송지 */
     font-size: 15px;
     display: inline-block;
     border: 1px solid #548235;
@@ -118,5 +118,3 @@
 .buttonBox a:hover {
     font-weight: bold;
 }
-
-

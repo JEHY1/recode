@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Symmetrical Buttons</title>
+    <style>
+        .container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            height: 100vh;
+            justify-content: space-between;
+        }
+        .btn {
+            width: 50px;
+            height: 50px;
+            display: flex;
+
+            justify-content: center;
+            font-size: 24px;
+            background-color: #f0f0f0;
+            border: 1px solid #ccc;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+<div>
+    <div class="btn" id="move-top-btn">&#8743;</div>
+    <div class="btn" id="move-bottom-btn">&#8744;</div>
+
+    <div th:text="${value1}"></div>
+    <div th:text="${value2}"></div>
+</div>
+</body>
+</html>

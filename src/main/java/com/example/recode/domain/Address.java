@@ -1,5 +1,6 @@
 package com.example.recode.domain;
 
+import com.example.recode.dto.ManagementAddressRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -48,9 +49,9 @@ public class Address {
     private String addressNickname;
 
     @Column(name = "address_default", nullable = false)
-    private String addressDefault;
+    private int addressDefault;
     @Builder
-    public Address(long addressId, long userId, String addressPostalCode, String addressRoadNameAddress, String addressDetailAddress, String addressRecipientName, String addressRecipientPhone, String addressDeliveryRequest, String addressFrontDoorSecret, String addressDeliveryBoxNum, String addressNickname, String addressDefault) {
+    public Address(long addressId, long userId, String addressPostalCode, String addressRoadNameAddress, String addressDetailAddress, String addressRecipientName, String addressRecipientPhone, String addressDeliveryRequest, String addressFrontDoorSecret, String addressDeliveryBoxNum, String addressNickname, int addressDefault) {
         this.addressId = addressId;
         this.userId = userId;
         this.addressPostalCode = addressPostalCode;
@@ -63,5 +64,24 @@ public class Address {
         this.addressDeliveryBoxNum = addressDeliveryBoxNum;
         this.addressNickname = addressNickname;
         this.addressDefault = addressDefault;
+    }
+
+    public Address update(ManagementAddressRequest request){
+        this.addressPostalCode = request.getPostalCode();
+        this.addressRoadNameAddress = request.getRoadNameAddress();
+        this.addressDetailAddress = request.getDetailAddress();
+        this.addressRecipientName = request.getRecipientName();
+        this.addressRecipientPhone = request.getRecipientPhone();
+        this.addressDeliveryRequest = request.getDeliveryRequest();
+        this.addressFrontDoorSecret = request.getFrontDoorSecret();
+        this.addressDeliveryBoxNum = request.getDeliveryBoxNum();
+        this.addressNickname = request.getAddressNickname();
+        this.addressDefault = request.getAddressDefault();
+
+        return this;
+    }
+
+    public void updateDefault(){
+        this.addressDefault = 0;
     }
 }

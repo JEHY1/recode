@@ -1,10 +1,7 @@
 package com.example.recode.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
@@ -15,6 +12,7 @@ import java.time.LocalDateTime;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @EntityListeners(AuditingEntityListener.class)
 @Getter
+@ToString
 public class Product {
 
     @Id
@@ -29,7 +27,7 @@ public class Product {
     private int productRegularPrice;
 
     @Column(name = "product_discount_price")
-    private int productDiscountPrice;
+    private Integer productDiscountPrice;
 
     @Column(name = "product_model", nullable = false)
     private String productModel;

@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/adminsCss/admin_header.css">
+    <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/adminsCss/admin_user_show.css">
     <link rel="stylesheet" href="/css/footer.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/js/header.js"></script>
     <title>관리자 - 회원정보 보기</title>
 </head>
 <body>
@@ -40,11 +42,15 @@
                         <div>
                             <div> <!-- 배송지 추가 -->
                                 <p>
-                                    <span>이름</span>
+                                    <span>배송지명</span>
                                     <span>
-                                        <span>황예지</span>
-                                        <span>기본배송지</span>
+                                        <span>집</span>
+                                        <span>기본배송지</span> <!-- 일반배송지의 경우 지우기 -->
                                     </span>
+                                </p>
+                                <p>
+                                    <span>이름</span>
+                                    <span>황예지</span>
                                 </p>
                                 <p>
                                     <span>연락처</span>
@@ -64,6 +70,12 @@
                                 </p>
                             </div>
                             <div> <!-- 배송지 추가 -->
+                                <p>
+                                    <span>배송지명</span>
+                                    <span>
+                                        <span>회사</span>
+                                    </span>
+                                </p>
                                 <p>
                                     <span>이름</span>
                                     <span>황예지</span>

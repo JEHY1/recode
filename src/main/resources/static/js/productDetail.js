@@ -1,3 +1,13 @@
+function httpRequest(url, method, body){
+    return fetch(url, {
+        method: method,
+        headers: {
+            "Content-Type" : "application/json"
+        },
+        body: body
+    });
+}
+
 const productDetailInfoButton = document.getElementById('product-detail-info-btn');
 
 if(productDetailInfoButton){
@@ -73,11 +83,107 @@ if(QnATitleButtons){
     });
 }
 
-
-
 if(document.getElementById('productDiscountPrice').value !== ''){
-
-    document.getElementById('salePercentage').textContent = parseInt(100 - parseInt(document.getElementById('productDiscountPrice').value) * 100 / parseInt(document.getElementById('productRegularPrice').value));
+    document.getElementById('salePercentage').textContent = parseInt(100 - parseInt(document.getElementById('productDiscountPrice').value) * 100 / parseInt(document.getElementById('productRegularPrice').value)) + '%';
 }
+
+const moveTopButton = document.getElementById('move-top-btn');
+
+if(moveTopButton){
+    moveTopButton.addEventListener('click', () => {
+        window.scrollTo({
+            top: 0,
+            behavior: 'smooth'
+        });
+    });
+}
+
+const moveBottomButton = document.getElementById('move-bottom-btn');
+
+if(moveBottomButton){
+    moveBottomButton.addEventListener('click', () => {
+        console.log('click');
+        window.scrollTo({
+            top: document.body.scrollHeight,
+            behavior: 'smooth'
+        });
+    });
+}
+
+const pages = document.getElementsByClassName('pages');
+
+if(pages){
+    pages[0].classList.remove('d-hidden');
+    pages[0].setAttribute('id', 'QnA-show');
+}
+
+const QnAPageUpButton = document.getElementById('QnAPageUp-btn');
+
+if(QnAPageUpButton){
+    QnAPageUpButton.addEventListener('click', () => {
+        if(document.getElementById('QnA-show').nextElementSibling != null){
+            let currentPage = document.getElementById('QnA-show');
+            currentPage.setAttribute('id', '');
+            currentPage.classList.add('d-hidden');
+            currentPage.nextElementSibling.setAttribute('id', 'QnA-show');
+            document.getElementById('QnA-show').classList.remove('d-hidden');
+
+            let pageCount = document.getElementById('QnAPage');
+            pageCount.textContent = parseInt(pageCount.textContent) + 1;
+            parseInt(document.getElementById('QnAPage').textContent)
+
+        }
+        else{
+            alert('마지막 페이지입니다.');
+        }
+    });
+}
+
+const QnAPageDownButton = document.getElementById('QnAPageDown-btn');
+
+if(QnAPageDownButton){
+    QnAPageDownButton.addEventListener('click', () => {
+        if(document.getElementById('QnAPage').textContent !== '1'){
+            let currentPage = document.getElementById('QnA-show');
+            currentPage.setAttribute('id', '');
+            currentPage.classList.add('d-hidden');
+
+            currentPage.previousElementSibling.setAttribute('id', 'QnA-show');
+            document.getElementById('QnA-show').classList.remove('d-hidden');
+
+            let pageCount = document.getElementById('QnAPage');
+            pageCount.textContent = parseInt(pageCount.textContent) - 1;
+            parseInt(document.getElementById('QnAPage').textContent)
+        }
+        else{
+            alert('이전 페이지가 없습니다.')
+        }
+    });
+}
+
+const cartButton = document.getElementById('cart-btn');
+
+if(cartButton){
+    cartButton.addEventListener('click', () => {
+        let body = JSON.stringify({
+            productId : document.getElementById('productId').value
+        });
+
+
+        httpRequest(`/user/addCart`, 'POST', body)
+        .then(response => {
+            if(response.ok){
+                alert('장바구니에 등록되었습니다.')
+            }
+            else{
+                alert('error');
+            }
+        })
+    })
+}
+
+
+
+
 
 

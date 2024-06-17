@@ -4,7 +4,7 @@
 }
 #boxTitle { /* 제목 */
     text-align: center;
-    margin-top: 30px;
+    margin-top: 200px;
     margin-bottom: 50px;
     font-size: 25px;
     font-weight: bold;
@@ -73,7 +73,7 @@
     box-sizing: border-box;
     width: 120px;
 }
-#editBox ul li > div:nth-child(2) > div > p:nth-child(1) > span:nth-child(2) > span:nth-child(2) {
+#editBox ul li > div:nth-child(2) > div > p:nth-child(1) > span:nth-child(2) > span:nth-child(2) { /* 기본 배송지 */
     font-size: 15px;
     display: inline-block;
     border: 1px solid #548235;
@@ -89,12 +89,12 @@
     width: 486px;
     box-sizing: border-box;
 }
-#editBox ul li > div:nth-child(2) > div > p:nth-child(3) > span:nth-child(2) > span > input {
+#editBox ul li > div:nth-child(2) > div > p:nth-child(4) > span:nth-child(2) > span > input {
     display: inline-block;
     width: 120px;
     box-sizing: border-box;
 }
-#editBox ul li > div:nth-child(2) > div > p:nth-child(3) > span:nth-child(2) > span > span {
+#editBox ul li > div:nth-child(2) > div > p:nth-child(4) > span:nth-child(2) > span > span {
     font-size: 15px;
     display: inline-block;
     border: 1px solid #548235;
@@ -106,7 +106,7 @@
     margin-left: 15px;
     margin-top: 7px;
 }
-#editBox ul li > div:nth-child(2) > div > p:nth-child(3) > span:nth-child(2) > input {
+#editBox ul li > div:nth-child(2) > div > p:nth-child(4) > span:nth-child(2) > input {
     display: block;
     width: 486px;
     box-sizing: border-box;
@@ -135,5 +135,3 @@
 .buttonBox button:hover {
     font-weight: bold;
 }
-
-

@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/adminsCss/admin_header.css">
+    <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/adminsCss/admin_user_edit.css">
     <link rel="stylesheet" href="/css/footer.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/js/header.js"></script>
     <title>관리자 - 회원정보 수정</title>
 </head>
 <body>
@@ -41,11 +43,15 @@
                             <div>
                                 <div> <!-- 배송지 추가 -->
                                     <p>
-                                        <span>이름</span>
+                                        <span>배송지명</span>
                                         <span>
+                                            <input type="text" value="집">
+                                            <span>기본배송지</span> <!-- 일반배송지의 경우 지우기 -->
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <span>이름</span>
                                         <input type="text" value="황예지">
-                                        <span>기본배송지</span> <!-- 일반배송지의 경우 지우기 -->
-                                    </span>
                                     </p>
                                     <p>
                                         <span>연락처</span>
@@ -69,10 +75,14 @@
                                 </div>
                                 <div> <!-- 배송지 추가 -->
                                     <p>
-                                        <span>이름</span>
+                                        <span>배송지명</span>
                                         <span>
+                                            <input type="text" value="회사">
+                                        </span>
+                                    </p>
+                                    <p>
+                                        <span>이름</span>
                                         <input type="text" value="황예지">
-                                    </span>
                                     </p>
                                     <p>
                                         <span>연락처</span>

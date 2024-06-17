@@ -3,9 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/adminsCss/admin_header.css">
+    <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/adminsCss/admin_user_index.css">
     <link rel="stylesheet" href="/css/footer.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/js/header.js"></script>
     <title>관리자 - 회원 목록</title>
 </head>
 <body>
@@ -13,7 +15,7 @@
     <main>
         <div class="box">
             <p id="boxTitle">회원 목록</p>
-            <div id="selectBox">
+            <form id="selectBox">
                 <select>
                     <option value="" hidden>검색분류</option>
                     <option value="아이디">아이디</option>
@@ -23,7 +25,8 @@
                     <option value="가입일">가입일</option>
                 </select>
                 <input type="search">
-            </div>
+                <button type="submit">검색</button>
+            </form>
             <div id="indexBox">
                 <table>
                     <colgroup>

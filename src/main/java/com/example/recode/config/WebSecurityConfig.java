@@ -19,21 +19,21 @@ public class WebSecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
         return web -> web.ignoring()
-                .requestMatchers("/**");
+                .requestMatchers("/css/**", "/js/**", "images/**");
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
 
         return httpSecurity.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/signup", "/user").permitAll()
+                .requestMatchers("/login", "/join/**", "/idfind", "/pwfind", "/").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         ).formLogin(in -> in
                 .loginPage("/login")
-                .defaultSuccessUrl("/main")
+                .defaultSuccessUrl("/")
         ).logout(out -> out
-                .logoutSuccessUrl("/main")
+                .logoutSuccessUrl("/")
                 .invalidateHttpSession(true)
         ).csrf(csrf -> csrf
                 .disable()

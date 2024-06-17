@@ -1,0 +1,429 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>payment</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <script src="//t1.daumcdn.net/mapjsapi/bundle/postcode/prod/postcode.v2.js"></script>
+    <style>
+        input{
+            border: none;
+        }
+
+        .d-hidden{
+            display: none;
+        }
+
+        .d-relative{
+            display: relative;
+        }
+
+        .cursor{
+            cursor: pointer;
+        }
+
+        .bg-gray{
+            background-color: gray;
+        }
+
+        .bg-white{
+            background-color: white;
+        }
+
+        .border-b{
+            border-bottom: 1px solid gainsboro;
+        }
+
+        .menuBar{
+            background-color: #82DC28;
+            color: white;
+            width: 1920px;
+            height: 150px;
+            padding: 0px;
+        }
+
+        .paymentSelectBar{
+            outline: none;
+        }
+
+        .menu{
+            font-size: 40px;
+            font-weight: bolder;
+            padding-left: 502px;
+        }
+        .menuSub{
+            font-size: 30px;
+            padding-right: 502px;
+        }
+
+        .titleFont{
+            font-size: 25px;
+            font-weight: bolder;
+        }
+
+        .productFont{
+            font-size: 18px;
+            font-weight: bolder;
+        }
+
+        .paymentInfoView{
+            background-color: rgb(240, 240, 240);;
+            width: 90%;
+            border: 1px solid gainsboro;
+        }
+
+        #payment-btn{
+            width: 100%;
+            height: 60px;
+            background-color: #82DC28;
+            color: white;
+            border: none;
+        }
+
+        #payment-btn: hover{
+            background-color: green;
+        }
+
+        .cancel-btn{
+            width: 25px;
+            height: 25px;
+            background-color: white;
+            border: 1px solid gainsboro;
+            color: gray;
+        }
+
+
+    </style>
+</head>
+<body>
+<div class="mx-auto" style="width: 1920px;">
+    <div class="menuBar row mx-auto">
+        <div class="col-auto menu d-flex align-items-center ">주문/결제</div>
+        <div class="col-auto mt-auto ms-auto menuSub">01장바구니 > 02주문/결제 > 03결제완료</div>
+    </div>
+
+
+    <div class="mx-auto border my-5 bg-gray" style=" width: 900px;">
+        <div class="bg-white ps-2 row mx-auto">
+            <div class="col-11 row mx-auto">
+                <div class="titleFont mb-2 mt-4">배송지</div>
+                <div style="height:60px;" class="d-flex align-items-center col-auto">배송지명</div>
+                <select class="col my-auto ms-2" style="height : 40px;" id="selectBar">
+                    <th:block th:each="addressNickname : ${addressNicknameList}">
+                        <option th:text="${addressNickname.addressNickname}" th:value="${addressNickname.addressId}"></option>
+                    </th:block>
+
+                    <option value="-1">새로운 배송지 입력</option>
+                </select>
+            </div>
+
+            <div class="col d-flex align-items-center justify-content-center cursor" id="addressInfoOpen-btn">확장</div>
+            <div class="d-hidden">
+
+                <div class="mx-auto mt-5" style="width: 600px;">
+
+                    <div class="row border w-100 mx-auto d-hidden" style="height: 50px;">
+                        <img src="/images/icon_img/addressNick.png" class="col-1 p-0 h-100" >
+                        <input class="col" type="text" placeholder="배송지명" id="addressNickname" th:value="${address == null ? null : address.addressNickname}">
+                    </div>
+
+                    <div class="row mt-2 mb-2 w-100 mx-auto border" style="height: 50px;">
+                        <img src="/images/icon_img/addressUser.png" class="col-1 p-0 h-100" >
+                        <input class="col" type="text" placeholder="받는 사람" id="recipientName" th:value="${address == null ? null : address.addressRecipientName}">
+
+                    </div>
+
+                    <div class="row mt-2 w-100 mx-auto border" style="height: 100px;">
+                        <img src="/images/icon_img/address.png" class="col-1 p-0 h-100">
+                        <div class="col p-0 row">
+                            <div>
+                                <input type="hidden" id="sample6_postcode" th:value="${address == null ? null : address.addressPostalCode}">
+                                <input type="hidden" id="sample6_address" th:value="${address == null ? null : address.addressRoadNameAddress}">
+                                <input type="text" id="sample6_addressAndPostcode" placeholder="주소" readonly onclick="sample6_execDaumPostcode()" class="w-100 h-50 px-2" th:value="${address == null ? null : address.addressRoadNameAddress + ' [' + address.addressPostalCode + ']'}"><br>
+                                <input type="text" id="sample6_detailAddress" placeholder="상세주소" class="w-100 h-50 px-2" th:value="${address == null ? null : address.addressDetailAddress}">
+                                <input type="hidden" id="sample6_extraAddress" placeholder="참고항목">
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mt-2 w-100 mx-auto border" style="height: 50px;">
+                        <img src="/images/icon_img/addressPhone.png" class="col-1 p-0 h-100" style="">
+                        <div class="row col">
+                            <input class="col-2 text-center" type="text" id="phoneTop" th:value="${address == null ? null : address.addressRecipientPhone.substring(0,3)}">
+                            <div class="col-1 d-flex align-items-center justify-content-center">-</div>
+                            <input class="col-4 text-center" type="text" id="phoneMiddle" th:value="${address == null ? null : address.addressRecipientPhone.substring(3,7)}">
+                            <div class="col-1 d-flex align-items-center justify-content-center">-</div>
+                            <input class="col-4 text-center" type="text" id="phoneBottom" th:value="${address == null ? null : address.addressRecipientPhone.substring(7,11)}">
+                        </div>
+                    </div>
+
+                    <div class="row mt-5" id="deliveryRequestSel">
+                        <div>배송 요청사항</div>
+
+                        <div class="row mx-auto cursor deliveryRequest-btn" style="height: 50px;">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <div class="col d-flex align-items-center">문 앞</div>
+                        </div>
+
+                        <div class="row mx-auto cursor deliveryRequest-btn" style="height: 50px;">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <div class="col d-flex align-items-center">직접 받고 부재 시 문 앞</div>
+                        </div>
+
+                        <div class="row mx-auto cursor deliveryRequest-btn" style="height: 50px;">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <div class="col d-flex align-items-center">경비실</div>
+                        </div>
+
+                        <div class="row mx-auto cursor deliveryRequest-btn" style="height: 50px;">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <div class="col d-flex align-items-center" style="height: 50px;">택배함</div>
+                        </div>
+
+                        <div class="mx-auto d-hidden" style="height: 50px;" id="deliveryBoxNumInputPlace">
+                            <input type="text" placeholder="택배함 번호(필수)" id="deliveryBoxNumView" class="h-100 w-100 border px-2 mx-auto" th:value="${address == null ? null : address.addressDeliveryBoxNum}">
+                            <input type="hidden" id="deliveryBoxNum" th:value="${address == null ? null : address.addressDeliveryBoxNum}">
+                        </div>
+
+                        <input type="hidden" id="deliveryRequest" th:value="${address == null ? '문 앞' : address.addressDeliveryRequest}">
+                    </div>
+
+
+                    <div class="row mt-5 d-hidden" id="">
+                        <div>배송 요청사항</div>
+
+                        <div class="row mx-auto" style="height: 50px;">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <div class="col d-flex align-items-center">문 앞</div>
+                        </div>
+
+                        <div class="row mx-auto" style="height: 50px;">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <div class="col d-flex align-items-center">직접 받고 부재 시 문 앞</div>
+                        </div>
+
+                        <div class="row mx-auto" style="height: 50px;">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <div class="col d-flex align-items-center">경비실</div>
+                        </div>
+
+                        <div class="row mx-auto" style="height: 50px;">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <div class="col d-flex align-items-center" style="height: 50px;">택배함</div>
+                        </div>
+
+                        <div class="mx-auto d-hidden" style="height: 50px;" id="deliveryBoxNumInputPlaceDot">
+                            <input type="text" placeholder="택배함 번호(필수)" id="deliveryBoxNumViewDot" class="h-100 w-100 border px-2 mx-auto" th:value="${address == null ? null : address.addressDeliveryBoxNum}" readonly>
+                        </div>
+
+                    </div>
+
+                    <div class="row mt-5">
+                        <div>공동현관 출입번호</div>
+
+                        <div class="row mx-auto cursor" style="height: 50px;" id="notUsedPassword-btn">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <div class="col d-flex align-items-center">비밀번호 없이 출입 가능해요</div>
+                        </div>
+
+                        <div class="row mx-auto cursor" style="height: 50px;" id="usedPassword-btn">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <input type="text" class="col border" placeholder="비밀번호 사용 예 : #1234" th:value="${address == null ? null : address.addressFrontDoorSecret}">
+                        </div>
+
+                        <input type="hidden" id="frontDoorSecret" th:value="${address == null ? null : address.addressFrontDoorSecret}">
+                    </div>
+
+                    <div class="row mt-5 d-hidden">
+                        <div>공동현관 출입번호</div>
+
+                        <div class="row mx-auto" style="height: 50px;">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <div class="col d-flex align-items-center">비밀번호 없이 출입 가능해요</div>
+                        </div>
+
+                        <div class="row mx-auto" style="height: 50px;">
+                            <img src="/images/icon_img/addressUncheck.png" class="col-auto p-0" style="width: 50px; height: 50px;">
+                            <input type="text" class="col border" id="frontDoorSecretViewDot" placeholder="비밀번호 사용 예 : #1234" th:value="${address == null ? null : address.addressFrontDoorSecret}" readonly>
+                        </div>
+                    </div>
+
+                    <div class="m-5"></div>
+
+                </div>
+
+            </div>
+        </div>
+
+        <div class="mt-2 px-2 bg-white">
+            <div class="titleFont ms-3 pt-4">주문상품</div>
+
+            <div class="productView row mx-auto py-4" th:each="cartInfo : ${cartInfoList}" style="border-top: 1px solid gray;">
+                <img th:src="${cartInfo.productRepImgSrc}" class="col-auto p-0 ms-3" style="width: 90px; height: 90px;">
+                <div class="col row">
+                    <div class="productFont" th:text="${cartInfo.productName}">상품 이름</div>
+                    <div class="mt-auto pb-1" th:if="${cartInfo.productDiscountPrice != null}">
+                        <del><div class="mt-auto" th:text="${cartInfo.productRegularPrice} + '원'">원가</div></del>
+                        <div th:text="${cartInfo.productDiscountPrice} + '원'" style="color: red;">할인가</div>
+                    </div>
+                    <div class="mt-auto pb-1" th:if="${cartInfo.productDiscountPrice == null}">
+                        <div class="mt-auto" th:text="${cartInfo.productRegularPrice} + '원'">원가</div>
+                    </div>
+                </div>
+                <button type="button" class="col-auto me-3 p-0 cancel-btn">X</button>
+            </div>
+        </div>
+
+        <div class="row mx-auto py-3" style="background-color: gainsboro;">
+            <div class="col" style="font-size: 20px;">배송비</div>
+            <div class="col-auto" style="font-size: 20px;">0원</div>
+        </div>
+
+        <div class="mt-2 px-2 bg-white">
+            <div class="titleFont ms-3 pt-4">결제정보</div>
+            <div class="row mx-auto py-3 px-2">
+                <div class="col-6">주문상품</div>
+                <div class="col-6 text-end">00,000원</div>
+                <div class="col-6">배송비</div>
+                <div class="col-6 text-end">+0원</div>
+                <div class="col-6">할인금액</div>
+                <div class="col-6 text-end" style="color: red;">-0원</div>
+            </div>
+        </div>
+        <div class="row mx-auto py-3" style="background-color: rgb(223, 255, 223);">
+            <div class="col" style="font-size: 20px; font-weight: bolder;">최종 결제 금액</div>
+            <div class="col-auto" style="font-size: 20px; font-weight: bolder; color:#82DC00;">0원</div>
+        </div>
+
+        <div class="mt-2 bg-white">
+            <div class="titleFont ms-3 pt-4">결제수단</div>
+            <div class="ps-3 mt-3">결제수단 선택</div>
+
+            <div class="row mx-auto mt-3">
+                <select class="col-11 mx-auto" style="height: 50px; border: 1px solid green; color:green;" id="paymentSelectBar">
+                    <option style="color: black;">무통장입금</option>
+                    <option style="color: black;">계좌이체</option>
+                    <option style="color: black;">신용/체크 카드</option>
+                    <option style="color: black;">핸드폰 결제</option>
+                </select>
+            </div>
+
+            <div class="row mx-auto mt-3 paymentInfoView py-3">
+                <div class="col-auto pe-0 d-flex align-items-center justify-content-center">입금은행</div>
+                <div class="col-auto d-flex align-items-center justify-content-center ps-1" style="font-size: 25px; color: green;">*</div>
+                <select class="col-10 mx-auto border">
+                    <option>카카오뱅크</option>
+                    <option>하나은행</option>
+                    <option>국민은행</option>
+                    <option>농협은행</option>
+                    <option>신한은행</option>
+                    <option>기업은행</option>
+                </select>
+
+                <div class="col-auto pe-0 d-flex align-items-center justify-content-center mt-3">계좌번호</div>
+                <div class="col-auto d-flex align-items-center justify-content-center ps-1 mt-3" style="font-size: 25px; color: green;">*</div>
+                <input class="col-10 mx-auto mt-3 border" type="text" placeholder="계좌번호" style="height: 50px;">
+            </div>
+
+            <div class="row mx-auto mt-3 paymentInfoView py-3">
+                <div class="col-auto pe-0 d-flex align-items-center justify-content-center">입금은행</div>
+                <div class="col-auto d-flex align-items-center justify-content-center ps-1" style="font-size: 25px; color: green;">*</div>
+                <select class="col-10 mx-auto border">
+                    <option>카카오뱅크</option>
+                    <option>하나은행</option>
+                    <option>국민은행</option>
+                    <option>농협은행</option>
+                    <option>신한은행</option>
+                    <option>기업은행</option>
+                </select>
+
+                <div class="col-auto pe-0 d-flex align-items-center justify-content-center mt-3">입금자명</div>
+                <div class="col-auto d-flex align-items-center justify-content-center ps-1 mt-3" style="font-size: 25px; color: green;">*</div>
+                <input class="col-10 mx-auto mt-3 border" type="text" placeholder="입금자명" style="height: 50px;">
+            </div>
+
+            <div class="row mx-auto mt-3 paymentInfoView py-3">
+                <div class="col-1 pe-0 d-flex align-items-center justify-content-center">카드사</div>
+                <div class="col-auto d-flex align-items-center justify-content-center ps-1" style="font-size: 25px; color: green;">*</div>
+                <select class="col-10 border" style="margin-left: 25px;">
+                    <option>카카오뱅크</option>
+                    <option>하나은행</option>
+                    <option>국민은행</option>
+                    <option>농협은행</option>
+                    <option>신한은행</option>
+                    <option>기업은행</option>
+                </select>
+
+                <div class="col-auto pe-0 d-flex align-items-center justify-content-center mt-3">할부기간</div>
+                <div class="col-auto d-flex align-items-center justify-content-center ps-1 mt-3" style="font-size: 25px; color: green;">*</div>
+                <select class="col-10 mx-auto border mt-3">
+                    <option>일시불</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                    <option>6</option>
+                </select>
+
+                <div class="col-auto pe-0 d-flex align-items-center justify-content-center mt-3">카드번호</div>
+                <div class="col-auto d-flex align-items-center justify-content-center ps-1 mt-3" style="font-size: 25px; color: green;">*</div>
+                <input class="col-10 mx-auto mt-3 border" type="text" placeholder="카드번호" style="height: 50px;">
+            </div>
+
+            <div class="row mx-auto mt-3 paymentInfoView py-3">
+                <div class="col-1 pe-0 d-flex align-items-center justify-content-center">통신사</div>
+                <div class="col-auto d-flex align-items-center justify-content-center ps-1" style="font-size: 25px; color: green;">*</div>
+                <select class="col-10 border" style="margin-left: 25px;">
+                    <option>SKT</option>
+                    <option>KT</option>
+                    <option>헬로모바일</option>
+                    <option>KCT</option>
+                </select>
+
+                <div class="col-auto pe-0 d-flex align-items-center justify-content-center mt-3">전화번호</div>
+                <div class="col-auto d-flex align-items-center justify-content-center ps-1 mt-3" style="font-size: 25px; color: green;">*</div>
+                <input class="col-10 mx-auto mt-3 border" type="text" placeholder="전화번호( '-' 를 제외한 숫자 11자리)" style="height: 50px;">
+            </div>
+
+            <div class="bg-white p-2"></div>
+        </div>
+
+        <div class="mt-2 px-2 bg-white">
+            <div class="titleFont ms-3 pt-4 border-b cursor">
+                <input type="checkbox" style="width: 25px; height: 25px;">
+                모든 약관 동의
+            </div>
+
+            <div class="row mx-auto py-3 px-2">
+
+                <div class="ms-3 pt-2 row cursor">
+                    <input type="checkbox" style="width: 21px; height: 21px;" class="col-auto">
+                    <div style="color: green;" class="w-auto h-auto pe-0">[필수]</div> 쇼핑몰 이용약관 동의
+                </div>
+
+                <div class="ms-3 pt-2 row cursor">
+                    <input type="checkbox" style="width: 21px; height: 21px;" class="col-auto">
+                    <div style="color: green;" class="w-auto h-auto pe-0">[필수]</div> 개인정보 수집 및 이용 동의
+                </div>
+            </div>
+        </div>
+
+        <div class="mt-2 bg-white">
+            <div class="titleFont text-center py-4">주문 내용을 확인하였으며 약관에 동의합니다.</div>
+
+            <button type="button" class="mt-4" id="payment-btn">00,000원 결제하기</button>
+        </div>
+
+
+
+    </div>
+
+
+
+</div>
+<script src="/js/payment.js"></script>
+<script src="/js/address.js"></script>
+
+</body>
+</html>

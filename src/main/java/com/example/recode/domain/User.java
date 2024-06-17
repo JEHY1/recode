@@ -27,7 +27,7 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "user_id", updatable = false)
-    private long userId;
+    private Long userId;
 
     @Column(name = "username", nullable = false, unique = true)
     private String username;
@@ -88,7 +88,7 @@ public class User implements UserDetails {
     }
 
     @Builder
-    public User(long userId, String username, String userPassword, String userRealName, String userPhone, String userEmail, LocalDateTime userSubmitDate, String userRole) {
+    public User(Long userId, String username, String userPassword, String userRealName, String userPhone, String userEmail, LocalDateTime userSubmitDate, String userRole) {
         this.userId = userId;
         this.username = username;
         this.userPassword = userPassword;

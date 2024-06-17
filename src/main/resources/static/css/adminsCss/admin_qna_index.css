@@ -4,7 +4,7 @@
 }
 #boxTitle { /* 제목 */
     text-align: center;
-    margin-top: 30px;
+    margin-top: 200px;
     margin-bottom: 60px;
     font-size: 25px;
     font-weight: bold;
@@ -20,6 +20,19 @@
 #selectBox input {
     padding: 9px;
     width: 430px;
+    vertical-align: top;
+}
+#selectBox button {
+    background-color: white;
+    width: 70px;
+    padding: 8px;
+    border: 1px solid #548235;
+    border-radius: 10px;
+    color: #548235;
+    vertical-align: top;
+}
+#selectBox button:hover {
+    font-weight: bold;
 }
 table {
     width: 100%;

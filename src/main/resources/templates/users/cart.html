@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <title>cart</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+    <style>
+        .menuBar{
+            background-color: #82DC28;
+            color: white;
+            width: 1920px;
+            height: 150px;
+            padding: 0px;
+        }
+
+        .menu{
+            font-size: 40px;
+            font-weight: bolder;
+            padding-left: 502px;
+        }
+
+        .menuSub{
+            font-size: 30px;
+            padding-right: 502px;
+        }
+
+        .border-x{
+            border-top: solid 2px gray;
+            border-bottom: solid 2px gray;
+        }
+
+        .border-t{
+            border-top: solid 2px #82DC28;
+        }
+
+        .border-b{
+            border-bottom: solid 1px gainsboro;
+        }
+
+        .border-b-2{
+            border-bottom: solid 2px gray;
+        }
+
+        .border-r{
+            border-right: solid 1px gainsboro;
+        }
+
+        .bg-gainsboro{
+            background-color: gainsboro;
+        }
+
+        .color-gray{
+            color: gray;
+        }
+
+        .btn-green{
+            border-radius: 5px;
+            border: 1px solid green;
+            background-color: white;
+            color: green;
+            width: 140px;
+        }
+
+        .btn-gray{
+            border-radius: 5px;
+            border: 1px solid gray;
+            background-color: white;
+            margin-top: 10px;
+            width: 140px;
+        }
+
+        .cursor{
+            cursor: pointer;
+        }
+
+        .infoTitleFont{
+            font-size: 20px;
+            font-weight: bold;
+            color: gray;
+        }
+
+        .infoStatusFont{
+            font-size: 20px;
+        }
+
+        .calcFont{
+            font-size: 50px;
+            font-weight: bold;
+            color: gray;
+        }
+
+        #selectOrder-btn{
+            width: 170px;
+            height: 45px;
+            border-radius: 5px;
+            background-color: white;
+            border: solid 1px #82DC28;
+            color: #82DC28;
+        }
+
+        #allOrder-btn{
+            width: 170px;
+            height: 45px;
+            border-radius: 5px;
+            background-color: #82DC28;
+            color: white;
+            border: none;
+        }
+    </style>
+</head>
+<body>
+
+<div class="mx-auto" style="width: 1920px;">
+    <div class="menuBar row mx-auto">
+        <div class="col-auto menu d-flex align-items-center ">장바구니</div>
+        <div class="col-auto mt-auto ms-auto menuSub">01장바구니 > 02주문/결제 > 03결제완료</div>
+    </div>
+
+    <div class="row mx-auto" style=" width: 900px;">
+        <div class="mt-5 border-x bg-gainsboro row mx-auto">
+            <input type="checkbox" class="col-auto" id="allCheckBox">
+            <div class="col text-center">상품 정보</div>
+            <div class="col-2 text-center">판매가</div>
+            <div class="col-2 text-center">구매가</div>
+            <div class="col-2 text-center">선택</div>
+        </div>
+
+        <div class="border-b row mx-auto" style="height:140px;" th:each="cart : ${carts}">
+            <input type="hidden" th:value="${cart.cartId}" th:id="'cartId' + ${cart.cartId}">
+            <input type="checkbox" class="col-auto productCheckBox">
+            <div class="col d-flex align-items-center row w-100 mx-auto border-r" style="padding: 0px;">
+                <img class="col-auto cursor" th:src="${cart.productRepresentativeImgSrc}" style="width:90px; height: 90px; padding: 0px; margin-left:30px;" th:onclick="|location.href = '/productDetail/${cart.productId}'|">
+                <div class="col mx-auto" th:text="${cart.productName}">상품 명</div>
+            </div>
+
+            <div class="col-2 d-flex align-items-center justify-content-center border-r" th:text="${cart.productRegularPrice} + '원'">판매가</div>
+
+            <div class="col-2 border-r">
+                <div style="margin-top: 45px;" th:if="${cart.productDiscountPrice != null}">
+                    <del><div class="text-center" style="color: gray;" th:text="${cart.productRegularPrice} + '원'">원가</div></del>
+                    <div class="text-center" style="color: red;" th:text="${cart.productDiscountPrice} + '원'">할인가</div>
+                </div>
+                <div style="margin-top: 58px;" th:if="${cart.productDiscountPrice == null}">
+                    <div></div>
+                    <div class="text-center" th:text="${cart.productRegularPrice} + '원'"></div>
+                </div>
+            </div>
+
+            <form action="#" method="post" class="col-2 my-auto">
+                <input type="hidden" name="cartId" th:value="${cart.cartId}" class="cartIds">
+                <button type="submit" class="btn-green">바로구매</button>
+                <button type="button" class="btn-gray cartDelete-btn">삭제</button>
+            </form>
+        </div>
+
+
+        <button type="button" class="btn-gray p-1" id="deleteSelectProduct-btn">선택상품 삭제</button>
+        <button type="button" class="btn-gray ms-2 p-1" id="deleteSoldProduct-btn">품절상품 삭제</button>
+
+        <div class="border-t mt-5 row mx-auto border-b-2">
+            <div class="col text-center my-3">
+                <div class="infoTitleFont">총 판매가</div>
+                <div class="infoStatusFont" id="totalRegularPrice">0원</div>
+            </div>
+            <div class="col-auto calcFont">-</div>
+            <div class="col text-center my-3">
+                <div class="infoTitleFont">할인 금액</div>
+                <div class="infoStatusFont" style="color: red;" id="totalDiscount">0원</div>
+            </div>
+            <div class="col-auto calcFont">=</div>
+            <div class="col text-center my-3">
+                <div class="infoTitleFont">결제 예상 금액</div>
+                <div class="infoStatusFont" id="totalDiscountPrice">0원</div>
+
+            </div>
+        </div>
+        <div class="border-b-2 bg-gainsboro text-end color-gray">! 배송비는 별도입니다.</div>
+
+        <div class="mx-auto w-auto mt-5">
+            <form action="/user/paymentView" method="post" id="selectedProductField">
+
+
+                <button type="submit" id="selectOrder-btn">선택주문</button>
+                <button id="allOrder-btn">전체주문</button>
+            </form>
+        </div>
+
+    </div>
+
+
+</div>
+
+
+<script src="/js/cart.js"></script>
+</body>
+</html>

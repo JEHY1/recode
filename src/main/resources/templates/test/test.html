@@ -1,10 +1,52 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml" xmlns:sec="http://www.w3.org/1999/xhtml">
 <head>
     <meta charset="UTF-8">
     <title>DB 연결 확인용</title>
 </head>
 <body>
+
+<button type="button" id="testButton">call test/test</button>
+
+<script>
+    document.getElementById('testButton').addEventListener('click', () => {
+        console.log('click');
+        let body = new URLSearchParams();
+
+        body.append('testValue1', 'asditj');
+        body.append('testValue2', 'rhashdgd122');
+
+        fetch(`/test/test`, {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: body
+        })
+        .then(response => response.text())
+        .then(data => {
+            console.log(data);
+            window.location.href = data;
+
+        });
+
+
+    });
+</script>
+
+<form action="/user/address/management2" method="post">
+    <input type="hidden" value="2" name="addressId">
+    <button type="submit">call test/test (form action)</button>
+</form>
+
+<div sec:authorize="isAuthenticated()">
+    <div>member</div>
+</div>
+
+<div sec:authorize="isAnonymous()">
+    <div>anonymous</div>
+</div>
+
 <div>
     주소 테이블
     <div th:each="address : ${addresses}">
