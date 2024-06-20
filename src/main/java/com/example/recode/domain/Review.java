@@ -8,6 +8,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
+import java.time.LocalDateTime;
+
 @Entity
 @Table(name = "review_tb")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
@@ -34,16 +36,16 @@ public class Review {
 
     @CreatedDate
     @Column(name = "review_create_date", nullable = false)
-    private String reviewCreateDate;
+    private LocalDateTime reviewCreateDate;
 
     @Column(name = "review_score", nullable = false)
-    private String reviewScore;
+    private int reviewScore;
 
     @Column(name = "review_views", nullable = false)
-    private String reviewViews;
+    private int reviewViews;
 
     @Builder
-    public Review(long reviewId, long userId, long productId, String reviewTitle, String reviewContent, String reviewCreateDate, String reviewScore, String reviewViews) {
+    public Review(long reviewId, long userId, long productId, String reviewTitle, String reviewContent, LocalDateTime reviewCreateDate, int reviewScore, int reviewViews) {
         this.reviewId = reviewId;
         this.userId = userId;
         this.productId = productId;

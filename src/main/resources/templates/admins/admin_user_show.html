@@ -19,23 +19,23 @@
                 <ul>
                     <li>
                         <p>아이디</p>
-                        <p>fddkfsjke54</p>
+                        <p th:text="${user.username}"></p>
                     </li>
                     <li>
                         <p>비밀번호</p>
-                        <p>******</p>
+                        <p>**********</p>
                     </li>
                     <li>
                         <p>이름</p>
-                        <p>황예지</p>
+                        <p th:text="${user.userRealName}"></p>
                     </li>
                     <li>
                         <p>연락처</p>
-                        <p>010-1234-5678</p>
+                        <p th:text="${user.userPhone}"></p>
                     </li>
                     <li>
                         <p>이메일</p>
-                        <p>fdksljk57@gmail.com</p>
+                        <p th:text="${user.userEmail}"></p>
                     </li>
                     <li>
                         <p>배송지</p>
@@ -101,16 +101,16 @@
                     </li>
                     <li>
                         <p>권한</p>
-                        <p>COSTOMER</p>
+                        <p th:text="${user.userRole}"></p>
                     </li>
                     <li>
                         <p>가입일</p>
-                        <p>2024-06-05 13:12:05</p>
+                        <p th:text="${#temporals.format(user.userSubmitDate, 'yyyy-MM-dd HH:mm:ss')}"></p>
                     </li>
                 </ul>
             </div>
             <div class="buttonBox">
-                <a href="/admin/user/edit">수정</a>
+                <a th:href="'/admin/user/' + ${user.userId} + '/edit'">수정</a>
                 <a href="/admin/user/index">목록</a>
             </div>
         </div>

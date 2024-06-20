@@ -29,21 +29,19 @@ public class UserViewController {
         return "users/deliveryAddressList";
     }
 
-    @GetMapping("/user/address/management")
-    public String deliveryAddressManagement1(Model model){
-        model.addAttribute("addressId", null);
-        return "users/deliveryAddressManagement";
-    }
+//    @GetMapping("/user/address/management2")
+//    public String deliveryAddressManagement1(Model model){
+//        model.addAttribute("addressId", null);
+//        return "users/deliveryAddressManagement";
+//    }
 
-    @PostMapping("/user/address/management2")
+    @PostMapping("/user/address/managementView")
     public String deliveryAddressManagement(AddressManagementViewRequest request, Model model){
-
 
         if(request.getAddressId() != null){
             Address address = addressService.findAddressByAddressId(request.getAddressId());
             model.addAttribute("address", address);
         }
-
 
         return "users/deliveryAddressManagement";
     }
@@ -62,6 +60,7 @@ public class UserViewController {
 
         model.addAttribute("addressNicknameList", addressService.getAddressNicknameList(principal));
         model.addAttribute("cartInfoList", cartService.getCartInfoList(request));
+        model.addAttribute("defaultAddressInfo", addressService.findAddressByUserIdAndAddressDefault(principal));
 
         System.err.println(request);
         System.err.println(cartService.getCartInfoList(request));

@@ -1,5 +1,6 @@
 package com.example.recode.domain;
 
+import com.example.recode.dto.QnaAnswerRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,7 +21,7 @@ public class QnA {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "qna_id", updatable = false)
-    private long QnAId;
+    private Long QnAId;
 
     @Column(name = "user_id", nullable = false)
     private long userId;
@@ -38,17 +39,17 @@ public class QnA {
     private String QnAAnswer;
 
     @CreatedDate
-    @Column(name = "qna_create_date", nullable = false)
+    @Column(name = "qna_create_date", nullable = false, updatable = false)
     private LocalDateTime QnACreateDate;
 
     @Column(name = "qna_views", nullable = false)
     private int QnAViews;
 
-    @Column(name = "qna_answer_date", nullable = false)
+    @Column(name = "qna_answer_date")
     private LocalDateTime QnAAnswerDate;
 
     @Builder
-    public QnA(long qnAId, long userId, long productId, String qnAQuestionTitle, String qnAQuestionContent, String qnAAnswer, LocalDateTime qnACreateDate, int qnAViews, LocalDateTime qnAAnswerDate) {
+    public QnA(Long qnAId, long userId, long productId, String qnAQuestionTitle, String qnAQuestionContent, String qnAAnswer, LocalDateTime qnACreateDate, int qnAViews, LocalDateTime qnAAnswerDate) {
         this.QnAId = qnAId;
         this.userId = userId;
         this.productId = productId;
@@ -58,5 +59,17 @@ public class QnA {
         this.QnACreateDate = qnACreateDate;
         this.QnAViews = qnAViews;
         this.QnAAnswerDate = qnAAnswerDate;
+    }
+
+    public QnA saveAnswer(QnaAnswerRequest dto) {
+        this.QnAAnswer = dto.getQnAAnswer();
+        this.QnAAnswerDate = this.QnAAnswerDate == null ? LocalDateTime.now() : this.QnAAnswerDate;
+        return this;
+    }
+
+    public QnA deleteAnswer() {
+        this.QnAAnswer = null;
+        this.QnAAnswerDate = null;
+        return this;
     }
 }

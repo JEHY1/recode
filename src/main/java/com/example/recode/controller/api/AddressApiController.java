@@ -2,6 +2,7 @@ package com.example.recode.controller.api;
 
 import com.example.recode.domain.Address;
 import com.example.recode.dto.AddressDeleteRequest;
+import com.example.recode.dto.GetAddressInfoRequest;
 import com.example.recode.dto.ManagementAddressRequest;
 import com.example.recode.service.AddressService;
 import lombok.RequiredArgsConstructor;
@@ -26,6 +27,21 @@ public class AddressApiController {
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(addressService.managementAddress(request, principal));
+    }
+
+    @PostMapping("/user/address/getAddressInfo")
+    public ResponseEntity<Address> responseAddressInfo(@RequestBody GetAddressInfoRequest request, Principal principal){
+        System.err.println("call getAddressInfo");
+
+        if(principal == null){
+            return ResponseEntity.ok()
+                    .body(addressService.findAddressByAddressId(request.getAddressId()));
+        }
+        else{
+            return ResponseEntity.ok()
+                    .body(addressService.findAddressByAddressId(request.getAddressId()));
+        }
+
     }
 
     @DeleteMapping("/user/address/delete")

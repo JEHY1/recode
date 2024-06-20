@@ -25,7 +25,7 @@ public class AddressService {
     public Address managementAddress(ManagementAddressRequest request, Principal principal){
 
 //        findAddressByUserIdAndAddressDefault(userService.getUserId(principal)).updateDefault(); //로그인 구현 후
-        if(findAddressByUserIdAndAddressDefault(1L) != null){
+        if(request.getAddressDefault() == 1 && findAddressByUserIdAndAddressDefault(1L) != null){
             findAddressByUserIdAndAddressDefault(1L).updateDefault();
         }
 
@@ -66,8 +66,11 @@ public class AddressService {
 
     public List<AddressNicknameListResponse> getAddressNicknameList(Principal principal){
 
-        return findAddressByUserId(1L).stream().map(AddressNicknameListResponse::new).toList();
-//        return findAddressByUserId(userService.getUserId(principal)).stream().map(AddressNicknameListResponse::new).toList(); //로그인 구현 후
+
+        List<AddressNicknameListResponse> list = findAddressByUserId(1L).stream().map(AddressNicknameListResponse::new).collect(Collectors.toList());
+//        List<AddressNicknameListResponse> list = findAddressByUserId(userService.getUserId(principal)).stream().map(AddressNicknameListResponse::new).collect(Collectors.toList()); 로그인 구현 후
+        list.sort((address1, address2) -> address2.getAddressDefault() - address1.getAddressDefault());
+        return list;
     }
 
     public Address findAddressByAddressId(long addressId){
@@ -79,6 +82,11 @@ public class AddressService {
     public Address findAddressByUserIdAndAddressDefault(long userId){
         return addressRepository.findByUserIdAndAddressDefault(userId, 1)
                 .orElse(null);
+    }
+
+    public Address findAddressByUserIdAndAddressDefault(Principal principal){
+//        return findAddressByUserIdAndAddressDefault(userService.getUserId(principal)); //로그인 구현 후
+        return findAddressByUserIdAndAddressDefault(1L);
     }
 
     public List<Address> findAddressByUserId(long userId){

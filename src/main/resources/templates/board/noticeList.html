@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RECODE 공지사항 페이지</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/boardCss/noticeList.css">
+</head>
+<body>
+<nav>
+    <a href="#">✕</a>
+    <div id="naviBox">
+        <ul>
+            <li>
+                <p>상품</p>
+                <ul>
+                    <li><a href="#">상품1</a></li>
+                    <li><a href="#">상품2</a></li>
+                    <li><a href="#">상품3</a></li>
+                    <li><a href="#">상품4</a></li>
+                    <li><a href="#">상품5</a></li>
+                </ul>
+            </li>
+            <li>
+                <p>커뮤니티</p>
+                <ul>
+                    <li><a href="#">공지사항</a></li>
+                    <li><a href="#">상품문의</a></li>
+                    <li><a href="#">리뷰</a></li>
+                </ul>
+            </li>
+            <li>
+                <p>내계정</p>
+                <ul>
+                    <li><a href="#">로그인</a></li>
+                    <li><a href="#">회원가입</a></li>
+                    <li><a href="#">마이페이지</a></li>
+                    <li><a href="#">주문조회</a></li>
+                    <li><a href="#">장바구니(<span>0</span>)</a></li>
+                    <li><a href="#">최근본상품(<span>0</span>)</a></li>
+                </ul>
+            </li>
+        </ul>
+    </div>
+</nav>
+<div id="search">
+    <a href="#">✕</a>
+    <div id="searchBox">
+        <p>Search</p>
+        <form>
+            <input type="search" placeholder="검색어를 입력해주세요">
+            <button type="submit"></button>
+        </form>
+    </div>
+</div>
+<div class="container">
+    <div class="content">
+        <div class="titleArea">
+            <h2>공지사항</h2>
+        </div>
+        <form>
+            <table>
+                <tr>
+                    <th>#</th>
+                    <th>Title</th>
+                    <th>Author</th>
+                    <th>Date</th>
+                    <th>Views</th>
+                </tr>
+                <tr th:each="notice : ${notices}">
+                    <td th:text="${notice.noticeId}">1</td>
+                    <td class="txtEm">
+                        <a th:href="@{/notice/{id}(id=${notice.noticeId})}" th:text="${notice.noticeTitle}">Title</a>
+                    </td>
+                    <td th:text="${notice.username}">작성자</td>
+                    <td th:text="${#temporals.format(notice.noticeCreateDate, 'yyyy-MM-dd')}">2024-06-12</td>
+                    <td th:text="${notice.noticeViews}">조회수</td>
+                </tr>
+            </table>
+        </form>
+    </div>
+</div>
+</body>
+</html>

@@ -73,4 +73,8 @@ public class Product {
         this.productColor = productColor;
         this.productType = productType;
     }
+
+    public void updateSold(int productSold){
+        this.productSold = productSold;
+    }
 }

@@ -2,11 +2,15 @@ package com.example.recode.service;
 
 import com.example.recode.domain.QnA;
 import com.example.recode.dto.ProductDetailQnAViewResponse;
+import com.example.recode.dto.QnaAnswerRequest;
 import com.example.recode.repository.QnARepository;
 import com.example.recode.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -54,5 +58,25 @@ public class QnAService {
 
         return pagingQnAs;
     }
+
+    public QnA findById(Long QnAId) {
+        return qnARepository.findById(QnAId)
+                .orElseThrow(() -> new IllegalArgumentException("not found QnA"));
+    }
+
+    @Transactional
+    public QnA saveAnswer(QnaAnswerRequest dto) {
+        return findById(dto.getQnAId()).saveAnswer(dto);
+    }
+
+    @Transactional
+    public QnA deleteAnswer(Long QnAId) {
+        return findById(QnAId).deleteAnswer();
+    }
+
+    public void deleteById(Long QnAId) {
+        qnARepository.deleteById(QnAId);
+    }
+
 
 }

@@ -1,5 +1,6 @@
 package com.example.recode.domain;
 
+import com.example.recode.dto.NoticeRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -20,7 +21,7 @@ public class Notice {
     @Id
     @Column(name = "notice_id", updatable = false)
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long noticeId;
+    private Long noticeId;
 
     @Column(name = "user_id", nullable = false)
     private long userId;
@@ -28,18 +29,18 @@ public class Notice {
     @Column(name = "notice_title", nullable = false)
     private String noticeTitle;
 
-    @Column(name = "notice_content", nullable = false)
+    @Column(name = "notice_content")
     private String noticeContent;
 
     @CreatedDate
-    @Column(name = "notice_create_date", nullable = false)
+    @Column(name = "notice_create_date", nullable = false, updatable = false)
     private LocalDateTime noticeCreateDate;
 
     @Column(name = "notice_views", nullable = false)
     private int noticeViews;
 
     @Builder
-    public Notice(long noticeId, long userId, String noticeTitle, String noticeContent, LocalDateTime noticeCreateDate, int noticeViews) {
+    public Notice(Long noticeId, long userId, String noticeTitle, String noticeContent, LocalDateTime noticeCreateDate, int noticeViews) {
         this.noticeId = noticeId;
         this.userId = userId;
         this.noticeTitle = noticeTitle;
@@ -47,4 +48,17 @@ public class Notice {
         this.noticeCreateDate = noticeCreateDate;
         this.noticeViews = noticeViews;
     }
+
+    public Notice update(NoticeRequest dto) {
+        this.noticeTitle = dto.getNoticeTitle();
+        this.noticeContent = dto.getNoticeContent();
+        return this;
+    }
+
+    public Notice updateViews(){
+        this.noticeViews++;
+        return this;
+    }
+
+
 }

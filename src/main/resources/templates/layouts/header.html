@@ -47,7 +47,7 @@
         </ul>
     </div>
 </header>
-<nav>
+<nav xmlns:sec="http://www.w3.org/1999/xhtml">
     <a href="#">✕</a>
     <div id="naviBox">
         <ul>
@@ -72,8 +72,10 @@
             <li>
                 <p>내계정</p>
                 <ul>
-                    <li><a href="#">로그인</a></li>
-                    <li><a href="#">회원가입</a></li>
+                    <li><a href="/login" sec:authorize="isAnonymous()">로그인</a></li>
+                    <li><a href="/join/new" sec:authorize="isAnonymous()">회원가입</a></li>
+                    <li><a href="/logout" sec:authorize="isAuthenticated()">로그아웃</a></li>
+                    <li><a href="/admin/product/index" sec:authorize="hasRole('ADMIN')">관리자페이지</a></li>
                     <li><a href="#">마이페이지</a></li>
                     <li><a href="#">주문조회</a></li>
                     <li><a href="#">장바구니(<span>0</span>)</a></li>

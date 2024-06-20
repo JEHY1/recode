@@ -87,9 +87,9 @@
     text-align: right;
     margin-bottom: 10px;
 }
-#answerBox p:nth-child(2) span {
+#answerBox p:nth-child(2) > span {
     font-weight: bold;
-    margin-right: 5px;
+    margin-right: 10px;
 }
 #answerBox p:nth-child(3) {
     box-sizing: border-box;

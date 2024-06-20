@@ -44,14 +44,20 @@ public class Payment {
     @Column(name = "payment_card")
     private String paymentCard;
 
+    @Column(name = "payment_card_number")
+    private String paymentCardNumber;
+
     @Column(name = "payment_installment")
     private Integer paymentInstallment;
+
+    @Column(name = "payment_phone_company")
+    private String paymentPhoneCompany;
 
     @Column(name = "payment_micropayment_phone")
     private String paymentMicropaymentPhone;
 
-    @Column(name = "payment_deposit")
-    private String paymentDeposit;
+    @Column(name = "payment_depositor")
+    private String paymentDepositor;
 
     @Column(name = "payment_status")
     private String paymentStatus;
@@ -81,7 +87,7 @@ public class Payment {
     private String paymentDeliveryBoxNum;
 
     @Builder
-    public Payment(long paymentId, long userId, int paymentPrice, LocalDateTime paymentDate, String paymentType, String paymentBank, String paymentAccountNumber, String paymentCard, int paymentInstallment, String paymentMicropaymentPhone, String paymentDeposit, String paymentStatus, String paymentPostalCode, String paymentAddress, String paymentDeliveryRequest, String paymentRecipientName, String paymentRecipientPhone, int paymentDeliveryFee, String paymentFrontDoorSecret, String paymentDeliveryBoxNum) {
+    public Payment(long paymentId, long userId, int paymentPrice, LocalDateTime paymentDate, String paymentType, String paymentBank, String paymentAccountNumber, String paymentCard, String paymentCardNumber, Integer paymentInstallment, String paymentPhoneCompany, String paymentMicropaymentPhone, String paymentDepositor, String paymentStatus, String paymentPostalCode, String paymentAddress, String paymentDeliveryRequest, String paymentRecipientName, String paymentRecipientPhone, int paymentDeliveryFee, String paymentFrontDoorSecret, String paymentDeliveryBoxNum) {
         this.paymentId = paymentId;
         this.userId = userId;
         this.paymentPrice = paymentPrice;
@@ -90,9 +96,11 @@ public class Payment {
         this.paymentBank = paymentBank;
         this.paymentAccountNumber = paymentAccountNumber;
         this.paymentCard = paymentCard;
+        this.paymentCardNumber = paymentCardNumber;
         this.paymentInstallment = paymentInstallment;
+        this.paymentPhoneCompany = paymentPhoneCompany;
         this.paymentMicropaymentPhone = paymentMicropaymentPhone;
-        this.paymentDeposit = paymentDeposit;
+        this.paymentDepositor = paymentDepositor;
         this.paymentStatus = paymentStatus;
         this.paymentPostalCode = paymentPostalCode;
         this.paymentAddress = paymentAddress;

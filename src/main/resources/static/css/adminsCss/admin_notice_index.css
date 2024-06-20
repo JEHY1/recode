@@ -79,7 +79,7 @@ td:nth-child(4) a {
 td:nth-child(4) a:hover {
     font-weight: bold;
 }
-td:nth-child(7) a:nth-child(1) {
+td:nth-child(8) a:nth-child(1) {
     font-size: 18px;
     text-decoration: none;
     background-color: #548235;
@@ -88,7 +88,7 @@ td:nth-child(7) a:nth-child(1) {
     border-radius: 10px;
     color: white;
 }
-td:nth-child(7) a:nth-child(2) {
+td:nth-child(8) a:nth-child(2) {
     font-size: 18px;
     text-decoration: none;
     background-color: white;
@@ -97,7 +97,7 @@ td:nth-child(7) a:nth-child(2) {
     border-radius: 10px;
     color: #548235;
 }
-td:nth-child(7) a:hover {
+td:nth-child(8) a:hover {
     font-weight: bold;
 }
 .buttonBox {

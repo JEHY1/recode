@@ -13,23 +13,24 @@
 <body>
     <th:block th:include="layouts/admin_header"></th:block>
     <main>
-        <form>
+        <form action="/admin/notice/create" method="post">
+            <input type="hidden" name="noticeId" th:value="${notice != null ? notice.noticeId : null}">
             <div class="box">
-                <p id="boxTitle">공지사항 등록</p>
+                <p id="boxTitle" th:text="${notice != null ? '공지사항 수정' : '공지사항 등록'}"></p>
                 <div id="insertBox">
                     <ul>
                         <li>
                             <label for="title">제목</label>
-                            <input type="text" id="title">
+                            <input type="text" id="title" name="noticeTitle" th:value="${notice != null ? notice.noticeTitle : ''}">
                         </li>
                         <li>
                             <label for="content">내용</label>
-                            <textarea id="content"></textarea>
+                            <textarea id="content" name="noticeContent" th:text="${notice != null ? notice.noticeContent : ''}"></textarea>
                         </li>
                     </ul>
                 </div>
                 <div class="buttonBox">
-                    <button type="submit">등록</button>
+                    <button type="submit" th:text="${notice != null ? '수정' : '등록'}"></button>
                     <button type="reset">취소</button>
                 </div>
             </div>

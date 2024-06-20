@@ -11,10 +11,12 @@ public class AddressNicknameListResponse {
 
     private long addressId;
     private String addressNickname;
+    private int addressDefault;
 
     @Builder
     public AddressNicknameListResponse(Address address) {
         this.addressId = address.getAddressId();
         this.addressNickname = address.getAddressNickname();
+        this.addressDefault = address.getAddressDefault();
     }
 }

@@ -152,6 +152,7 @@ if(deleteSoldProductButton){
             }
         })
         .then(data => {
+            console.log(data);
             if(data.products.length === 0){
                 alert('품절된 상품이 없습니다.');
             }
@@ -192,4 +193,32 @@ if(deleteSelectProductButton){
             }
         });
     });
+}
+
+const allOrderButton = document.getElementById('allOrder-btn');
+
+if(allOrderButton){
+    allOrderButton.addEventListener('click', () => {
+        if(!allCheckBox.checked){
+            allCheckBox.click();
+        }
+
+        document.getElementById('selectOrder-btn').click();
+    });
+}
+
+const selectOrderButton = document.getElementById('selectOrder-btn');
+
+if(selectOrderButton){
+    selectOrderButton.addEventListener('click', () => {
+        let cartIds = selectToList(Array.from(document.getElementsByClassName('productCheckBox')), Array.from(document.getElementsByClassName('cartIds')));
+        console.log(cartIds);
+
+        if(cartIds.length === 0){
+            alert('상품을 선택하세요');
+            return;
+        }
+        document.getElementById('selectedProductField').submit();
+
+    })
 }

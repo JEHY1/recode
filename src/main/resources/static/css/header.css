@@ -179,7 +179,7 @@ nav > a { /* ✕ 표시 */
     font-size: 20px;
 }
 #naviBox > ul > li > ul > li {
-    padding: 5px 0;
+    line-height: 36px;
 }
 #naviBox > ul > li > ul > li > a {
     text-decoration: none;
@@ -239,4 +239,43 @@ nav > a { /* ✕ 표시 */
     background-color: white;
     vertical-align: top;
     margin-left: 10px;
+}
+
+/* notice css */
+#notice {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background-color: #eeeeee95;
+    backdrop-filter: blur(3px);
+    z-index: 1;
+}
+#notice > div {
+    background-color: white;
+    border: 1px solid #548235;
+    position: relative;
+    width: 250px;
+    height: 160px;
+    margin: 0 auto;
+    top: 50%;
+    transform: translateY(-50%);
+    text-align: center;
+    border-radius: 7px;
+}
+#notice > div > p {
+    margin-top: 47px;
+    font-size: 16px;
+}
+#notice > div > a {
+    display: inline-block;
+    margin-top: 20px;
+    padding: 7px 12px;
+    border: 1px solid #548235;
+    border-radius: 12px;
+    background-color: #548235;
+    color: white;
+    text-decoration: none;
+    font-size: 14px;
 }

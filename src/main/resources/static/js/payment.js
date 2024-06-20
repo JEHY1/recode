@@ -1,12 +1,28 @@
+function httpRequest(url, method, body){
+    return fetch(url, {
+        method : method,
+        headers : {
+            "Content-Type" : "application/json"
+        },
+        body : body
+    });
+}
+
+function toList(components){
+    let list = [];
+    components.forEach(component => list.push(component.value));
+    return list;
+}
+
 const addressInfoOpenButton = document.getElementById('addressInfoOpen-btn');
 
 if(addressInfoOpenButton){
     addressInfoOpenButton.addEventListener('click', () => {
-        if(addressInfoOpenButton.nextElementSibling.classList.contains('d-hidden')){
-            addressInfoOpenButton.nextElementSibling.classList.remove('d-hidden');
+        if(addressInfoOpenButton.parentElement.nextElementSibling.classList.contains('d-hidden')){
+            addressInfoOpenButton.parentElement.nextElementSibling.classList.remove('d-hidden');
         }
         else{
-            addressInfoOpenButton.nextElementSibling.classList.add('d-hidden');
+            addressInfoOpenButton.parentElement.nextElementSibling.classList.add('d-hidden');
         }
     })
 }
@@ -30,6 +46,8 @@ if(deliveryRequestButton){
             if(button.nextElementSibling.id === 'deliveryBoxNumInputPlace'){
                 document.getElementById('deliveryBoxNumInputPlace').classList.remove('d-hidden');
                 document.getElementById('deliveryBoxNum').value = deliveryBoxNumView.value;
+                deliveryBoxNumView.classList.remove('border-red');
+                deliveryBoxNumView.classList.add('border');
             }
             else{
                 document.getElementById('deliveryBoxNumInputPlace').classList.add('d-hidden');
@@ -44,6 +62,10 @@ const deliveryBoxNumView = document.getElementById('deliveryBoxNumView');
 if(deliveryBoxNumView){
     deliveryBoxNumView.addEventListener('blur', () => {
         document.getElementById('deliveryBoxNum').value = deliveryBoxNumView.value;
+        if(deliveryBoxNumView.value !== ''){
+            deliveryBoxNumView.classList.remove('border-red');
+            deliveryBoxNumView.classList.add('border');
+        }
     });
 }
 
@@ -85,13 +107,41 @@ const selectBar = document.getElementById('selectBar');
 if(selectBar){
     selectBar.addEventListener('change', () => {
         console.log('change');
+        addressInfoOpenButton.classList.remove('d-hidden');
+
         if(selectBar.value === '-1'){
             console.log("new form");
+            addressInfoOpenButton.parentElement.nextElementSibling.classList.remove('d-hidden');
+
             document.getElementById('addressNickname').parentElement.classList.add('d-hidden');
             document.getElementById('deliveryRequestSel').classList.remove('d-hidden');
             document.getElementById('deliveryRequestSel').nextElementSibling.classList.add('d-hidden');
             document.getElementById('deliveryRequestSel').nextElementSibling.nextElementSibling.classList.remove('d-hidden');
             document.getElementById('deliveryRequestSel').nextElementSibling.nextElementSibling.nextElementSibling.classList.add('d-hidden');
+
+            document.getElementById('addressNickname').removeAttribute('readonly');
+            document.getElementById('recipientName').removeAttribute('readonly');
+            document.getElementById('sample6_addressAndPostcode').setAttribute('onclick', 'sample6_execDaumPostcode()');
+            document.getElementById('sample6_detailAddress').removeAttribute('readonly');
+            document.getElementById('phoneTop').removeAttribute('readonly');
+            document.getElementById('phoneMiddle').removeAttribute('readonly');
+            document.getElementById('phoneBottom').removeAttribute('readonly');
+
+            //새로운 배송지 입력시 기본 요청사항 기본 값을 '문 앞' 으로 설정
+            document.getElementById('deliveryRequestSel').children[1].click();
+            //새로운 배송지 입력시 기본 비밀번호 사용 여부를 '비밀번호 사용 안함' 으로 설정
+            document.getElementById('deliveryRequestSel').nextElementSibling.nextElementSibling.children[1].click();
+            //주소 view 를 비우기
+            document.getElementById('addressNickname').value = '';
+            document.getElementById('recipientName').value = '';
+            document.getElementById('sample6_addressAndPostcode').value = '';
+            document.getElementById('sample6_detailAddress').value = '';
+            document.getElementById('phoneTop').value = '';
+            document.getElementById('phoneMiddle').value = '';
+            document.getElementById('phoneBottom').value = '';
+            document.getElementById('sample6_postcode').value = '';
+            document.getElementById('sample6_address').value = '';
+
         }
         else{
             document.getElementById('addressNickname').parentElement.classList.remove('d-hidden');
@@ -99,6 +149,620 @@ if(selectBar){
             document.getElementById('deliveryRequestSel').nextElementSibling.classList.remove('d-hidden');
             document.getElementById('deliveryRequestSel').nextElementSibling.nextElementSibling.classList.add('d-hidden');
             document.getElementById('deliveryRequestSel').nextElementSibling.nextElementSibling.nextElementSibling.classList.remove('d-hidden');
+
+            document.getElementById('addressNickname').setAttribute('readonly', true);
+            document.getElementById('recipientName').setAttribute('readonly', true);
+            document.getElementById('sample6_addressAndPostcode').setAttribute('onclick', '');
+            document.getElementById('sample6_detailAddress').setAttribute('readonly', true);
+            document.getElementById('phoneTop').setAttribute('readonly', true);
+            document.getElementById('phoneMiddle').setAttribute('readonly', true);
+            document.getElementById('phoneBottom').setAttribute('readonly', true);
+
+            let deliveryRequestSel = document.getElementById('deliveryRequestSel');
+            deliveryRequestSel.nextElementSibling.children[1].children[0].src = '/images/icon_img/addressUncheck.png';
+            deliveryRequestSel.nextElementSibling.children[2].children[0].src = '/images/icon_img/addressUncheck.png';
+            deliveryRequestSel.nextElementSibling.children[3].children[0].src = '/images/icon_img/addressUncheck.png';
+            deliveryRequestSel.nextElementSibling.children[4].children[0].src = '/images/icon_img/addressUncheck.png';
+            deliveryRequestSel.nextElementSibling.children[5].classList.add('d-hidden');
+
+            deliveryRequestSel.nextElementSibling.nextElementSibling.nextElementSibling.children[1].children[0].src = '/images/icon_img/addressUncheck.png';
+            deliveryRequestSel.nextElementSibling.nextElementSibling.nextElementSibling.children[2].children[0].src = '/images/icon_img/addressUncheck.png';
+
+
+            let body = JSON.stringify({
+                addressId : selectBar.value
+            });
+
+            httpRequest(`/user/address/getAddressInfo`, 'POST', body)
+            .then(response => {
+                if(response.ok){
+                    return response.json();
+                }
+                else{
+                    throw Error('error');
+                }
+            })
+            .then(data => {
+                //받은 주소 정보 view 입력
+                document.getElementById('addressNickname').value = data.addressNickname;
+                document.getElementById('recipientName').value = data.addressRecipientName;
+                document.getElementById('sample6_addressAndPostcode').value = data.addressRoadNameAddress + ' [' + data.addressPostalCode + ']';
+                document.getElementById('sample6_detailAddress').value = data.addressDetailAddress;
+                document.getElementById('phoneTop').value = data.addressRecipientPhone.substring(0, 3);
+                document.getElementById('phoneMiddle').value = data.addressRecipientPhone.substring(3, 7);
+                document.getElementById('phoneBottom').value = data.addressRecipientPhone.substring(7, 11);
+                document.getElementById('sample6_postcode').value = data.addressPostalCode;
+                document.getElementById('sample6_address').value = data.addressRoadNameAddress;
+
+                //받은 요청사항 view 입력
+                let deliveryRequest = document.getElementById('deliveryRequest');
+                deliveryRequest.value = data.addressDeliveryRequest;
+
+                document.getElementById('deliveryBoxNum').value = data.addressDeliveryBoxNum;
+                if(deliveryRequest.value === '문 앞'){
+                    document.getElementById('deliveryRequestSel').nextElementSibling.children[1].children[0].src ='/images/icon_img/addressCheck.png';
+                }
+                else if(deliveryRequest.value === '직접 받고 부재 시 문 앞'){
+                   document.getElementById('deliveryRequestSel').nextElementSibling.children[2].children[0].src ='/images/icon_img/addressCheck.png';
+                }
+                else if(deliveryRequest.value === '경비실'){
+                    document.getElementById('deliveryRequestSel').nextElementSibling.children[3].children[0].src ='/images/icon_img/addressCheck.png';
+                }
+                else{
+                    document.getElementById('deliveryRequestSel').nextElementSibling.children[4].children[0].src ='/images/icon_img/addressCheck.png';
+                    document.getElementById('deliveryRequestSel').nextElementSibling.children[5].classList.remove('d-hidden');
+                    document.getElementById('deliveryBoxNumViewDot').value = data.addressDeliveryBoxNum;
+                }
+
+                //출입 비밀번호 view 입력
+                document.getElementById('frontDoorSecret').value =  data.addressFrontDoorSecret;
+                document.getElementById('frontDoorSecretViewDot').value = data.addressFrontDoorSecret;
+                if(document.getElementById('frontDoorSecret').value !== ''){
+                    document.getElementById('frontDoorSecretViewDot').previousElementSibling.src = '/images/icon_img/addressCheck.png';
+                }
+                else{
+                    document.getElementById('frontDoorSecretViewDot').parentElement.previousElementSibling.children[0].src = '/images/icon_img/addressCheck.png';
+                }
+
+                document.getElementById('addressForm').classList.remove('border-red');
+                document.getElementById('deliveryBoxNumView').classList.remove('border-red');
+                document.getElementById('deliveryBoxNumView').classList.add('border');
+
+
+            });
+
+
+
+        }
+    });
+
+}
+
+//address default 세팅
+const hasDefaultAddress = document.getElementById('hasDefaultAddress');
+
+if(hasDefaultAddress){
+    //배송 요청사항 view 설정
+    document.getElementById('addressNickname').parentElement.classList.remove('d-hidden');
+    document.getElementById('deliveryRequestSel').classList.add('d-hidden');
+    document.getElementById('deliveryRequestSel').nextElementSibling.classList.remove('d-hidden');
+    document.getElementById('deliveryRequestSel').nextElementSibling.nextElementSibling.classList.add('d-hidden');
+    document.getElementById('deliveryRequestSel').nextElementSibling.nextElementSibling.nextElementSibling.classList.remove('d-hidden');
+
+    //주소 view 기본 설정
+    document.getElementById('addressNickname').setAttribute('readonly', true);
+    document.getElementById('recipientName').setAttribute('readonly', true);
+    document.getElementById('sample6_addressAndPostcode').setAttribute('onclick', '');
+    document.getElementById('sample6_detailAddress').setAttribute('readonly', true);
+    document.getElementById('phoneTop').setAttribute('readonly', true);
+    document.getElementById('phoneMiddle').setAttribute('readonly', true);
+    document.getElementById('phoneBottom').setAttribute('readonly', true);
+
+
+    //선택 이미지 기본 설정
+    let deliveryRequest = document.getElementById('deliveryRequest');
+
+    if(deliveryRequest.value === '문 앞'){
+        document.getElementById('deliveryRequestSel').nextElementSibling.children[1].children[0].src ='/images/icon_img/addressCheck.png';
+    }
+    else if(deliveryRequest.value === '직접 받고 부재 시 문 앞'){
+       document.getElementById('deliveryRequestSel').nextElementSibling.children[2].children[0].src ='/images/icon_img/addressCheck.png';
+    }
+    else if(deliveryRequest.value === '경비실'){
+        document.getElementById('deliveryRequestSel').nextElementSibling.children[3].children[0].src ='/images/icon_img/addressCheck.png';
+    }
+    else{
+        document.getElementById('deliveryRequestSel').nextElementSibling.children[4].children[0].src ='/images/icon_img/addressCheck.png';
+        document.getElementById('deliveryRequestSel').nextElementSibling.children[5].classList.remove('d-hidden');
+    }
+
+    if(document.getElementById('frontDoorSecretViewDot').value !== ''){
+        document.getElementById('frontDoorSecretViewDot').previousElementSibling.src = '/images/icon_img/addressCheck.png';
+    }
+    else{
+        document.getElementById('frontDoorSecretViewDot').parentElement.previousElementSibling.children[0].src = '/images/icon_img/addressCheck.png';
+    }
+
+
+
+}
+
+const cancelButtons = document.getElementsByClassName('cancel-btn');
+
+if(cancelButtons){
+    Array.from(cancelButtons).forEach(cancelButton => {
+        cancelButton.addEventListener('click', () => {
+
+            //상품 제외로 인한 결제 금액 변경
+
+            let productPrice = 0;
+            let productPriceComp;
+            if(cancelButton.previousElementSibling.children[1].children[0].children[0] == null){
+                let text = cancelButton.previousElementSibling.children[1].children[0].textContent
+                productPrice = parseInt(text.substring(0, text.length - 1));
+                productPriceComp = cancelButton.previousElementSibling.children[1].children[0];
+            }
+            else{
+                let text = cancelButton.previousElementSibling.children[1].children[0].children[0].textContent
+                productPrice = parseInt(text.substring(0, text.length - 1));
+                productPriceComp = cancelButton.previousElementSibling.children[1].children[0].children[0];
+            }
+
+            let discount = 0;
+            let prevTotalProductPrice = parseInt(document.getElementById('productTotalPrice').textContent.substring(1, document.getElementById('productTotalPrice').textContent.length - 1));
+            let prevTotalDiscount = parseInt(document.getElementById('discountTotal').textContent.substring(1, document.getElementById('discountTotal').textContent.length - 1));
+
+            if(productPriceComp.parentElement.nextElementSibling !== null){
+                let discountPriceText = productPriceComp.parentElement.nextElementSibling.textContent;
+                let discountPrice = parseInt(discountPriceText.substring(0, discountPriceText.length - 1));
+                discount = productPrice - discountPrice;
+            }
+
+            document.getElementById('productTotalPrice').textContent = '+' + (prevTotalProductPrice - productPrice) + '원';
+            document.getElementById('discountTotal').textContent = '-' + (prevTotalDiscount - discount) + '원';
+
+            let prevProductTotalPrice = parseInt(document.getElementById('productTotalPrice').textContent.substring(1, document.getElementById('productTotalPrice').textContent.length - 1));
+
+            console.log(prevProductTotalPrice);
+            if((prevTotalProductPrice - productPrice) - (prevTotalDiscount - discount) < 50000 && prevProductTotalPrice >= 50000){
+                let afterDeliveryFee = parseInt(document.getElementById('deliveryFee').textContent.substring(1, document.getElementById('deliveryFee').textContent.length - 1)) + 2500;
+                document.getElementById('deliveryFee').textContent = '+' + afterDeliveryFee + '원';
+                document.getElementById('deliveryFeeInfo').textContent = afterDeliveryFee + '원';
+            }
+
+            let afterTotalPaymentPrice = parseInt(document.getElementById('productTotalPrice').textContent.substring(1, document.getElementById('productTotalPrice').textContent.length - 1)) + parseInt(document.getElementById('deliveryFee').textContent.substring(1, document.getElementById('deliveryFee').textContent.length - 1)) - parseInt(document.getElementById('discountTotal').textContent.substring(1, document.getElementById('discountTotal').textContent.length - 1));
+            document.getElementById('totalPaymentPrice').textContent = paymentFormChange(afterTotalPaymentPrice) + '원';
+            document.getElementById('payment-btn').textContent = paymentFormChange(afterTotalPaymentPrice) + '원 결제하기';
+
+
+            cancelButton.parentElement.remove();
+
+            if(Array.from(document.getElementsByClassName('productView')).length === 0){
+                document.getElementById('totalPaymentPrice').textContent = '0원';
+                document.getElementById('payment-btn').textContent = '0원 결제하기';
+                document.getElementById('deliveryFeeInfo').textContent = '0원';
+                document.getElementById('deliveryFee').textContent = '0원';
+                wait(10)
+                .then(() => {
+                    alert('모든 상품을 제거하여 메인으로 이동합니다.');
+                    location.replace('/');
+                });
+            }
+
+
+        });
+    });
+}
+
+const paymentSelectBar = document.getElementById('paymentSelectBar');
+
+if(paymentSelectBar){
+
+    let paymentInfoView = Array.from(document.getElementsByClassName('paymentInfoView'));
+    paymentSelectBar.addEventListener('change', () => {
+        paymentInfoView.forEach(view => view.classList.add('d-hidden'));
+        paymentSelectBar.parentElement.parentElement.children[3].children[2].value = '-1';
+        paymentSelectBar.parentElement.parentElement.children[3].children[5].value = '';
+        paymentSelectBar.parentElement.parentElement.children[4].children[2].value = '-1';
+        paymentSelectBar.parentElement.parentElement.children[4].children[5].value = '';
+        paymentSelectBar.parentElement.parentElement.children[5].children[2].value = '-1';
+        paymentSelectBar.parentElement.parentElement.children[5].children[5].value = '-1';
+        paymentSelectBar.parentElement.parentElement.children[5].children[8].value = '';
+        paymentSelectBar.parentElement.parentElement.children[6].children[2].value = '-1';
+        paymentSelectBar.parentElement.parentElement.children[6].children[5].value = '';
+
+
+        if(paymentSelectBar.value === '무통장입금'){
+            paymentInfoView[0].classList.remove('d-hidden');
+        }
+        else if(paymentSelectBar.value === '계좌이체'){
+            paymentInfoView[1].classList.remove('d-hidden');
+        }
+        else if(paymentSelectBar.value === '신용/체크 카드'){
+            paymentInfoView[2].classList.remove('d-hidden');
+        }
+        else{
+            paymentInfoView[3].classList.remove('d-hidden');
         }
     });
 }
+
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+const productPrices = document.getElementsByClassName('productPrice');
+
+if(productPrices){
+    let totalProductPrice = 0;
+    let totalDiscount = 0;
+
+    Array.from(productPrices).forEach(productPriceText => {
+
+        let productPrice = parseInt(productPriceText.textContent.substring(0, productPriceText.textContent.length - 1));
+        console.log(productPrice);
+
+        totalProductPrice += productPrice;
+        console.log(totalProductPrice);
+
+        if(productPriceText.parentElement.nextElementSibling !== null){
+            let discountPriceText = productPriceText.parentElement.nextElementSibling.textContent;
+            let discountPrice = parseInt(discountPriceText.substring(0, discountPriceText.length - 1));
+            let discount = productPrice - discountPrice;
+
+            totalDiscount += discount;
+        }
+    });
+
+    document.getElementById('productTotalPrice').textContent = '+' + totalProductPrice + '원';
+    document.getElementById('discountTotal').textContent = '-' + totalDiscount + '원';
+
+    let deliveryFee = 0;
+    if(hasDefaultAddress){
+        if(totalProductPrice - totalDiscount < 50000){
+            deliveryFee += 2500;
+        }
+        if(document.getElementById('sample6_address').value.includes('제주특별자치도')){
+            deliveryFee += 5000;
+        }
+
+        console.log(deliveryFee);
+
+    }
+    document.getElementById('deliveryFee').textContent = '+' + deliveryFee + '원';
+    document.getElementById('deliveryFeeInfo').textContent = deliveryFee + '원';
+    document.getElementById('totalPaymentPrice').textContent = totalProductPrice - totalDiscount + deliveryFee + '원';
+
+
+    let paymentPrice = totalProductPrice - totalDiscount + deliveryFee;
+
+    document.getElementById('payment-btn').textContent = paymentFormChange(paymentPrice) + '원 결제하기';
+}
+
+function paymentFormChange(paymentPrice){
+    let paymentPriceText = '';
+    paymentPrice += '';
+
+    while(paymentPrice.length > 3){
+        console.log(paymentPrice.substring(paymentPrice.length - 3, paymentPrice.length));
+        paymentPriceText += ',' + paymentPrice.substring(paymentPrice.length - 3, paymentPrice.length);
+        paymentPrice = paymentPrice.substring(0, paymentPrice.length - 3);
+        console.log(paymentPrice);
+        console.log(paymentPriceText);
+    }
+    return paymentPriceText = paymentPrice + paymentPriceText;
+}
+
+const paymentButton = document.getElementById('payment-btn');
+
+if(paymentButton){
+    paymentButton.addEventListener('click', () => {
+
+        console.log('click');
+
+        if(document.getElementById('recipientName').value === '' || document.getElementById('sample6_addressAndPostcode').value === '' || document.getElementById('sample6_detailAddress').value === '' || (document.getElementById('deliveryRequest').value === '택배함' && document.getElementById('deliveryBoxNum').value === '')){
+            document.getElementById('addressForm').classList.remove('border-green');
+            document.getElementById('addressForm').classList.add('border-red');
+            document.getElementById('recipientName').focus();
+
+            if(document.getElementById('deliveryRequest').value === '택배함' && document.getElementById('deliveryBoxNumView').value === ''){
+                document.getElementById('deliveryBoxNumView').classList.remove('border');
+                document.getElementById('deliveryBoxNumView').classList.add('border-red');
+            }
+            return ;
+        }
+
+        if(document.getElementById('paymentSelectBar').value === '-1'){
+            document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
+            document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
+            return ;
+        }
+        else if(document.getElementById('paymentSelectBar').value === '무통장입금'){
+            if(document.getElementById('paymentBank1').value === '-1'){
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
+                return ;
+            }
+            if(document.getElementById('paymentDepositor').value === ''){
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
+                document.getElementById('paymentDepositor').classList.add('border-red');
+                document.getElementById('paymentDepositor').classList.remove('border');
+                return ;
+            }
+        }
+        else if(document.getElementById('paymentSelectBar').value === '계좌이체'){
+            if(document.getElementById('paymentBank2').value === '-1'){
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
+                return ;
+            }
+            if(document.getElementById('paymentAccountNumber').value === ''){
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
+                document.getElementById('paymentAccountNumber').classList.add('border-red');
+                document.getElementById('paymentAccountNumber').classList.remove('border');
+                return ;
+            }
+        }
+        else if(document.getElementById('paymentSelectBar').value === '신용/체크 카드'){
+            if(document.getElementById('paymentCard').value === '-1' || document.getElementById('paymentInstallment') === '-1'){
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
+                return ;
+            }
+            if(document.getElementById('paymentCardNumber').value === ''){
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
+                document.getElementById('paymentCardNumber').classList.add('border-red');
+                document.getElementById('paymentCardNumber').classList.remove('border');
+                return ;
+            }
+        }
+        else if(document.getElementById('paymentSelectBar').value === '핸드폰 결제'){
+            if(document.getElementById('paymentPhoneCompany').value === '-1'){
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
+                return ;
+            }
+            if(document.getElementById('paymentMicropaymentPhone').value === ''){
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
+                document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
+                document.getElementById('paymentMicropaymentPhone').classList.add('border-red');
+                document.getElementById('paymentMicropaymentPhone').classList.remove('border');
+                return ;
+            }
+        }
+
+        //약관 동의여부 확인
+        if(!document.getElementById('allAgreementCheckBox').checked){
+            console.log('sdf');
+            document.getElementById('allAgreementCheckBox').parentElement.parentElement.classList.add('border-red');
+
+            return ;
+        }
+        else{
+            console.log('else');
+        }
+
+        let body = JSON.stringify({
+            cartIds : toList(Array.from(document.getElementsByClassName('cartId')))
+        });
+
+        httpRequest(`/user/cart/cleanList`, 'DELETE', body)
+        .then(response => {
+            if(response.ok){
+                return response.json();
+            }
+            else{
+                alert('error');
+                throw new error('error');
+            }
+        })
+        .then(data => {
+            console.log(data);
+            if(data.products.length !== 0){
+                let text = '';
+                data.products.forEach(product => {
+                    text += product.productName + '\n';
+                    document.getElementById('productId' + product.productId).parentElement.children[4].click();
+                });
+                alert('품절된 상품 있음\n' + text + '\n\n 해당 상품이 결제 명세서 및 장바구니에서 제외되었습니다.\n 결제 명세서 내역을 재확인바람니다.');
+            }
+        })
+        .then(() => {
+            let body = JSON.stringify({
+                paymentPrice : document.getElementById('totalPaymentPrice').textContent.substring(0, document.getElementById('totalPaymentPrice').textContent.length - 1),
+                paymentType : document.getElementById('paymentSelectBar').value,
+                paymentBank : getPaymentBank(document.getElementById('paymentBank1'), document.getElementById('paymentBank2')),
+                paymentDepositor : document.getElementById('paymentDepositor').value,
+                paymentAccountNumber : document.getElementById('paymentAccountNumber').value,
+                paymentCard : document.getElementById('paymentCard').value,
+                paymentInstallment : document.getElementById('paymentInstallment').value,
+                paymentCardNumber : document.getElementById('paymentCardNumber').value,
+                paymentPhoneCompany : document.getElementById('paymentPhoneCompany').value,
+                paymentMicropaymentPhone : document.getElementById('paymentMicropaymentPhone').value,
+                paymentPostalCode : document.getElementById('sample6_postcode').value,
+                paymentAddress : document.getElementById('sample6_address').value + ', ' + document.getElementById('sample6_detailAddress').value,
+                paymentRecipientName : document.getElementById('recipientName').value,
+                paymentRecipientPhone : document.getElementById('phoneTop').value + document.getElementById('phoneMiddle').value + document.getElementById('phoneBottom').value,
+                deliveryRequest : document.getElementById('deliveryRequest').value,
+                deliveryBoxNum : document.getElementById('deliveryBoxNum').value,
+                frontDoorSecret : document.getElementById('frontDoorSecret').value,
+                deliveryFee : document.getElementById('deliveryFeeInfo').textContent.substring(0, document.getElementById('deliveryFeeInfo').textContent.length - 1),
+                cartIds : toList(Array.from(document.getElementsByClassName('cartId'))),
+                productIds : toList(Array.from(document.getElementsByClassName('productId')))
+            });
+
+            httpRequest(`/user/payment`, 'POST', body);
+        });
+
+    });
+}
+
+function getPaymentBank(comp1, comp2){
+    if(comp1.value === '' && comp2.value === ''){
+        return null;
+    }
+    return comp1.value === '' ? comp2.value : comp1.value;
+}
+
+//쇼핑몰 이용약관 동의시 check 박스 상태 변경
+const termsAndConditionsAgreementCheckBox = document.getElementById('termsAndConditionsAgreementCheckBox');
+
+if(termsAndConditionsAgreementCheckBox){
+    termsAndConditionsAgreementCheckBox.addEventListener('change', () => {
+        if(termsAndConditionsAgreementCheckBox.checked && privacyAgreementCheckBox.checked){
+            allAgreementCheckBox.checked = true;
+        }
+        else{
+            allAgreementCheckBox.checked = false;
+        }
+    });
+}
+
+//개인정보 수집 밎 이용 동의시 check 박스 상태 변경
+const privacyAgreementCheckBox = document.getElementById('privacyAgreementCheckBox');
+
+if(privacyAgreementCheckBox){
+    privacyAgreementCheckBox.addEventListener('change', () => {
+        if(termsAndConditionsAgreementCheckBox.checked && privacyAgreementCheckBox.checked){
+            allAgreementCheckBox.checked = true;
+        }
+        else{
+            allAgreementCheckBox.checked = false;
+        }
+    });
+}
+
+//모든 약관 동의시 check박스 상태 변경
+const allAgreementCheckBox = document.getElementById('allAgreementCheckBox');
+
+if(allAgreementCheckBox){
+    allAgreementCheckBox.addEventListener('click', () => {
+        if(allAgreementCheckBox.checked){
+            if(!termsAndConditionsAgreementCheckBox.checked){
+                termsAndConditionsAgreementCheckBox.checked = true;
+            }
+            if(!privacyAgreementCheckBox.checked){
+                privacyAgreementCheckBox.checked = true;
+            }
+        }
+        else{
+            if(termsAndConditionsAgreementCheckBox.checked){
+                termsAndConditionsAgreementCheckBox.checked = false;
+            }
+            if(privacyAgreementCheckBox.checked){
+                privacyAgreementCheckBox.checked = false;
+            }
+        }
+    });
+}
+
+//
+const addressForm = document.getElementById('addressForm');
+
+if(addressForm){
+    addressForm.addEventListener('click', () => {
+        allFormBorderRewind();
+        addressForm.classList.remove('border-red');
+        addressForm.classList.add('border-green');
+    });
+}
+
+const paymentTypeForm = document.getElementById('paymentTypeForm');
+
+if(paymentTypeForm){
+    paymentTypeForm.addEventListener('click', () => {
+        allFormBorderRewind();
+
+        document.getElementById('paymentDepositor').classList.remove('border-red');
+        document.getElementById('paymentDepositor').classList.add('border');
+
+        document.getElementById('paymentAccountNumber').classList.remove('border-red');
+        document.getElementById('paymentAccountNumber').classList.add('border');
+
+        document.getElementById('paymentCardNumber').classList.remove('border-red');
+        document.getElementById('paymentCardNumber').classList.add('border');
+
+        document.getElementById('paymentMicropaymentPhone').classList.remove('border-red');
+        document.getElementById('paymentMicropaymentPhone').classList.add('border');
+
+        paymentTypeForm.classList.remove('border-red');
+        paymentTypeForm.classList.add('border-green');
+    });
+}
+
+const productForm = document.getElementById('productForm');
+
+if(productForm){
+    productForm.addEventListener('click', () => {
+        allFormBorderRewind();
+        productForm.classList.remove('border-red');
+        productForm.classList.add('border-green');
+    });
+}
+
+const paymentForm = document.getElementById('paymentForm');
+
+if(paymentForm){
+    paymentForm.addEventListener('click', () => {
+        allFormBorderRewind();
+
+        paymentForm.classList.remove('border-red');
+        paymentForm.classList.add('border-green');
+    });
+}
+
+const agreementForm = document.getElementById('agreementForm');
+
+if(agreementForm){
+    agreementForm.addEventListener('click', () => {
+        allFormBorderRewind();
+        agreementForm.classList.remove('border-red');
+        agreementForm.classList.add('border-green');
+    });
+}
+
+function allFormBorderRewind(){
+    addressForm.classList.remove('border-green');
+    paymentTypeForm.classList.remove('border-green');
+    productForm.classList.remove('border-green');
+    paymentForm.classList.remove('border-green');
+    agreementForm.classList.remove('border-green');
+}
+
+const termsAndConditionsAgreementViewButton = document.getElementById('termsAndConditionsAgreementView-btn');
+
+if(termsAndConditionsAgreementViewButton){
+    termsAndConditionsAgreementViewButton.addEventListener('click', () => {
+        document.getElementById('termsAndConditionsAgreementViewButton').click();
+    });
+}
+
+const privacyAgreementViewButton = document.getElementById('privacyAgreementView-btn');
+
+if(privacyAgreementViewButton){
+    privacyAgreementViewButton.addEventListener('click', () => {
+        document.getElementById('privacyAgreementViewButton').click();
+    });
+}
+
+const termsAndConditionsAgreementButton = document.getElementById('termsAndConditionsAgreement-btn')
+
+if(termsAndConditionsAgreementButton){
+    termsAndConditionsAgreementButton.addEventListener('click', () => {
+        document.getElementById('termsAndConditionsAgreementCheckBox').click();
+        termsAndConditionsAgreementButton.previousElementSibling.click();
+    })
+}
+
+const termsAndConditionsAgreementButton = document.getElementById('termsAndConditionsAgreement-btn')
+
+if(termsAndConditionsAgreementButton){
+    termsAndConditionsAgreementButton.addEventListener('click', () => {
+        document.getElementById('termsAndConditionsAgreementCheckBox').click();
+        termsAndConditionsAgreementButton.previousElementSibling.click();
+    })
+}
+
