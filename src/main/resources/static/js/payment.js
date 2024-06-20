@@ -66,6 +66,7 @@ if(deliveryBoxNumView){
             deliveryBoxNumView.classList.remove('border-red');
             deliveryBoxNumView.classList.add('border');
         }
+
     });
 }
 
@@ -149,6 +150,11 @@ if(selectBar){
             document.getElementById('deliveryRequestSel').nextElementSibling.classList.remove('d-hidden');
             document.getElementById('deliveryRequestSel').nextElementSibling.nextElementSibling.classList.add('d-hidden');
             document.getElementById('deliveryRequestSel').nextElementSibling.nextElementSibling.nextElementSibling.classList.remove('d-hidden');
+
+            //주소 불러오기시 주소 미입력 경고 삭제
+            document.getElementById('recipientName').parentElement.classList.remove('border-red');
+            document.getElementById('sample6_addressAndPostcode').parentElement.parentElement.parentElement.classList.remove('border-red');
+            document.getElementById('phoneTop').parentElement.parentElement.classList.remove('border-red');
 
             document.getElementById('addressNickname').setAttribute('readonly', true);
             document.getElementById('recipientName').setAttribute('readonly', true);
@@ -460,15 +466,32 @@ if(paymentButton){
 
         console.log('click');
 
-        if(document.getElementById('recipientName').value === '' || document.getElementById('sample6_addressAndPostcode').value === '' || document.getElementById('sample6_detailAddress').value === '' || (document.getElementById('deliveryRequest').value === '택배함' && document.getElementById('deliveryBoxNum').value === '')){
+        //결제 버튼 클릭시 주소정보 확인
+        if(document.getElementById('recipientName').value === '' || document.getElementById('sample6_addressAndPostcode').value === '' || document.getElementById('sample6_detailAddress').value === '' || (document.getElementById('deliveryRequest').value === '택배함' && document.getElementById('deliveryBoxNum').value === '') || (!(parseInt(phoneTop.value.trim()).toString() === phoneTop.value.trim() && phoneTop.value.trim().length === 3) || !(parseInt(phoneMiddle.value.trim()).toString() === phoneMiddle.value.trim() && phoneMiddle.value.trim().length === 4) || !(parseInt(phoneBottom.value.trim()).toString() === phoneBottom.value.trim() && phoneBottom.value.trim().length === 4))){
             document.getElementById('addressForm').classList.remove('border-green');
             document.getElementById('addressForm').classList.add('border-red');
-            document.getElementById('recipientName').focus();
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
 
             if(document.getElementById('deliveryRequest').value === '택배함' && document.getElementById('deliveryBoxNumView').value === ''){
                 document.getElementById('deliveryBoxNumView').classList.remove('border');
                 document.getElementById('deliveryBoxNumView').classList.add('border-red');
             }
+
+            if(document.getElementById('recipientName').value === ''){
+                document.getElementById('recipientName').parentElement.classList.add('border-red');
+            }
+
+            if(document.getElementById('sample6_addressAndPostcode').value === '' || document.getElementById('sample6_detailAddress').value === ''){
+                document.getElementById('sample6_addressAndPostcode').parentElement.parentElement.parentElement.classList.add('border-red');
+            }
+
+            if(!(parseInt(phoneTop.value.trim()).toString() === phoneTop.value.trim() && phoneTop.value.trim().length === 3) || !(parseInt(phoneMiddle.value.trim()).toString() === phoneMiddle.value.trim() && phoneMiddle.value.trim().length === 4) || !(parseInt(phoneBottom.value.trim()).toString() === phoneBottom.value.trim() && phoneBottom.value.trim().length === 4)){
+                phoneTop.parentElement.parentElement.classList.add('border-red');
+            }
+
             return ;
         }
 
@@ -537,6 +560,7 @@ if(paymentButton){
         //약관 동의여부 확인
         if(!document.getElementById('allAgreementCheckBox').checked){
             console.log('sdf');
+            document.getElementById('allAgreementCheckBox').parentElement.parentElement.classList.remove('border-green');
             document.getElementById('allAgreementCheckBox').parentElement.parentElement.classList.add('border-red');
 
             return ;
@@ -748,21 +772,130 @@ if(privacyAgreementViewButton){
     });
 }
 
-const termsAndConditionsAgreementButton = document.getElementById('termsAndConditionsAgreement-btn')
 
-if(termsAndConditionsAgreementButton){
-    termsAndConditionsAgreementButton.addEventListener('click', () => {
+function termsAndConditionsAgreement(comp){
+    if(!document.getElementById('termsAndConditionsAgreementCheckBox').checked){
         document.getElementById('termsAndConditionsAgreementCheckBox').click();
-        termsAndConditionsAgreementButton.previousElementSibling.click();
+    }
+    comp.previousElementSibling.click();
+}
+
+function PrivacyAgreement(comp){
+    if(!document.getElementById('privacyAgreementCheckBox').checked){
+        document.getElementById('privacyAgreementCheckBox').click();
+    }
+    comp.previousElementSibling.click();
+}
+
+const PrivacyAgreementButton = document.getElementById('PrivacyAgreement-btn');
+
+if(PrivacyAgreementButton){
+    PrivacyAgreementButton.addEventListener('click', () => {
+        document.getElementById('termsAndConditionsAgreementCheckBox').click();
+        PrivacyAgreementButton.previousElementSibling.click();
     })
 }
 
-const termsAndConditionsAgreementButton = document.getElementById('termsAndConditionsAgreement-btn')
+//카드자릿수 확인
+const paymentCardNumber = document.getElementById('paymentCardNumber');
 
-if(termsAndConditionsAgreementButton){
-    termsAndConditionsAgreementButton.addEventListener('click', () => {
-        document.getElementById('termsAndConditionsAgreementCheckBox').click();
-        termsAndConditionsAgreementButton.previousElementSibling.click();
-    })
+if(paymentCardNumber){
+    paymentCardNumber.addEventListener('blur', () => {
+        console.log(parseInt(paymentCardNumber.value.trim()));
+        if(parseInt(paymentCardNumber.value.trim()).toString() === paymentCardNumber.value.trim() && paymentCardNumber.value.trim().length === 16){
+            paymentCardNumber.classList.remove('border-red');
+        }
+        else{
+            paymentCardNumber.classList.add('border-red');
+        }
+    });
+}
+
+//계좌번호 자리수 확인
+const paymentAccountNumber = document.getElementById('paymentAccountNumber');
+
+if(paymentAccountNumber){
+    paymentAccountNumber.addEventListener('blur', () => {
+
+        if(parseInt(paymentAccountNumber.value.trim()).toString() === paymentAccountNumber.value.trim() && paymentAccountNumber.value.trim().length === 14){
+            paymentAccountNumber.classList.remove('border-red');
+        }
+        else{
+            paymentAccountNumber.classList.add('border-red');
+        }
+    });
+}
+
+//핸드폰결제 전화번호 확인
+const paymentMicropaymentPhone = document.getElementById('paymentMicropaymentPhone');
+
+if(paymentMicropaymentPhone){
+    paymentMicropaymentPhone.addEventListener('blur', () => {
+
+        if(parseInt(paymentMicropaymentPhone.value.trim()).toString() === paymentMicropaymentPhone.value.trim() && paymentMicropaymentPhone.value.trim().length === 11){
+            paymentMicropaymentPhone.classList.remove('border-red');
+        }
+        else{
+            paymentMicropaymentPhone.classList.add('border-red');
+        }
+    });
+}
+
+function prevCompClick(comp){
+    comp.previousElementSibling.click();
+}
+
+//택배 수령자 전화번호 확인
+const phoneTop = document.getElementById('phoneTop');
+
+if(phoneTop){
+    phoneTop.addEventListener('blur', () => {
+        if((parseInt(phoneTop.value.trim()).toString() === phoneTop.value.trim() && phoneTop.value.trim().length === 3) && (parseInt(phoneMiddle.value.trim()).toString() === phoneMiddle.value.trim() && phoneMiddle.value.trim().length === 4) && (parseInt(phoneBottom.value.trim()).toString() === phoneBottom.value.trim() && phoneBottom.value.trim().length === 4)){
+            phoneTop.parentElement.parentElement.classList.remove('border-red');
+        }
+    });
+}
+
+const phoneMiddle = document.getElementById('phoneMiddle');
+
+if(phoneMiddle){
+    phoneMiddle.addEventListener('blur', () => {
+        if((parseInt(phoneTop.value.trim()).toString() === phoneTop.value.trim() && phoneTop.value.trim().length === 3) && (parseInt(phoneMiddle.value.trim()).toString() === phoneMiddle.value.trim() && phoneMiddle.value.trim().length === 4) && (parseInt(phoneBottom.value.trim()).toString() === phoneBottom.value.trim() && phoneBottom.value.trim().length === 4)){
+            phoneTop.parentElement.parentElement.classList.remove('border-red');
+        }
+    });
+}
+
+const phoneBottom = document.getElementById('phoneBottom');
+
+if(phoneBottom){
+    phoneBottom.addEventListener('blur', () => {
+        if((parseInt(phoneTop.value.trim()).toString() === phoneTop.value.trim() && phoneTop.value.trim().length === 3) && (parseInt(phoneMiddle.value.trim()).toString() === phoneMiddle.value.trim() && phoneMiddle.value.trim().length === 4) && (parseInt(phoneBottom.value.trim()).toString() === phoneBottom.value.trim() && phoneBottom.value.trim().length === 4)){
+            phoneTop.parentElement.parentElement.classList.remove('border-red');
+        }
+    });
+}
+
+//택배 수령자이름 확인
+const recipientName = document.getElementById('recipientName');
+
+if(recipientName){
+    recipientName.addEventListener('change', () => {
+        if(recipientName.value !== null){
+            recipientName.parentElement.classList.remove('border-red');
+        }
+    });
+}
+
+//택배 배송지 확인
+const sample6AddressAndPostcode = document.getElementById('sample6_addressAndPostcode');
+const sample6DetailAddress = document.getElementById('sample6_detailAddress');
+
+if(sample6AddressAndPostcode && sample6DetailAddress){
+    sample6DetailAddress.addEventListener('change', () => {
+        if(sample6AddressAndPostcode.value !== '' && sample6DetailAddress.value !== ''){
+            sample6AddressAndPostcode.parentElement.parentElement.parentElement.classList.remove('border-red');
+        }
+    });
 }
 

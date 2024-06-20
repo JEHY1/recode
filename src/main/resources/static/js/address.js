@@ -43,16 +43,10 @@ function sample6_execDaumPostcode() {
             document.getElementById("sample6_address").value = addr;
             document.getElementById("sample6_addressAndPostcode").value = addr + ' [' + data.zonecode + "]";
 
-//            // 주소에 맞는 가격 할당
-//            console.log('change');
-//            if(addr.includes('제주특별자치도') && parseInt(document.getElementById('totalPrice').textContent) <= 20000){
-//                document.getElementById('deliveryFee').textContent = '5000';
-//                document.getElementById('paymentPrice').textContent = parseInt(document.getElementById('totalPrice').textContent) + 5000;
-//            }
-//            else if(!addr.includes('제주특별자치도') && parseInt(document.getElementById('totalPrice').textContent) <= 20000){
-//                document.getElementById('deliveryFee').textContent = '2500';
-//                document.getElementById('paymentPrice').textContent = parseInt(document.getElementById('totalPrice').textContent) + 2500;
-//            }
+            //주소 미입력 경고 삭제
+            if(document.getElementById('sample6_detailAddress').value !== ''){
+                sample6AddressAndPostcode.parentElement.parentElement.parentElement.classList.remove('border-red');
+            }
 
 
             // 커서를 상세주소 필드로 이동한다.

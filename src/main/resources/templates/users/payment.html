@@ -389,7 +389,7 @@
 
                 <div class="col-auto pe-0 d-flex align-items-center justify-content-center mt-3">카드번호</div>
                 <div class="col-auto d-flex align-items-center justify-content-center ps-1 mt-3" style="font-size: 25px; color: green;">*</div>
-                <input class="col-10 mx-auto mt-3 border" type="text" placeholder="카드번호" style="height: 50px;" id="paymentCardNumber">
+                <input class="col-10 mx-auto mt-3 border" type="text" placeholder="카드번호 ( '-' 를 제외한 숫자 16자리)" style="height: 50px;" id="paymentCardNumber">
             </div>
 
             <div class="row mx-auto mt-3 paymentInfoView py-3 d-hidden">
@@ -412,22 +412,24 @@
         </div>
 
         <div class="mt-2 px-2 bg-white border" id="agreementForm">
-            <div class="titleFont ms-3 pt-4 border-b cursor">
-                <input type="checkbox" style="width: 25px; height: 25px;" id="allAgreementCheckBox">
-                모든 약관 동의
+            <div class="titleFont ms-3 pt-4 border-b cursor row mx-auto">
+                <input type="checkbox" class="col-auto my-auto" style="width: 25px; height: 25px;" id="allAgreementCheckBox">
+                <div class="col-auto" onclick="prevCompClick(this)">모든 약관 동의</div>
             </div>
 
             <div class="row mx-auto py-3 px-2">
 
                 <div class="ms-3 pt-2 row cursor">
                     <input type="checkbox" style="width: 21px; height: 21px;" class="col-auto" id="termsAndConditionsAgreementCheckBox">
-                    <div style="color: green;" class="w-auto h-auto pe-0">[필수]</div> 쇼핑몰 이용약관 동의
+                    <div style="color: green;" class="w-auto h-auto pe-0" onclick="prevCompClick(this)">[필수]</div>
+                    <div class="col-auto p-0" onclick="prevCompClick(this)">쇼핑몰 이용약관 동의</div>
                     <img src="/images/icon_img/agreementView.png" class="p-0 ms-2" style="width: 25px; height: 25px;" id="termsAndConditionsAgreementView-btn">
                 </div>
 
                 <div class="ms-3 pt-2 row cursor">
                     <input type="checkbox" style="width: 21px; height: 21px;" class="col-auto" id="privacyAgreementCheckBox">
-                    <div style="color: green;" class="w-auto h-auto pe-0">[필수]</div> 개인정보 수집 및 이용 동의
+                    <div style="color: green;" class="w-auto h-auto pe-0" onclick="prevCompClick(this)">[필수]</div>
+                    <div class="col-auto p-0" onclick="prevCompClick(this)">개인정보 수집 및 이용 동의</div>
                     <img src="/images/icon_img/agreementView.png" class="p-0 ms-2" style="width: 25px; height: 25px;" id="privacyAgreementView-btn">
                 </div>
             </div>
@@ -448,7 +450,7 @@
 
 
 <!-- Button trigger modal -->
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="termsAndConditionsAgreementViewButton">
+<button type="button" class="btn btn-primary d-hidden" data-bs-toggle="modal" data-bs-target="#staticBackdrop" id="termsAndConditionsAgreementViewButton">
     Launch static backdrop modal
 </button>
 
@@ -750,14 +752,14 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary d-hidden" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="termsAndConditionsAgreement-btn">Understood</button>
+                <button type="button" class="btn btn-primary" onclick="termsAndConditionsAgreement(this)">Understood</button>
             </div>
         </div>
     </div>
 </div>
 
 
-<button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop2" id="privacyAgreementViewButton">
+<button type="button" class="btn btn-primary d-hidden" data-bs-toggle="modal" data-bs-target="#staticBackdrop2" id="privacyAgreementViewButton">
     Launch static backdrop modal
 </button>
 
@@ -799,8 +801,8 @@
                 ※ 동의를 거부할 수 있으나 거부시 구매 서비스 이용이 불가능합니다.
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-primary" id="PrivacyAgreement-btn">Understood</button>
+                <button type="button" class="btn btn-secondary d-hidden" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-primary" id="PrivacyAgreement-btn" onclick="PrivacyAgreement(this)">Understood</button>
             </div>
         </div>
     </div>
