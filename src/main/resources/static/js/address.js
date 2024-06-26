@@ -38,6 +38,8 @@ function sample6_execDaumPostcode() {
                 document.getElementById("sample6_extraAddress").value = '';
             }
 
+            let beforeAddress = document.getElementById("sample6_address").value;
+
             // 우편번호와 주소 정보를 해당 필드에 넣는다.
             document.getElementById('sample6_postcode').value = data.zonecode;
             document.getElementById("sample6_address").value = addr;
@@ -46,6 +48,23 @@ function sample6_execDaumPostcode() {
             //주소 미입력 경고 삭제
             if(document.getElementById('sample6_detailAddress').value !== ''){
                 sample6AddressAndPostcode.parentElement.parentElement.parentElement.classList.remove('border-red');
+            }
+
+            if(document.getElementById('deliveryFeeInfo') != null){
+                if(beforeAddress.includes('제주특별자치도') && !addr.includes('제주특별자치도')){
+                    console.log('include jeju');
+                    document.getElementById('deliveryFeeInfo').textContent = parseInt(document.getElementById('deliveryFeeInfo').textContent.substring(0, document.getElementById('deliveryFeeInfo').textContent.length - 1)) - 5000 + '원';
+                    document.getElementById('deliveryFee').textContent = '+' + (parseInt(document.getElementById('deliveryFee').textContent) - 5000) + '원';
+                    document.getElementById('totalPaymentPrice').textContent = (parseInt(document.getElementById('totalPaymentPrice').textContent) - 5000) + '원';
+                    paymentButton.textContent = paymentFormChange(parseInt(document.getElementById('totalPaymentPrice').textContent)) + '원 결제하기';
+                }
+
+                if(!beforeAddress.includes('제주특별자치도') && addr.includes('제주특별자치도')){
+                    document.getElementById('deliveryFeeInfo').textContent = parseInt(document.getElementById('deliveryFeeInfo').textContent.substring(0, document.getElementById('deliveryFeeInfo').textContent.length - 1)) + 5000 + '원';
+                    document.getElementById('deliveryFee').textContent = '+' + (parseInt(document.getElementById('deliveryFee').textContent) + 5000) + '원';
+                    document.getElementById('totalPaymentPrice').textContent = (parseInt(document.getElementById('totalPaymentPrice').textContent) + 5000) + '원';
+                    paymentButton.textContent = paymentFormChange(parseInt(document.getElementById('totalPaymentPrice').textContent)) + '원 결제하기';
+                }
             }
 
 

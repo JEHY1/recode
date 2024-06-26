@@ -49,13 +49,13 @@ public class Notice {
         this.noticeViews = noticeViews;
     }
 
-    public Notice update(NoticeRequest dto) {
+    public Notice update(NoticeRequest dto) { //공지사항 수정
         this.noticeTitle = dto.getNoticeTitle();
         this.noticeContent = dto.getNoticeContent();
         return this;
     }
 
-    public Notice updateViews(){
+    public Notice updateViews(){ //조회수 증가
         this.noticeViews++;
         return this;
     }

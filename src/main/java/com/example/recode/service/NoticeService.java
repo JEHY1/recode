@@ -52,20 +52,20 @@ public class NoticeService {
                 .build());
     }
 
-    public Notice findById(Long noticeId) {
+    public Notice findById(Long noticeId) { // noticeId로 Notice 가져오기
         return noticeRepository.findById(noticeId)
                 .orElseThrow(() -> new IllegalArgumentException("not found notice"));
     }
 
-    public List<Notice> findAll() {
+    public List<Notice> findAll() { // List<Notice> 가져오기
         return noticeRepository.findAll();
     }
 
-    public void deleteById(Long noticeId) {
+    public void deleteById(Long noticeId) { // noticeId로 Notice 삭제
         noticeRepository.deleteById(noticeId);
     }
 
-    public List<NoticeViewResponse> getAllNoticeInfo(){
+    public List<NoticeViewResponse> getAllNoticeInfo() { // List<NoticeViewResponse> 가져오기
 
         List<NoticeViewResponse> list = new ArrayList<>();
 
@@ -74,7 +74,7 @@ public class NoticeService {
         return list;
     }
     @Transactional
-    public Notice updateView(Long noticeId) {
+    public Notice updateView(Long noticeId) { // 조회수 증가
         return findById(noticeId).updateViews();
     }
 }

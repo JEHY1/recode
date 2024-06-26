@@ -19,14 +19,14 @@ public class WebSecurityConfig {
     @Bean
     public WebSecurityCustomizer webSecurityCustomizer(){
         return web -> web.ignoring()
-                .requestMatchers("/css/**", "/js/**", "images/**");
+                .requestMatchers("/css/**", "/js/**", "/images/**");
     }
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
 
         return httpSecurity.authorizeHttpRequests(auth -> auth
-                .requestMatchers("/login", "/join/**", "/idfind", "/pwfind", "/").permitAll()
+                .requestMatchers("/login", "/join/**", "/idfind", "/pwfind", "/", "/productDetail/**", "/", "/etc/**").permitAll()
                 .requestMatchers("/admin/**").hasRole("ADMIN")
                 .anyRequest().authenticated()
         ).formLogin(in -> in

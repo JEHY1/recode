@@ -1,4 +1,4 @@
-package com.example.recode.controller;
+package com.example.recode.controller.product;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;

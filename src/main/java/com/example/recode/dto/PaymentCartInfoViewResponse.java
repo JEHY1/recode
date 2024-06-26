@@ -10,7 +10,7 @@ import lombok.ToString;
 @ToString
 public class PaymentCartInfoViewResponse {
 
-    private long cartId;
+    private Long cartId;
     private long productId;
     private String productRepImgSrc;
     private int productRegularPrice;
@@ -18,7 +18,7 @@ public class PaymentCartInfoViewResponse {
     private String productName;
 
     @Builder
-    public PaymentCartInfoViewResponse(long cartId, long productId, String productRepImgSrc, int productRegularPrice, Integer productDiscountPrice, String productName) {
+    public PaymentCartInfoViewResponse(Long cartId, long productId, String productRepImgSrc, int productRegularPrice, Integer productDiscountPrice, String productName) {
         this.cartId = cartId;
         this.productId = productId;
         this.productRepImgSrc = productRepImgSrc;

@@ -12,8 +12,8 @@ const submitAddressButton = document.getElementById('submitAddress-btn');
 
 if(submitAddressButton){
     submitAddressButton.addEventListener('click', () => {
-        console.log('click');
 
+        //입력된 정보를 이용하여 http 요청
         let body = JSON.stringify({
             addressId: document.getElementById('addressId').value,
             addressNickname: document.getElementById('addressNickname').value,
@@ -27,7 +27,6 @@ if(submitAddressButton){
             deliveryBoxNum: document.getElementById('deliveryBoxNum').value,
             addressDefault: document.getElementById('defaultAddress').value
         });
-
         httpRequest(`/user/address/management`, 'POST', body)
         .then(response => {
             if(response.ok){
@@ -43,17 +42,16 @@ if(submitAddressButton){
             else{
                 alert('error')
             }
-        })
-
+        });
     });
 }
 
+//입력 여부 확인하여 보여줌
 const deliveryRequestButton = document.getElementsByClassName('deliveryRequest-btn');
 
 if(deliveryRequestButton){
     Array.from(deliveryRequestButton).forEach(button => {
         button.addEventListener('click', () => {
-            console.log('click');
             button.children[0].setAttribute('src', '/images/icon_img/addressCheck.png');
             document.getElementById('deliveryRequest').value = button.children[1].textContent;
 

@@ -13,7 +13,6 @@ public class NoticeViewResponse {
     private Long noticeId;
     private String username;
     private String noticeTitle;
-    private String noticeContent;
     private LocalDateTime noticeCreateDate;
     private int noticeViews;
 
@@ -21,7 +20,6 @@ public class NoticeViewResponse {
         this.noticeId = notice.getNoticeId();
         this.username = username;
         this.noticeTitle = notice.getNoticeTitle();
-        this.noticeContent = notice.getNoticeContent();
         this.noticeCreateDate = notice.getNoticeCreateDate();
         this.noticeViews = notice.getNoticeViews();
     }

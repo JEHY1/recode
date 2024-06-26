@@ -10,8 +10,18 @@ function httpRequest(url, method, body){
 
 function toList(components){
     let list = [];
-    components.forEach(component => list.push(component.value));
+    components.forEach(component => {
+        if(component.value !== ''){
+            list.push(component.value);
+        }
+    });
     return list;
+}
+
+function isMatchingRegex(str, regexPattern) {
+    const regex = new RegExp(regexPattern);
+
+    return regex.test(str);
 }
 
 const addressInfoOpenButton = document.getElementById('addressInfoOpen-btn');
@@ -128,6 +138,15 @@ if(selectBar){
             document.getElementById('phoneMiddle').removeAttribute('readonly');
             document.getElementById('phoneBottom').removeAttribute('readonly');
 
+            //배송비 설정 및 최종금액 변경
+            let beforeAddress = document.getElementById('sample6_address').value;
+            if(beforeAddress.includes('제주특별자치도')){
+                document.getElementById('deliveryFeeInfo').textContent = parseInt(document.getElementById('deliveryFeeInfo').textContent.substring(0, document.getElementById('deliveryFeeInfo').textContent.length - 1)) - 5000 + '원';
+                document.getElementById('deliveryFee').textContent = '+' + (parseInt(document.getElementById('deliveryFee').textContent) - 5000) + '원';
+                document.getElementById('totalPaymentPrice').textContent = (parseInt(document.getElementById('totalPaymentPrice').textContent) - 5000) + '원';
+                paymentButton.textContent = paymentFormChange(parseInt(document.getElementById('totalPaymentPrice').textContent)) + '원 결제하기';
+            }
+
             //새로운 배송지 입력시 기본 요청사항 기본 값을 '문 앞' 으로 설정
             document.getElementById('deliveryRequestSel').children[1].click();
             //새로운 배송지 입력시 기본 비밀번호 사용 여부를 '비밀번호 사용 안함' 으로 설정
@@ -142,6 +161,8 @@ if(selectBar){
             document.getElementById('phoneBottom').value = '';
             document.getElementById('sample6_postcode').value = '';
             document.getElementById('sample6_address').value = '';
+
+
 
         }
         else{
@@ -189,6 +210,19 @@ if(selectBar){
                 }
             })
             .then(data => {
+                if(document.getElementById('sample6_address').value.includes('제주특별자치도') && !data.addressRoadNameAddress.includes('제주특별자치도')){
+                    document.getElementById('deliveryFeeInfo').textContent = parseInt(document.getElementById('deliveryFeeInfo').textContent.substring(0, document.getElementById('deliveryFeeInfo').textContent.length - 1)) - 5000 + '원';
+                    document.getElementById('deliveryFee').textContent = '+' + (parseInt(document.getElementById('deliveryFee').textContent) - 5000) + '원';
+                    document.getElementById('totalPaymentPrice').textContent = (parseInt(document.getElementById('totalPaymentPrice').textContent) - 5000) + '원';
+                    paymentButton.textContent = paymentFormChange(parseInt(document.getElementById('totalPaymentPrice').textContent)) + '원 결제하기';
+                }
+                else if(!document.getElementById('sample6_address').value.includes('제주특별자치도') && data.addressRoadNameAddress.includes('제주특별자치도')){
+                    document.getElementById('deliveryFeeInfo').textContent = parseInt(document.getElementById('deliveryFeeInfo').textContent.substring(0, document.getElementById('deliveryFeeInfo').textContent.length - 1)) + 5000 + '원';
+                    document.getElementById('deliveryFee').textContent = '+' + (parseInt(document.getElementById('deliveryFee').textContent) + 5000) + '원';
+                    document.getElementById('totalPaymentPrice').textContent = (parseInt(document.getElementById('totalPaymentPrice').textContent) + 5000) + '원';
+                    paymentButton.textContent = paymentFormChange(parseInt(document.getElementById('totalPaymentPrice').textContent)) + '원 결제하기';
+                }
+
                 //받은 주소 정보 view 입력
                 document.getElementById('addressNickname').value = data.addressNickname;
                 document.getElementById('recipientName').value = data.addressRecipientName;
@@ -467,7 +501,7 @@ if(paymentButton){
         console.log('click');
 
         //결제 버튼 클릭시 주소정보 확인
-        if(document.getElementById('recipientName').value === '' || document.getElementById('sample6_addressAndPostcode').value === '' || document.getElementById('sample6_detailAddress').value === '' || (document.getElementById('deliveryRequest').value === '택배함' && document.getElementById('deliveryBoxNum').value === '') || (!(parseInt(phoneTop.value.trim()).toString() === phoneTop.value.trim() && phoneTop.value.trim().length === 3) || !(parseInt(phoneMiddle.value.trim()).toString() === phoneMiddle.value.trim() && phoneMiddle.value.trim().length === 4) || !(parseInt(phoneBottom.value.trim()).toString() === phoneBottom.value.trim() && phoneBottom.value.trim().length === 4))){
+        if(document.getElementById('recipientName').value === '' || document.getElementById('sample6_addressAndPostcode').value === '' || document.getElementById('sample6_detailAddress').value === '' || (document.getElementById('deliveryRequest').value === '택배함' && document.getElementById('deliveryBoxNum').value === '') || !isMatchingRegex(phoneTop.value.trim(), "^\\d{3}$") || !isMatchingRegex(phoneMiddle.value.trim(), "^\\d{4}$") || !isMatchingRegex(phoneBottom.value.trim(), "^\\d{4}$")){
             document.getElementById('addressForm').classList.remove('border-green');
             document.getElementById('addressForm').classList.add('border-red');
             window.scrollTo({
@@ -488,7 +522,8 @@ if(paymentButton){
                 document.getElementById('sample6_addressAndPostcode').parentElement.parentElement.parentElement.classList.add('border-red');
             }
 
-            if(!(parseInt(phoneTop.value.trim()).toString() === phoneTop.value.trim() && phoneTop.value.trim().length === 3) || !(parseInt(phoneMiddle.value.trim()).toString() === phoneMiddle.value.trim() && phoneMiddle.value.trim().length === 4) || !(parseInt(phoneBottom.value.trim()).toString() === phoneBottom.value.trim() && phoneBottom.value.trim().length === 4)){
+
+            if(!isMatchingRegex(phoneTop.value.trim(), "^\\d{3}$") || !isMatchingRegex(phoneMiddle.value.trim(), "^\\d{4}$") || !isMatchingRegex(phoneBottom.value.trim(), "^\\d{4}$")){
                 phoneTop.parentElement.parentElement.classList.add('border-red');
             }
 
@@ -520,7 +555,7 @@ if(paymentButton){
                 document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
                 return ;
             }
-            if(document.getElementById('paymentAccountNumber').value === ''){
+            if(!isMatchingRegex(document.getElementById('paymentAccountNumber').value.trim(), "^\\d{14}$")){
                 document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
                 document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
                 document.getElementById('paymentAccountNumber').classList.add('border-red');
@@ -534,7 +569,7 @@ if(paymentButton){
                 document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
                 return ;
             }
-            if(document.getElementById('paymentCardNumber').value === ''){
+            if(!isMatchingRegex(document.getElementById('paymentCardNumber').value.trim(), "^\\d{16}$")){
                 document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
                 document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
                 document.getElementById('paymentCardNumber').classList.add('border-red');
@@ -548,7 +583,7 @@ if(paymentButton){
                 document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
                 return ;
             }
-            if(document.getElementById('paymentMicropaymentPhone').value === ''){
+            if(!isMatchingRegex(document.getElementById('paymentMicropaymentPhone').value.trim(), "^\\d{16}$")){
                 document.getElementById('paymentSelectBar').parentElement.parentElement.classList.add('border-red');
                 document.getElementById('paymentSelectBar').parentElement.parentElement.classList.remove('border-green');
                 document.getElementById('paymentMicropaymentPhone').classList.add('border-red');
@@ -569,57 +604,140 @@ if(paymentButton){
             console.log('else');
         }
 
-        let body = JSON.stringify({
-            cartIds : toList(Array.from(document.getElementsByClassName('cartId')))
-        });
-
-        httpRequest(`/user/cart/cleanList`, 'DELETE', body)
-        .then(response => {
-            if(response.ok){
-                return response.json();
-            }
-            else{
-                alert('error');
-                throw new error('error');
-            }
-        })
-        .then(data => {
-            console.log(data);
-            if(data.products.length !== 0){
-                let text = '';
-                data.products.forEach(product => {
-                    text += product.productName + '\n';
-                    document.getElementById('productId' + product.productId).parentElement.children[4].click();
-                });
-                alert('품절된 상품 있음\n' + text + '\n\n 해당 상품이 결제 명세서 및 장바구니에서 제외되었습니다.\n 결제 명세서 내역을 재확인바람니다.');
-            }
-        })
-        .then(() => {
+        if(toList(Array.from(document.getElementsByClassName('cartId'))).length === 0){
+            console.log('size = 0');
             let body = JSON.stringify({
-                paymentPrice : document.getElementById('totalPaymentPrice').textContent.substring(0, document.getElementById('totalPaymentPrice').textContent.length - 1),
-                paymentType : document.getElementById('paymentSelectBar').value,
-                paymentBank : getPaymentBank(document.getElementById('paymentBank1'), document.getElementById('paymentBank2')),
-                paymentDepositor : document.getElementById('paymentDepositor').value,
-                paymentAccountNumber : document.getElementById('paymentAccountNumber').value,
-                paymentCard : document.getElementById('paymentCard').value,
-                paymentInstallment : document.getElementById('paymentInstallment').value,
-                paymentCardNumber : document.getElementById('paymentCardNumber').value,
-                paymentPhoneCompany : document.getElementById('paymentPhoneCompany').value,
-                paymentMicropaymentPhone : document.getElementById('paymentMicropaymentPhone').value,
-                paymentPostalCode : document.getElementById('sample6_postcode').value,
-                paymentAddress : document.getElementById('sample6_address').value + ', ' + document.getElementById('sample6_detailAddress').value,
-                paymentRecipientName : document.getElementById('recipientName').value,
-                paymentRecipientPhone : document.getElementById('phoneTop').value + document.getElementById('phoneMiddle').value + document.getElementById('phoneBottom').value,
-                deliveryRequest : document.getElementById('deliveryRequest').value,
-                deliveryBoxNum : document.getElementById('deliveryBoxNum').value,
-                frontDoorSecret : document.getElementById('frontDoorSecret').value,
-                deliveryFee : document.getElementById('deliveryFeeInfo').textContent.substring(0, document.getElementById('deliveryFeeInfo').textContent.length - 1),
-                cartIds : toList(Array.from(document.getElementsByClassName('cartId'))),
-                productIds : toList(Array.from(document.getElementsByClassName('productId')))
+                productId : toList(Array.from(document.getElementsByClassName('productId')))[0]
             });
 
-            httpRequest(`/user/payment`, 'POST', body);
-        });
+            httpRequest(`/user/payment/cleanList`, 'POST', body)
+            .then(response => {
+                if(response.ok){
+                    return response.json();
+                }
+                else{
+                    alert('error');
+                    throw new error('error');
+                }
+            })
+            .then(data => {
+                console.log(data);
+                if(data.products.length !== 0){
+                    let text = '';
+                    data.products.forEach(product => {
+                        text += product.productName + '\n';
+                        document.getElementById('productId' + product.productId).parentElement.children[4].click();
+                    });
+                    alert('품절된 상품 있음\n' + text + '\n\n 해당 상품이 결제 명세서 및 장바구니에서 제외되었습니다.\n 결제 명세서 내역을 재확인바람니다.');
+                }
+            })
+            .then(() => {
+                //결제 요청
+                if(toList(Array.from(document.getElementsByClassName('productId'))).length !== 0){
+                    let body = JSON.stringify({
+                        paymentPrice : document.getElementById('totalPaymentPrice').textContent.substring(0, document.getElementById('totalPaymentPrice').textContent.length - 1),
+                        paymentType : document.getElementById('paymentSelectBar').value,
+                        paymentBank : getPaymentBank(document.getElementById('paymentBank1'), document.getElementById('paymentBank2')),
+                        paymentDepositor : document.getElementById('paymentDepositor').value,
+                        paymentAccountNumber : document.getElementById('paymentAccountNumber').value,
+                        paymentCard : document.getElementById('paymentCard').value,
+                        paymentInstallment : document.getElementById('paymentInstallment').value,
+                        paymentCardNumber : document.getElementById('paymentCardNumber').value,
+                        paymentPhoneCompany : document.getElementById('paymentPhoneCompany').value,
+                        paymentMicropaymentPhone : document.getElementById('paymentMicropaymentPhone').value,
+                        paymentPostalCode : document.getElementById('sample6_postcode').value,
+                        paymentAddress : document.getElementById('sample6_address').value + ', ' + document.getElementById('sample6_detailAddress').value,
+                        paymentRecipientName : document.getElementById('recipientName').value,
+                        paymentRecipientPhone : document.getElementById('phoneTop').value + document.getElementById('phoneMiddle').value + document.getElementById('phoneBottom').value,
+                        deliveryRequest : document.getElementById('deliveryRequest').value,
+                        deliveryBoxNum : document.getElementById('deliveryBoxNum').value,
+                        frontDoorSecret : document.getElementById('frontDoorSecret').value,
+                        deliveryFee : document.getElementById('deliveryFeeInfo').textContent.substring(0, document.getElementById('deliveryFeeInfo').textContent.length - 1),
+                        cartIds : toList(Array.from(document.getElementsByClassName('cartId'))),
+                        productIds : toList(Array.from(document.getElementsByClassName('productId')))
+                    });
+
+                    httpRequest(`/user/payment`, 'POST', body)
+                    .then(response => {
+                        if(response.ok){
+                            alert('상품구매가 완료되었습니다.');
+                            location.replace('/');
+                        }
+                        else{
+                            alert('error');
+                        }
+                    });
+                }
+            });
+        }
+        else{
+            console.log('size != 0');
+
+            let body = JSON.stringify({
+                cartIds : toList(Array.from(document.getElementsByClassName('cartId')))
+            });
+
+
+            httpRequest(`/user/cart/cleanList`, 'DELETE', body)
+            .then(response => {
+                if(response.ok){
+                    return response.json();
+                }
+                else{
+                    alert('error');
+                    throw new error('error');
+                }
+            })
+            .then(data => {
+                console.log(data);
+                if(data.products.length !== 0){
+                    let text = '';
+                    data.products.forEach(product => {
+                        text += product.productName + '\n';
+                        document.getElementById('productId' + product.productId).parentElement.children[4].click();
+                    });
+                    alert('품절된 상품 있음\n' + text + '\n\n 해당 상품이 결제 명세서 및 장바구니에서 제외되었습니다.\n 결제 명세서 내역을 재확인바람니다.');
+                }
+            })
+            .then(() => {
+                //결제 요청
+                if(toList(Array.from(document.getElementsByClassName('productId'))).length !== 0){
+                    let body = JSON.stringify({
+                        paymentPrice : document.getElementById('totalPaymentPrice').textContent.substring(0, document.getElementById('totalPaymentPrice').textContent.length - 1),
+                        paymentType : document.getElementById('paymentSelectBar').value,
+                        paymentBank : getPaymentBank(document.getElementById('paymentBank1'), document.getElementById('paymentBank2')),
+                        paymentDepositor : document.getElementById('paymentDepositor').value,
+                        paymentAccountNumber : document.getElementById('paymentAccountNumber').value,
+                        paymentCard : document.getElementById('paymentCard').value,
+                        paymentInstallment : document.getElementById('paymentInstallment').value,
+                        paymentCardNumber : document.getElementById('paymentCardNumber').value,
+                        paymentPhoneCompany : document.getElementById('paymentPhoneCompany').value,
+                        paymentMicropaymentPhone : document.getElementById('paymentMicropaymentPhone').value,
+                        paymentPostalCode : document.getElementById('sample6_postcode').value,
+                        paymentAddress : document.getElementById('sample6_address').value + ', ' + document.getElementById('sample6_detailAddress').value,
+                        paymentRecipientName : document.getElementById('recipientName').value,
+                        paymentRecipientPhone : document.getElementById('phoneTop').value + document.getElementById('phoneMiddle').value + document.getElementById('phoneBottom').value,
+                        deliveryRequest : document.getElementById('deliveryRequest').value,
+                        deliveryBoxNum : document.getElementById('deliveryBoxNum').value,
+                        frontDoorSecret : document.getElementById('frontDoorSecret').value,
+                        deliveryFee : document.getElementById('deliveryFeeInfo').textContent.substring(0, document.getElementById('deliveryFeeInfo').textContent.length - 1),
+                        cartIds : toList(Array.from(document.getElementsByClassName('cartId'))),
+                        productIds : toList(Array.from(document.getElementsByClassName('productId')))
+                    });
+
+                    httpRequest(`/user/payment`, 'POST', body)
+                    .then(response => {
+                        if(response.ok){
+                            alert('상품구매가 완료되었습니다.');
+                            location.replace('/');
+                        }
+                        else{
+                            alert('error');
+                        }
+                    });
+                }
+            });
+        }
 
     });
 }
@@ -850,7 +968,7 @@ const phoneTop = document.getElementById('phoneTop');
 
 if(phoneTop){
     phoneTop.addEventListener('blur', () => {
-        if((parseInt(phoneTop.value.trim()).toString() === phoneTop.value.trim() && phoneTop.value.trim().length === 3) && (parseInt(phoneMiddle.value.trim()).toString() === phoneMiddle.value.trim() && phoneMiddle.value.trim().length === 4) && (parseInt(phoneBottom.value.trim()).toString() === phoneBottom.value.trim() && phoneBottom.value.trim().length === 4)){
+        if(isMatchingRegex(phoneTop.value.trim(), "^\\d{3}$") && isMatchingRegex(phoneMiddle.value.trim(), "^\\d{4}$") && isMatchingRegex(phoneBottom.value.trim(), "^\\d{4}$")){
             phoneTop.parentElement.parentElement.classList.remove('border-red');
         }
     });
@@ -860,7 +978,8 @@ const phoneMiddle = document.getElementById('phoneMiddle');
 
 if(phoneMiddle){
     phoneMiddle.addEventListener('blur', () => {
-        if((parseInt(phoneTop.value.trim()).toString() === phoneTop.value.trim() && phoneTop.value.trim().length === 3) && (parseInt(phoneMiddle.value.trim()).toString() === phoneMiddle.value.trim() && phoneMiddle.value.trim().length === 4) && (parseInt(phoneBottom.value.trim()).toString() === phoneBottom.value.trim() && phoneBottom.value.trim().length === 4)){
+        if(isMatchingRegex(phoneTop.value.trim(), "^\\d{3}$") && isMatchingRegex(phoneMiddle.value.trim(), "^\\d{4}$") && isMatchingRegex(phoneBottom.value.trim(), "^\\d{4}$")){
+            console.log('clicksdfsdf');
             phoneTop.parentElement.parentElement.classList.remove('border-red');
         }
     });
@@ -870,7 +989,7 @@ const phoneBottom = document.getElementById('phoneBottom');
 
 if(phoneBottom){
     phoneBottom.addEventListener('blur', () => {
-        if((parseInt(phoneTop.value.trim()).toString() === phoneTop.value.trim() && phoneTop.value.trim().length === 3) && (parseInt(phoneMiddle.value.trim()).toString() === phoneMiddle.value.trim() && phoneMiddle.value.trim().length === 4) && (parseInt(phoneBottom.value.trim()).toString() === phoneBottom.value.trim() && phoneBottom.value.trim().length === 4)){
+        if(isMatchingRegex(phoneTop.value.trim(), "^\\d{3}$") && isMatchingRegex(phoneMiddle.value.trim(), "^\\d{4}$") && isMatchingRegex(phoneBottom.value.trim(), "^\\d{4}$")){
             phoneTop.parentElement.parentElement.classList.remove('border-red');
         }
     });
@@ -898,4 +1017,3 @@ if(sample6AddressAndPostcode && sample6DetailAddress){
         }
     });
 }
-

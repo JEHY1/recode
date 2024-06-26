@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>RECODE 상품문의 페이지</title>
+  <link rel="stylesheet" href="/css/header.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <link rel="stylesheet" href="/css/boardCss/queryList.css">
+  <script src="/js/queryList.js"></script>
+</head>
+
+<body>
+<th:block th:include="layouts/header"></th:block>
+<div class="container">
+  <div class="content">
+    <div class="titleArea">
+      <h2>상품문의</h2>
+    </div>
+    <form>
+      <table id="userReviewList">
+        <tr th:each="qna, iterStat : ${qnas}">
+          <td th:text="${iterStat.count}">1</td>
+          <td>
+            <div>
+              <a th:href="@{/qna/{id}(id=${qna.qnAId})}">
+                <img class="userProImg" src="">
+              </a>
+            </div>
+          </td>
+          <td class="txtEm">
+            <a th:href="@{/qna/{id}(id=${qna.qnAId})}" th:text="${qna.QnAQuestionTitle}">Title을 호출 합니다.</a>
+          </td>
+          <td th:text="${qna.userId}">작성자</td>
+          <td th:text="${#temporals.format(qna.QnACreateDate, 'yyyy-MM-dd')}">2024-06-12</td>
+          <td th:text="${qna.qnAViews}">조회수</td>
+        </tr>
+      </table>
+    </form>
+  </div>
+</div>
+<th:block th:include="layouts/footer"></th:block>
+</body>
+
+</html>

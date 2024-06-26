@@ -61,13 +61,13 @@ public class QnA {
         this.QnAAnswerDate = qnAAnswerDate;
     }
 
-    public QnA saveAnswer(QnaAnswerRequest dto) {
+    public QnA saveAnswer(QnaAnswerRequest dto) { // 상품문의 답변 등록&수정
         this.QnAAnswer = dto.getQnAAnswer();
         this.QnAAnswerDate = this.QnAAnswerDate == null ? LocalDateTime.now() : this.QnAAnswerDate;
         return this;
     }
 
-    public QnA deleteAnswer() {
+    public QnA deleteAnswer() { // 상품문의 답변 지우기
         this.QnAAnswer = null;
         this.QnAAnswerDate = null;
         return this;

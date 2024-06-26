@@ -19,6 +19,7 @@ public class CartApiController {
 
     private final CartService cartService;
 
+    //장바구니 상품 추가
     @PostMapping("/user/addCart")
     public ResponseEntity<Cart> addCart(@RequestBody AddCartRequest request, Principal principal){
         return ResponseEntity.ok()
@@ -26,6 +27,7 @@ public class CartApiController {
 
     }
 
+    //장바구니 상품 삭제
     @DeleteMapping("/user/cart")
     public ResponseEntity<Void> deleteCart(@RequestBody DeleteCartRequest request){
 
@@ -35,7 +37,8 @@ public class CartApiController {
                 .build();
     }
 
-    @DeleteMapping("user/cartList")
+    //장바구니 리스트 삭제
+    @DeleteMapping("/user/cartList")
     public ResponseEntity<Void> deleteCartList(@RequestBody DeleteCartListRequest request){
 
         cartService.deleteList(request);

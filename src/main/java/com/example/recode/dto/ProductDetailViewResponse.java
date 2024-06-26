@@ -21,10 +21,11 @@ public class ProductDetailViewResponse {
     private String type;
     private int regularPrice;
     private Integer discountPrice;
+    private int productSold;
 
     @Builder
     public ProductDetailViewResponse(long productId ,String productName, String productModel, String productRepImg, List<String> productDetailImgs,
-                                     String color, String type, int regularPrice, Integer discountPrice) {
+                                     String color, String type, int regularPrice, Integer discountPrice, int productSold) {
         this.productId = productId;
         this.productName = productName;
         this.productModel = productModel;
@@ -34,5 +35,6 @@ public class ProductDetailViewResponse {
         this.type = type;
         this.regularPrice = regularPrice;
         this.discountPrice = discountPrice;
+        this.productSold = productSold;
     }
 }

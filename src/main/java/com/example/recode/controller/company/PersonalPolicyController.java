@@ -1,4 +1,4 @@
-package com.example.recode.controller;
+package com.example.recode.controller.company;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;

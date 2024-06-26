@@ -112,7 +112,7 @@ if(moveBottomButton){
 
 const pages = document.getElementsByClassName('pages');
 
-if(pages){
+if(pages.length !== 0){
     pages[0].classList.remove('d-hidden');
     pages[0].setAttribute('id', 'QnA-show');
 }
@@ -182,8 +182,11 @@ if(cartButton){
     })
 }
 
+//바로 구매시 결제 페이지 이동
+const buyButton = document.getElementById('buy-btn');
 
-
-
-
-
+if(buyButton){
+    buyButton.addEventListener('click', () => {
+        document.getElementById('requestPaymentView').submit();
+    });
+}

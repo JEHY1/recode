@@ -33,6 +33,7 @@
 
     });
 </script>
+<input type="checkbox" id="testCheckBox">
 
 <form action="/user/address/management2" method="post">
     <input type="hidden" value="2" name="addressId">
@@ -120,7 +121,7 @@
         <div th:text="${payment.paymentCard}"></div>
         <div th:text="${payment.paymentInstallment}"></div>
         <div th:text="${payment.paymentMicropaymentPhone}"></div>
-        <div th:text="${payment.paymentDeposit}"></div>
+        <div th:text="${payment.paymentDepositor}"></div>
         <div th:text="${payment.paymentStatus}"></div>
         <div th:text="${payment.paymentPostalCode}"></div>
         <div th:text="${payment.paymentAddress}"></div>
@@ -245,5 +246,8 @@
         <hr>
     </div>
 </div>
+
+<button type="button" id="test-btn">test Button</button>
+<script src="/js/test.js"></script>
 </body>
 </html>

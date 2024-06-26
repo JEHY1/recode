@@ -77,4 +77,11 @@ public class Product {
     public void updateSold(int productSold){
         this.productSold = productSold;
     }
+
+    public Product updateRepImgSrc(String productRepresentativeImgSrc){
+        this.productRepresentativeImgSrc = productRepresentativeImgSrc;
+        return this;
+    }
+
+
 }

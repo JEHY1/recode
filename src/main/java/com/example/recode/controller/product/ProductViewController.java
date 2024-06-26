@@ -1,4 +1,4 @@
-package com.example.recode.controller;
+package com.example.recode.controller.product;
 
 import com.example.recode.service.ProductService;
 import com.example.recode.service.QnAService;

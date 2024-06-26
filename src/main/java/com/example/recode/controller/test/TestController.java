@@ -1,4 +1,4 @@
-package com.example.recode.controller;
+package com.example.recode.controller.test;
 
 import com.example.recode.domain.Address;
 import com.example.recode.domain.QnA;

@@ -21,17 +21,17 @@ public class AddressApiController {
 
     private final AddressService addressService;
 
+    //주소 정보 신규 생성 및 수정
     @PostMapping("/user/address/management")
     public ResponseEntity<Address> addressManagement(@RequestBody ManagementAddressRequest request, Principal principal){
-        System.err.println(request);
 
         return ResponseEntity.status(HttpStatus.CREATED)
                 .body(addressService.managementAddress(request, principal));
     }
 
+    //주소 정보 불러오기
     @PostMapping("/user/address/getAddressInfo")
     public ResponseEntity<Address> responseAddressInfo(@RequestBody GetAddressInfoRequest request, Principal principal){
-        System.err.println("call getAddressInfo");
 
         if(principal == null){
             return ResponseEntity.ok()
@@ -41,9 +41,9 @@ public class AddressApiController {
             return ResponseEntity.ok()
                     .body(addressService.findAddressByAddressId(request.getAddressId()));
         }
-
     }
 
+    //주소 삭제
     @DeleteMapping("/user/address/delete")
     public ResponseEntity<Void> deleteAddress(@RequestBody AddressDeleteRequest request){
 

@@ -1,4 +1,4 @@
-package com.example.recode.controller;
+package com.example.recode.controller.user;
 
 import com.example.recode.domain.Address;
 import com.example.recode.dto.AddressManagementViewRequest;
@@ -67,7 +67,7 @@ public class UserViewController {
         return "users/payment";
     }
 
-    //상품 상세 페이지 -> 결제 페이지 상품 판매 여부 확인 위함(미완)
+    //상품 상세 페이지 -> 결제 페이지 상품 판매 여부 확인
     @PostMapping("/user/paymentView2")
     public String paymentView2(Model model, AtDetailPaymentViewRequest request, Principal principal){
 

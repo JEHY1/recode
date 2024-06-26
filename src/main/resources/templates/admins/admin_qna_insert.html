@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/adminsCss/admin_qna_insert.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/js/header.js"></script>
+    <title>관리자 - 상품문의/답변 등록</title>
+</head>
+<body>
+    <th:block th:include="layouts/admin_header"></th:block>
+    <main>
+        <div class="box">
+            <p class="boxTitle">상품문의 보기</p>
+            <div id="showBox">
+                <div>
+                    <img th:src="${product.productRepresentativeImgSrc}">
+                    <a th:href="'/admin/product/' + ${product.productId} + '/show'" th:text="${product.productName}"></a>
+                </div>
+                <ul>
+                    <li>
+                        <p>제목</p>
+                        <p th:text="${QnA.QnAQuestionTitle}"></p>
+                        <p></p>
+                    </li>
+                    <li>
+                        <p>내용</p>
+                        <p th:text="${QnA.QnAQuestionContent}"></p>
+                    </li>
+                    <li>
+                        <p>작성자</p>
+                        <p th:text="${username}"></p>
+                    </li>
+                    <li>
+                        <p>조회수</p>
+                        <p th:text="${QnA.QnAViews}"></p>
+                    </li>
+                    <li>
+                        <p>등록일</p>
+                        <p th:text="${#temporals.format(QnA.QnACreateDate, 'yyyy-MM-dd HH:mm:ss')}"></p>
+                    </li>
+                </ul>
+            </div>
+            <div class="buttonBox">
+                <a th:href="'/admin/qna/' + ${QnA.QnAId} + '/delete'">삭제</a>
+                <a href="/admin/qna/index">목록</a>
+            </div>
+            <form action="/admin/qna/create" method="post">
+                <input type="hidden" name="QnAId" th:value="${QnA.QnAId}">
+                <div id="answerBox">
+                    <p th:text="${QnA.QnAAnswer != null ? ' 답변 수정' : ' 답변 등록'}"></p>
+                    <textarea name="QnAAnswer" th:text="${QnA.QnAAnswer}"></textarea>
+                </div>
+                <div class="buttonBox">
+                    <button type="submit" th:text="${QnA.QnAAnswer != null ? '수정' : '등록'}"></button>
+                    <button type="reset">취소</button>
+                </div>
+            </form>
+        </div>
+    </main>
+    <th:block th:include="layouts/footer"></th:block>
+</body>
+</html>
