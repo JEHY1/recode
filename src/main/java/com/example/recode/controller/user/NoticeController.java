@@ -1,4 +1,4 @@
-package com.example.recode.controller;
+package com.example.recode.controller.admin;
 
 import com.example.recode.dto.NoticeDto;
 import com.example.recode.service.NoticeService;

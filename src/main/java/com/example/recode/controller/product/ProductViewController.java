@@ -16,6 +16,7 @@ public class ProductViewController {
     private final QnAService qnAService;
 
 
+    //상품 상세 페이지
     @GetMapping("/productDetail/{productId}")
     public String showProductDetails(@PathVariable long productId, Model model){
 

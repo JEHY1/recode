@@ -6,7 +6,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
 public class PersonalPolicyController {
-    @GetMapping("/personalPolicy")
+    @GetMapping("/etc/personalPolicy")
     public String brandInfo(Model model) {
         return "etc/personalPolicy";
     }

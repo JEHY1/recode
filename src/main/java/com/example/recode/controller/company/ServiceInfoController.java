@@ -5,11 +5,10 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 
 @Controller
-public class BrandController {
-    @GetMapping("/brand")
+public class ServiceInfoController {
+
+    @GetMapping("/etc/servicePolicy")
     public String brandInfo(Model model) {
-//        model.addAttribute("brandName", "RECODE");
-//        model.addAttribute("brandDescription", "This is a description of your brand.");
-        return "etc/brandInfo";
+        return "etc/servicePolicy";
     }
 }

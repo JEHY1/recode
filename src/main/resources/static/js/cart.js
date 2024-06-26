@@ -222,3 +222,15 @@ if(selectOrderButton){
 
     })
 }
+
+const eachOrderButton = document.getElementById('eachOrder-btn');
+
+if(eachOrderButton){
+    eachOrderButton.addEventListener('click', () => {
+        let body = JSON.stringify({
+
+        })
+    })
+}
+
+//allCheckBox.click();

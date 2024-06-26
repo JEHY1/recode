@@ -2,9 +2,11 @@ package com.example.recode.controller;
 
 import com.example.recode.domain.Address;
 import com.example.recode.dto.AddressManagementViewRequest;
+import com.example.recode.dto.AtDetailPaymentViewRequest;
 import com.example.recode.dto.PaymentViewRequest;
 import com.example.recode.service.AddressService;
 import com.example.recode.service.CartService;
+import com.example.recode.service.PaymentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +21,9 @@ public class UserViewController {
 
     private final AddressService addressService;
     private final CartService cartService;
+    private final PaymentService paymentService;
 
+    //사용자 주소 리스트 페이지
     @GetMapping("/user/address/list")
     public String addressList(Model model, Principal principal){
 
@@ -29,12 +33,7 @@ public class UserViewController {
         return "users/deliveryAddressList";
     }
 
-//    @GetMapping("/user/address/management2")
-//    public String deliveryAddressManagement1(Model model){
-//        model.addAttribute("addressId", null);
-//        return "users/deliveryAddressManagement";
-//    }
-
+    //사용자 주소 생성 및 수정 페이지
     @PostMapping("/user/address/managementView")
     public String deliveryAddressManagement(AddressManagementViewRequest request, Model model){
 
@@ -46,6 +45,7 @@ public class UserViewController {
         return "users/deliveryAddressManagement";
     }
 
+    //장바구니 페이지
     @GetMapping("/user/cart")
     public String cartList(Model model, Principal principal){
 
@@ -55,6 +55,7 @@ public class UserViewController {
         return "users/cart";
     }
 
+    //결제 페이지
     @PostMapping("/user/paymentView")
     public String paymentView(Model model, PaymentViewRequest request, Principal principal){
 
@@ -62,10 +63,28 @@ public class UserViewController {
         model.addAttribute("cartInfoList", cartService.getCartInfoList(request));
         model.addAttribute("defaultAddressInfo", addressService.findAddressByUserIdAndAddressDefault(principal));
 
-        System.err.println(request);
-        System.err.println(cartService.getCartInfoList(request));
 
         return "users/payment";
+    }
+
+    //상품 상세 페이지 -> 결제 페이지 상품 판매 여부 확인 위함(미완)
+    @PostMapping("/user/paymentView2")
+    public String paymentView2(Model model, AtDetailPaymentViewRequest request, Principal principal){
+
+        System.err.println("call paymentView 2");
+        model.addAttribute("addressNicknameList", addressService.getAddressNicknameList(principal));
+        model.addAttribute("cartInfoList", cartService.getCartInfoList(request));
+        model.addAttribute("defaultAddressInfo", addressService.findAddressByUserIdAndAddressDefault(principal));
+
+        return "users/payment";
+    }
+
+    //마이페이지
+    @GetMapping("/user/myPage")
+    public String myPage(Model model, Principal principal){
+
+        model.addAttribute("deliveryInfo", paymentService.getMyPageInfo(principal));
+        return "/users/myPage";
     }
 
 
