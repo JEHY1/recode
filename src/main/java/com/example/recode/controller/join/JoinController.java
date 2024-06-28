@@ -21,25 +21,26 @@ public class JoinController {
 
     private final UserService userService;
 
-    @GetMapping("/join/new") // join 화면
+    @GetMapping("/join/new") // join 페이지
     public String newJoin() {
         return "logins/join";
     }
 
-    @PostMapping("/join/create") // join 폼 만들기
+    @PostMapping("/join/create") // join 페이지 post
     public String createJoin(JoinRequest request) {
         Long userId = userService.save(request);
+        System.err.println("sss");
         return "redirect:/join/" + userId + "/finish";
     }
-    
-    @GetMapping("/join/{userId}/finish") // join_finish 화면
+
+    @GetMapping("/join/{userId}/finish") // join_finish 페이지
     public String showJoinFinish(@PathVariable Long userId, Model model) {
         User userEntity = userService.findById(userId);
-        model.addAttribute("join", userEntity);
+        model.addAttribute("user", userEntity);
         return "logins/join_finish";
     }
 
-    @GetMapping("/login") // login 화면
+    @GetMapping("/login") // login 페이지
     public String login() {
         return "logins/login";
     }
@@ -49,13 +50,23 @@ public class JoinController {
         return "redirect:/";
     }
 
-    @GetMapping("/idfind") // idfind 화면
-    public String showIdfind() {
-        return "logins/idfind";
+    @GetMapping("/find/id") // find_id 페이지
+    public String showFindId() {
+        return "logins/find_id";
     }
-    @GetMapping("/pwfind") // pwfind 화면
-    public String showPwfind() {
-        return "logins/pwfind";
+    @GetMapping("/find/pw") // find_pw 페이지
+    public String showFindPw() {
+        return "logins/find_pw";
+    }
+
+    @GetMapping("/find/id/finish") // find_id_finish 페이지
+    public String showFindIdFinish() {
+        return "logins/find_id_finish";
+    }
+
+    @GetMapping("/find/pw/finish") // find_pw_finish 페이지
+    public String showFindPwFinish() {
+        return "logins/find_pw_finish";
     }
 
     @PostMapping("/join/idCheck") // 아이디 중복 확인 - join.js에 ajax 연결
@@ -82,5 +93,15 @@ public class JoinController {
         System.out.println("이메일 확인: " + userEmail);
 
         return userService.emailCheck(userEmail);
+    }
+
+    @PostMapping("/login/check") // 로그인 시 아이디, 비밀번호 확인 - login.js에 ajax 연결
+    @ResponseBody
+    public String loginCheck(String username, String userPassword) {
+
+        System.out.println("아이디 확인: " + username);
+        System.out.println("비밀번호 확인: " + userPassword);
+
+        return userService.loginCheck(username, userPassword);
     }
 }

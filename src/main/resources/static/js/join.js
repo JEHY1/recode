@@ -1,31 +1,45 @@
 $(function() {
-    // 전체 동의하기 눌렀을 때, 다 체크
-    $("#all").on("click", function() {
-        if($("#all").prop("checked") == true) {
-            $(".must, .select").prop("checked", true);
-        }
-        else {
-            $(".must, .select").prop("checked", false);
-        }
-    });
-    // 개별 다 체크되면 전체 동의하기 체크
-    $(".must, .select").on("click", function() {
-        if($("#must1").prop("checked") == true && $("#must2").prop("checked") == true 
-        && $("#select1").prop("checked") == true && $("#select2").prop("checked") == true) {
-            $("#all").prop("checked", true);
-        }
-        else {
-            $("#all").prop("checked", false);
-        }  
-    });
 
-    // 회원가입 유효성 체크
+    // 회원가입 유효성 체크 - submit 시 확인할 변수
     let idCheck = false;
     let pw1Check = false;
     let pw2Check = false;
     let nameCheck = false;
     let phoneCheck = false;
     let emailCheck = false;
+    let mustCheck = false;
+
+    // 전체 동의하기 눌렀을 때, 다 체크
+    $("#all").on("click", function() {
+        if($("#all").prop("checked") == true) {
+            $(".must, .select").prop("checked", true);
+            $("#agreeBox > span:nth-child(2)").html("");
+            mustCheck = true;
+        }
+        else {
+            $(".must, .select").prop("checked", false);
+            mustCheck = false;
+        }
+    });
+    // 개별 다 체크되면 전체 동의하기 체크
+    $(".must, .select").on("click", function() {
+        if($("#must1").prop("checked") == true && $("#must2").prop("checked") == true
+        && $("#select1").prop("checked") == true && $("#select2").prop("checked") == true) {
+            $("#all").prop("checked", true);
+            $("#agreeBox > span:nth-child(2)").html("");
+            mustCheck = true;
+        }
+        else {
+            $("#all").prop("checked", false);
+            if($("#must1").prop("checked") == true && $("#must2").prop("checked") == true) { // 필수 항목만 체크 됐을 때
+                $("#agreeBox > span:nth-child(2)").html("");
+                mustCheck = true;
+            }
+            else {
+                mustCheck = false;
+            }
+        }
+    });
 
     // 아이디
     $("#userId").on("input", function() {
@@ -44,7 +58,7 @@ $(function() {
         }
         // 아이디 중복 체크
         else {
-             $.ajax({
+            $.ajax({
                 url:'/join/idCheck',
                 type : "post",
                 data : {
@@ -61,7 +75,7 @@ $(function() {
                         idCheck = true;
                     }
                 }
-             });
+            });
         }
     });
 
@@ -140,7 +154,7 @@ $(function() {
         }
         // 휴대폰번호 중복 체크
         else {
-             $.ajax({
+            $.ajax({
                 url:'/join/phoneCheck',
                 type : "post",
                 data : {
@@ -157,7 +171,7 @@ $(function() {
                         phoneCheck = true;
                     }
                 }
-             });
+            });
         }
     });
 
@@ -178,7 +192,7 @@ $(function() {
         }
         // 이메일 중복 체크
         else {
-             $.ajax({
+            $.ajax({
                 url:'/join/emailCheck',
                 type : "post",
                 data : {
@@ -195,10 +209,10 @@ $(function() {
                         emailCheck = true;
                     }
                 }
-             });
+            });
         }
     });
-    // submit
+    // submit 됐을 때
     $("main form").submit(function() {
         if(idCheck == false) {
             $("#userId").focus();
@@ -243,12 +257,11 @@ $(function() {
             }
             return false;
         }
-        else if($("#must1").prop("checked") == false || $("#must2").prop("checked") == false) {
+        else if(mustCheck == false) {
             $("#all").focus();
             $("#agreeBox > span:nth-child(2)").html("! 필수 항목에 모두 동의해주세요.").css("color","red");
             return false;
         }
-
         else {
             return true;
         }

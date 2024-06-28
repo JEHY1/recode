@@ -7,55 +7,14 @@
     <title>RECODE 공지사항 페이지</title>
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/footer.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/js/header.js"></script>
     <link rel="stylesheet" href="/css/boardCss/noticeList.css">
 </head>
 <body>
-<nav>
-    <a href="#">✕</a>
-    <div id="naviBox">
-        <ul>
-            <li>
-                <p>상품</p>
-                <ul>
-                    <li><a href="#">상품1</a></li>
-                    <li><a href="#">상품2</a></li>
-                    <li><a href="#">상품3</a></li>
-                    <li><a href="#">상품4</a></li>
-                    <li><a href="#">상품5</a></li>
-                </ul>
-            </li>
-            <li>
-                <p>커뮤니티</p>
-                <ul>
-                    <li><a href="#">공지사항</a></li>
-                    <li><a href="#">상품문의</a></li>
-                    <li><a href="#">리뷰</a></li>
-                </ul>
-            </li>
-            <li>
-                <p>내계정</p>
-                <ul>
-                    <li><a href="#">로그인</a></li>
-                    <li><a href="#">회원가입</a></li>
-                    <li><a href="#">마이페이지</a></li>
-                    <li><a href="#">주문조회</a></li>
-                    <li><a href="#">장바구니(<span>0</span>)</a></li>
-                    <li><a href="#">최근본상품(<span>0</span>)</a></li>
-                </ul>
-            </li>
-        </ul>
-    </div>
-</nav>
-<div id="search">
-    <a href="#">✕</a>
-    <div id="searchBox">
-        <p>Search</p>
-        <form>
-            <input type="search" placeholder="검색어를 입력해주세요">
-            <button type="submit"></button>
-        </form>
-    </div>
-</div>
+
+<th:block th:include="layouts/header"></th:block>
+
 <div class="container">
     <div class="content">
         <div class="titleArea">
@@ -83,5 +42,6 @@
         </form>
     </div>
 </div>
+<th:block th:include="layouts/footer"></th:block>
 </body>
 </html>

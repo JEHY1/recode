@@ -10,7 +10,12 @@ import lombok.NoArgsConstructor;
 @Table(name = "payment_detail_tb")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class PaymentDetail {
+public class
+
+
+
+
+PaymentDetail {
 
     @Id
     @Column(name = "payment_detail_id", updatable = false)

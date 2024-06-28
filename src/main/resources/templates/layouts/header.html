@@ -1,8 +1,8 @@
 <header xmlns:sec="http://www.w3.org/1999/xhtml">
-    <a id="logo" href="#"></a>
+    <a id="logo" href="/"></a>
     <ul>
         <li>
-            <a href="#">브랜드</a>
+            <a href="/etc/brand">브랜드</a>
         </li>
         <li>
             <a href="#" onclick="return false;">상품</a>
@@ -17,8 +17,8 @@
         <li>
             <a href="#" onclick="return false;">커뮤니티</a>
             <ul>
-                <li><a href="#">공지사항</a></li>
-                <li><a href="#">상품문의</a></li>
+                <li><a href="/noticeList">공지사항</a></li>
+                <li><a href="/qnaList">상품문의</a></li>
                 <li><a href="#">리뷰</a></li>
             </ul>
         </li>
@@ -35,9 +35,9 @@
                     <li><a href="/join/new" sec:authorize="isAnonymous()">회원가입</a></li>
                     <li><a href="/logout" sec:authorize="isAuthenticated()">로그아웃</a></li>
                     <li><a href="/admin/product/index" sec:authorize="hasRole('ADMIN')">관리자페이지</a></li>
-                    <li><a href="#">마이페이지</a></li>
-                    <li><a href="#">주문조회</a></li>
-                    <li><a href="#">장바구니(<span>0</span>)</a></li>
+                    <li><a href="/user/myPage">마이페이지</a></li>
+                    <li><a href="/user/orderCheck">주문조회</a></li>
+                    <li><a href="/user/cart">장바구니(<span>0</span>)</a></li>
                     <li><a href="#">최근본상품(<span>12</span>)</a></li>
                 </ul>
             </li>
@@ -64,8 +64,8 @@
             <li>
                 <p>커뮤니티</p>
                 <ul>
-                    <li><a href="#">공지사항</a></li>
-                    <li><a href="#">상품문의</a></li>
+                    <li><a href="/noticeList">공지사항</a></li>
+                    <li><a href="/qnaList">상품문의</a></li>
                     <li><a href="#">리뷰</a></li>
                 </ul>
             </li>
@@ -76,9 +76,9 @@
                     <li><a href="/join/new" sec:authorize="isAnonymous()">회원가입</a></li>
                     <li><a href="/logout" sec:authorize="isAuthenticated()">로그아웃</a></li>
                     <li><a href="/admin/product/index" sec:authorize="hasRole('ADMIN')">관리자페이지</a></li>
-                    <li><a href="#">마이페이지</a></li>
-                    <li><a href="#">주문조회</a></li>
-                    <li><a href="#">장바구니(<span>0</span>)</a></li>
+                    <li><a href="/user/myPage">마이페이지</a></li>
+                    <li><a href="/user/orderCheck">주문조회</a></li>
+                    <li><a href="/user/cart">장바구니(<span>0</span>)</a></li>
                     <li><a href="#">최근본상품(<span>0</span>)</a></li>
                 </ul>
             </li>

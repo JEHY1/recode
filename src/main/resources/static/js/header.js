@@ -3,6 +3,7 @@ $(function() {
     // search 열기
     $("#iconBox > ul > li:nth-child(1) > a").on("click", function() {
         $("#search").css("display","block");
+        $("#search input[type=search]").focus();
     });
     // search 닫기
     $("#search > a").on("click", function() {

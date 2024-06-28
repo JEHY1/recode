@@ -4,7 +4,9 @@ import com.example.recode.domain.Payment;
 import com.example.recode.domain.PaymentDetail;
 import com.example.recode.domain.Product;
 import com.example.recode.dto.MyPageViewResponse;
+import com.example.recode.dto.OrderCheckResponse;
 import com.example.recode.dto.PaymentRequest;
+import com.example.recode.dto.ProductOrderCheckResponse;
 import com.example.recode.repository.CartRepository;
 import com.example.recode.repository.PaymentDetailRepository;
 import com.example.recode.repository.PaymentRepository;
@@ -12,6 +14,10 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.security.Principal;
+import java.time.LocalDateTime;
+import java.time.Period;
+import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.List;
 
 @Service
@@ -23,6 +29,7 @@ public class PaymentService {
     private final CartRepository cartRepository;
     private final ProductService productService;
     private final UserService userService;
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
 
     //결제 요청 처리
     public Payment payment(PaymentRequest request, Principal principal){
@@ -136,5 +143,55 @@ public class PaymentService {
     public List<PaymentDetail> findPaymentDetailByPaymentId(long paymentId){
         return paymentDetailRepository.findByPaymentId(paymentId)
                 .orElseThrow(() -> new IllegalArgumentException("not found paymentDetail"));
+    }
+
+    public List<OrderCheckResponse> orderCheck(Principal principal, String startDate, String endDate, Integer unitPeriod){
+
+        List<Payment> payments;
+
+        if(unitPeriod != null){
+            payments = paymentRepository.findPaymentsInDateRangeAndUserId(userService.getUserId(principal), LocalDateTime.now().minus(Period.ofMonths(unitPeriod)), LocalDateTime.now())
+                    .orElse(null);
+        }
+        else if(startDate != null && endDate != null){
+            LocalDateTime end = LocalDateTime.parse(startDate, formatter);
+            LocalDateTime start = LocalDateTime.parse(endDate, formatter);
+            payments = paymentRepository.findPaymentsInDateRangeAndUserId(userService.getUserId(principal), start, end)
+                    .orElse(null);
+        }
+        else{
+            payments = paymentRepository.findPaymentsInDateRangeAndUserId(userService.getUserId(principal), LocalDateTime.now().minus(Period.ofMonths(1)), LocalDateTime.now())
+                    .orElse(null);
+        }
+
+        List<OrderCheckResponse> list = null;
+        if(payments != null){
+            list = payments.stream().map(this::toOrderCheckResponse).toList();
+        }
+
+        return list;
+    }
+
+    public OrderCheckResponse toOrderCheckResponse(Payment payment){
+
+        List<PaymentDetail> list = findPaymentDetailByPaymentId(payment.getPaymentId());
+
+        return OrderCheckResponse.builder()
+                .orderDate(payment.getPaymentDate())
+                .paymentDetails(findPaymentDetailByPaymentId(payment.getPaymentId()).stream().map(this::toProductOrderCheckResponse).toList())
+                .build();
+    }
+
+    public ProductOrderCheckResponse toProductOrderCheckResponse(PaymentDetail paymentdetail){
+
+        Product product = productService.findProductByProductId(paymentdetail.getProductId());
+
+        return ProductOrderCheckResponse.builder()
+                .paymentDetailId(paymentdetail.getPaymentDetailId())
+                .productName(product.getProductName())
+                .productRepImgSrc(product.getProductRepresentativeImgSrc())
+                .paymentDetailStatus(paymentdetail.getPaymentDetailStatus())
+                .paymentDetailPrice(paymentdetail.getPaymentDetailPrice())
+                .build();
     }
 }

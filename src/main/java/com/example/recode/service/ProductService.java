@@ -71,6 +71,7 @@ public class ProductService {
     @Transactional
     public Product uploadProduct(UploadProductRequest request){
 
+        System.err.println("1");
         Product product = productRepository.save(Product.builder()
                 .productName(request.getProductName())
                 .productModel(request.getProductModel())
@@ -85,18 +86,22 @@ public class ProductService {
                 .productType(request.getProductType())
                 .build());
 
+        System.err.println("1");
         //상품 등록시 대표이미지로 설정한 이미지파일 이름
         String originalFileName = request.getProductRepImg().getOriginalFilename();
         //파일 확장자 추출
         int extensionIndex = originalFileName.lastIndexOf(".");
         String extension = originalFileName.substring(extensionIndex);
 
+        System.err.println("1");
         //db에 상품 /image/productRep/product{상품아이디}RepImg.확장자 로 db저장
         product.updateRepImgSrc("/images/productRep/product" + product.getProductId() + "RepImg" + extension);
 
+        System.err.println("1");
         //파일 업로드 (application.properties 에 저장한 경로/images/productRep/)
         fileUpload(request.getProductRepImg(), product.getProductId(), extension, "productRep", "RepImg", null);
 
+        System.err.println("1");
         //상세 이미지 파일들 업로드 및 db 저장
         int imgNum = 1;
         for(MultipartFile img : request.getProductExtImg()){
@@ -112,6 +117,7 @@ public class ProductService {
                     .build());
         }
 
+        System.err.println("1");
         return product;
     }
 

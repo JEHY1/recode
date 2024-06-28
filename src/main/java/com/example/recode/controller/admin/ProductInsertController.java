@@ -1,5 +1,6 @@
 package com.example.recode.controller.admin;
 
+import com.example.recode.domain.Product;
 import com.example.recode.dto.UploadProductRequest;
 import com.example.recode.service.ProductService;
 import lombok.RequiredArgsConstructor;
@@ -16,7 +17,8 @@ public class ProductInsertController {
     //상품 업로드
     @PostMapping("/admin/upload")
     public String uploadProduct(UploadProductRequest request){
-        productService.uploadProduct(request);
-        return null;
+        System.err.println("call upload");
+        Product product = productService.uploadProduct(request);
+        return "redirect:/admin/product/" + product.getProductId() + "/show";
     }
 }

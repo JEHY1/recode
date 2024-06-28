@@ -12,6 +12,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
 
@@ -87,5 +88,18 @@ public class UserViewController {
         return "/users/myPage";
     }
 
+
+    //주문내역 조회
+    @GetMapping("/user/orderCheck")
+    public String orderCheck(Model model, Principal principal, @RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate,  @RequestParam(required = false) Integer unitPeriod){
+
+        System.err.println(startDate);
+        System.err.println(endDate);
+        System.err.println(unitPeriod);
+
+        model.addAttribute("orderCheckInfos", paymentService.orderCheck(principal, startDate, endDate, unitPeriod));
+        model.addAttribute("unitPeriod", unitPeriod);
+        return "/users/orderCheck";
+    }
 
 }
