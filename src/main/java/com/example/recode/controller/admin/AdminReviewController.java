@@ -41,7 +41,7 @@ public class AdminReviewController {
     @GetMapping("/admin/review/{reviewId}/delete") // 리뷰 삭제
     public String deleteAdminReview(@PathVariable Long reviewId, RedirectAttributes rttr) {
         reviewService.deleteById(reviewId);
-        rttr.addFlashAttribute("msg", "삭제 되었습니다.");
+        rttr.addFlashAttribute("msg", "리뷰가 삭제 되었습니다.");
 
         return "redirect:/admin/review/index";
     }

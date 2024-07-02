@@ -42,9 +42,9 @@ public class AdminUserController {
 
     @PostMapping("/admin/user/update") // admin_user_edit 회원정보 수정 post
     public String updateAdminUser(AdminUserRequest request) {
-        User updated = userService.updateAdminUser(request);
+        addressService.updateAdminUserAddress(request);
 
-        return "redirect:/admin/user/index";
+        return "redirect:/admin/user/" + request.getUserId() + "/show";
     }
     @GetMapping("/admin/user/index") // admin_user_index 회원 목록 페이지
     public String indexAdminUser() {

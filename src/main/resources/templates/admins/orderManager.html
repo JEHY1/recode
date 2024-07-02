@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head>
+  <meta charset="UTF-8">
+  <title>OrderManager</title>
+  <link rel="stylesheet" href="/css/bootHeader.css">
+  <link rel="stylesheet" href="/css/footer.css">
+  <script src="/js/jquery.js"></script>
+  <script src="/js/header.js"></script>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
+  <style>
+    .d-hidden{
+      display: none;
+    }
+
+    .d-fixed{
+      position: fixed;
+    }
+
+    #searchBar{
+      width: 500px;
+      background-color: #F0F0F0;
+    }
+
+    .bg-white{
+      background-color: white;
+    }
+
+    .bg-gray{
+      background-color: gray;
+    }
+
+    .color-white{
+      color:white;
+    }
+
+    .color-blue{
+      color: blue;
+    }
+    .border-y{
+      border-top: 2px solid gray;
+      border-bottom: 2px solid gray;
+    }
+
+    .border-b{
+      border-bottom: 1px solid gainsboro;
+    }
+
+    .productNameField:hover{
+      background-color: gray;
+    }
+
+    .userNameField:hover{
+      background-color: gray;
+    }
+
+
+  </style>
+
+
+</head>
+<body>
+<th:block th:include="layouts/admin_header"></th:block>
+<div style="height: 160px;"></div>
+
+<div class="row mx-auto" style="height: 35px; width: 1920px;">
+  <div class="col-3"></div>
+  <div class="col-auto ms-4">선택항목 상태변경</div>
+  <select class="col-auto me-4" style="width: 180px; height:30px;">
+    <option>선택</option>
+    <option>배송준비중</option>
+  </select>
+  <button class="col-auto btn btn-secondary py-0" type="button" style="height: 30px;">변경하기</button>
+</div>
+
+<div class="main mx-auto row" style="width: 1920px; height: 844px;">
+  <div id="searchBar" class="h-100 col-auto">
+    <div class="row mx-auto w-100 pt-5">
+      <div class="col-3">상품이름</div>
+      <input type="text" class="col me-4" id="productNameSearch" placeholder="상품이름">
+    </div>
+    <div style="width: 320px;  background-color:white; left:133px ;" class="d-fixed " id="productNameSearchedField">
+    </div>
+
+
+    <div class="row mx-auto w-100 pt-2">
+      <div class="col-3">구매자ID</div>
+      <input type="text" class="col me-4" placeholder="구매자ID" id="userRealNameSearch">
+    </div>
+    <div style="width: 320px;  background-color:white; left:133px ;" class="d-fixed " id="UserRealNameSearchedField">
+    </div>
+
+    <input type="hidden" id="currentYear" th:value="${serverDate.currentYear}">
+    <input type="hidden" id ="currentMonthAndDay" th:value="${serverDate.currentMonthAndDay}">
+    <input type="hidden" id="startYear" th:value="${serverDate.startYear}">
+    <input type="hidden" id="startMonth" th:value="${serverDate.startMonth}">
+    <input type="hidden" id="startDay" th:value="${serverDate.startDay}">
+    <input type="hidden" id="endYear" th:value="${serverDate.endYear}">
+    <input type="hidden" id="endMonth" th:value="${serverDate.endMonth}">
+    <input type="hidden" id="endDay" th:value="${serverDate.endDay}">
+    <div class="row mx-auto w-100 pt-5">
+      <div class="col-3">기간</div>
+      <div type="button" class="text-center col-auto me-auto border bg-white p-0" style="width: 80px;" onclick="getPeriod(this)">3개월<input type="hidden" value="3"></div>
+      <div type="button" class="text-center col-auto mx-auto border bg-white p-0" style="width: 80px;" onclick="getPeriod(this)">6개월<input type="hidden" value="6"></div>
+      <div type="button" class="text-center col-auto mx-auto border bg-white p-0" style="width: 80px;" onclick="getPeriod(this)">12개월<input type="hidden" value="12"></div>
+      <div type="button" class="text-center col-auto mx-auto me-4 border bg-gray color-white p-0" style="width: 80px;" onclick="getPeriod(this)">전체<input type="hidden" value="120"></div>
+    </div>
+
+    <div class="row mx-auto w-100 pt-2">
+      <div class="col-3">시작일</div>
+      <div class="row col mx-auto w-100 p-0">
+        <select class="col-4" id="startYearSel">
+        </select>
+        <div class="col-auto ps-1">년</div>
+
+        <select class="col p-0" style="width: 50px;" id="startMonthSel">
+          <option value="01">1</option>
+          <option value="02">2</option>
+          <option value="03">3</option>
+          <option value="04">4</option>
+          <option value="05">5</option>
+          <option value="06">6</option>
+          <option value="07">7</option>
+          <option value="08">8</option>
+          <option value="09">9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+        </select>
+        <div class="col-auto ps-1">월</div>
+
+        <select class="col p-0" style="width: 50px;" id="startDaySel">
+          <option value="01">1</option>
+          <option value="02">2</option>
+          <option value="03">3</option>
+          <option value="04">4</option>
+          <option value="05">5</option>
+          <option value="06">6</option>
+          <option value="07">7</option>
+          <option value="08">8</option>
+          <option value="09">9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+          <option>13</option>
+          <option>14</option>
+          <option>15</option>
+          <option>16</option>
+          <option>17</option>
+          <option>18</option>
+          <option>19</option>
+          <option>20</option>
+          <option>21</option>
+          <option>22</option>
+          <option>23</option>
+          <option>24</option>
+          <option>25</option>
+          <option>26</option>
+          <option>27</option>
+          <option>28</option>
+          <option>29</option>
+          <option>30</option>
+          <option>31</option>
+        </select>
+        <div class="col-auto ps-1 pe-4">일</div>
+      </div>
+    </div>
+
+    <div class="row mx-auto w-100 pt-2">
+      <div class="col-3">종료일</div>
+      <div class="row col mx-auto w-100 p-0">
+        <select class="col-4" id="endYearSel">
+        </select>
+        <div class="col-auto ps-1">년</div>
+
+        <select class="col p-0" style="width: 50px;" id="endMonthSel">
+          <option value="01">1</option>
+          <option value="02">2</option>
+          <option value="03">3</option>
+          <option value="04">4</option>
+          <option value="05">5</option>
+          <option value="06">6</option>
+          <option value="07">7</option>
+          <option value="08">8</option>
+          <option value="09">9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+        </select>
+        <div class="col-auto ps-1">월</div>
+
+        <select class="col p-0" style="width: 50px;" id="endDaySel">
+          <option value="01">1</option>
+          <option value="02">2</option>
+          <option value="03">3</option>
+          <option value="04">4</option>
+          <option value="05">5</option>
+          <option value="06">6</option>
+          <option value="07">7</option>
+          <option value="08">8</option>
+          <option value="09">9</option>
+          <option>10</option>
+          <option>11</option>
+          <option>12</option>
+          <option>13</option>
+          <option>14</option>
+          <option>15</option>
+          <option>16</option>
+          <option>17</option>
+          <option>18</option>
+          <option>19</option>
+          <option>20</option>
+          <option>21</option>
+          <option>22</option>
+          <option>23</option>
+          <option>24</option>
+          <option>25</option>
+          <option>26</option>
+          <option>27</option>
+          <option>28</option>
+          <option>29</option>
+          <option>30</option>
+          <option>31</option>
+        </select>
+        <div class="col-auto ps-1 pe-4">일</div>
+      </div>
+    </div>
+
+    <div class="row mx-auto w-100 pt-5">
+      <div class="col-3">최소금액</div>
+      <input type="text" class="col me-4" id="minPrice" placeholder="최소금액">
+    </div>
+
+    <div class="row mx-auto w-100 pt-2">
+      <div class="col-3">최대금액</div>
+      <input type="text" class="col me-4" id="maxPrice" placeholder="최대금액">
+    </div>
+
+    <div class="row mx-auto w-100 pt-5">
+      <div class="col-3">주문상태</div>
+      <select class="col me-4" id="paymentStatusSel">
+        <option>전체</option>
+        <option>결제대기</option>
+        <option>배송준비중</option>
+        <option>배송중</option>
+        <option>배송완료</option>
+        <option>주문취소</option>
+        <option>반품대기</option>
+        <option>반품완료</option>
+      </select>
+    </div>
+
+    <div class="row mx-auto w-100 pt-2">
+      <div class="col-3">상품상태</div>
+      <select class="col me-4" id="paymentDetailStatusSel">
+        <option>전체</option>
+        <option>결제대기</option>
+        <option>배송준비중</option>
+        <option>배송중</option>
+        <option>배송완료</option>
+        <option>주문취소</option>
+        <option>반품대기</option>
+        <option>반품완료</option>
+      </select>
+    </div>
+
+    <div class="row mx-auto w-100 pt-5">
+      <div class="col-5 mx-auto" style="border: 1px solid gray; background-color: gray; color:white;">주문별 보기</div>
+      <div class="col-5 mx-auto" style="border: 1px solid gray; background-color: white;">상품별 보기</div>
+    </div>
+
+
+    <div class="row mx-auto w-100 pt-5">
+      <button type="button" class="col-11 mx-auto" id="search-btn">조회</button>
+    </div>
+  </div>
+
+  <div class="col row w-100 mx-auto">
+
+    <div class="border-y row mx-auto w-100 my-0">
+      <input type="checkbox" class="col-auto">
+      <div class="col-auto" style="width: 100px;">No.</div>
+      <div class="col text-center">날짜</div>
+      <div class="col-6">주문 상품</div>
+      <div class="col text-center p-0">구매자(실명)</div>
+      <div class="col text-center">금액</div>
+      <div class="col text-center">상태</div>
+    </div>
+
+    <div class="border-b row mx-auto w-100" style="height: 75px;">
+      <input type="checkbox" class="col-auto">
+      <div class="col-auto d-flex align-items-center" style="width: 100px;">1</div>
+      <div class="col d-flex align-items-center">2024-06-24</div>
+      <div class="col-6 d-flex align-items-center">주문 상품</div>
+      <div class="col d-flex align-items-center justify-content-center p-0">구매자(실명)</div>
+      <div class="col d-flex align-items-center justify-content-center">금액</div>
+      <div class="col text-center">상태</div>
+    </div>
+    <div class="border-b row mx-auto w-100" style="height: 75px;">
+      <input type="checkbox" class="col-auto">
+      <div class="col d-flex align-items-center">2</div>
+      <div class="col-6 d-flex align-items-center">주문 상품</div>
+      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
+      <div class="col d-flex align-items-center justify-content-center">금액</div>
+      <div class="col text-center">상태</div>
+    </div>
+    <div class="border-b row mx-auto w-100" style="height: 75px;">
+      <input type="checkbox" class="col-auto">
+      <div class="col d-flex align-items-center">3</div>
+      <div class="col-6 d-flex align-items-center">주문 상품</div>
+      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
+      <div class="col d-flex align-items-center justify-content-center">금액</div>
+      <div class="col text-center">상태</div>
+    </div>
+    <div class="border-b row mx-auto w-100" style="height: 75px;">
+      <input type="checkbox" class="col-auto">
+      <div class="col d-flex align-items-center">4</div>
+      <div class="col-6 d-flex align-items-center">주문 상품</div>
+      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
+      <div class="col d-flex align-items-center justify-content-center">금액</div>
+      <div class="col text-center">상태</div>
+    </div>
+    <div class="border-b row mx-auto w-100" style="height: 75px;">
+      <input type="checkbox" class="col-auto">
+      <div class="col d-flex align-items-center">5</div>
+      <div class="col-6 d-flex align-items-center">주문 상품</div>
+      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
+      <div class="col d-flex align-items-center justify-content-center">금액</div>
+      <div class="col text-center">상태</div>
+    </div>
+    <div class="border-b row mx-auto w-100" style="height: 75px;">
+      <input type="checkbox" class="col-auto">
+      <div class="col d-flex align-items-center">6</div>
+      <div class="col-6 d-flex align-items-center">주문 상품</div>
+      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
+      <div class="col d-flex align-items-center justify-content-center">금액</div>
+      <div class="col text-center">상태</div>
+    </div>
+    <div class="border-b row mx-auto w-100" style="height: 75px;">
+      <input type="checkbox" class="col-auto">
+      <div class="col d-flex align-items-center">7</div>
+      <div class="col-6 d-flex align-items-center">주문 상품</div>
+      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
+      <div class="col d-flex align-items-center justify-content-center">금액</div>
+      <div class="col text-center">상태</div>
+    </div>
+    <div class="border-b row mx-auto w-100" style="height: 75px;">
+      <input type="checkbox" class="col-auto">
+      <div class="col d-flex align-items-center">8</div>
+      <div class="col-6 d-flex align-items-center">주문 상품</div>
+      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
+      <div class="col d-flex align-items-center justify-content-center">금액</div>
+      <div class="col text-center">상태</div>
+    </div>
+    <div class="border-b row mx-auto w-100" style="height: 75px;">
+      <input type="checkbox" class="col-auto">
+      <div class="col d-flex align-items-center">9</div>
+      <div class="col-6 d-flex align-items-center">주문 상품</div>
+      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
+      <div class="col d-flex align-items-center justify-content-center">금액</div>
+      <div class="col text-center">상태</div>
+    </div>    <div class="border-b row mx-auto w-100" style="height: 75px;">
+    <input type="checkbox" class="col-auto">
+    <div class="col d-flex align-items-center">10</div>
+    <div class="col-6 d-flex align-items-center">주문 상품</div>
+    <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
+    <div class="col d-flex align-items-center justify-content-center">금액</div>
+    <div class="col text-center">상태</div>
+  </div>
+
+
+    <div class="row mt-auto">
+      <button class="col-auto ms-auto"><</button>
+      <div class="col-auto p-0 text-center" style="width: 50px;">1</div>
+      <button class="col-auto me-auto">></button>
+    </div>
+  </div>
+
+
+
+</div>
+
+<script src="/js/orderManager.js"></script>
+</body>
+</html>

@@ -39,6 +39,8 @@
     box-sizing: border-box;
     width: 600px;
     padding: 7px;
+    height: 320px;
+    overflow-y: scroll;
 }
 #editBox ul li > div:nth-child(2) > div { /* 배송지 추가 */
     border-bottom: 1px solid #ccc;
@@ -64,37 +66,37 @@
 }
 #editBox ul li > div:nth-child(2) > div > p > span:nth-child(2) {
     display: inline-block;
-    width: 485px;
+    width: 440px;
 }
 #editBox ul li > div:nth-child(2) > div > p input {
     padding: 7px;
 }
 #editBox ul li > div:nth-child(2) > div > p:nth-of-type(1) > span:nth-child(2) > input:nth-child(1) {
     box-sizing: border-box;
-    width: 120px;
+    width: 250px;
 }
 #editBox ul li > div:nth-child(2) > div > p:nth-of-type(1) > span:nth-child(2) > input:nth-child(2) {
-    margin-left: 15px;
+    margin-left: 5px;
     display: inline-block;
     vertical-align: top;
     margin-top: 14px;
 }
-#editBox ul li > div:nth-child(2) > div > p:nth-of-type(1) > span:nth-child(2) > label:nth-child(3) { /* 기본 배송지 */
+#editBox ul li > div:nth-child(2) > div > p:nth-of-type(1) > span:nth-child(2) > label { /* 기본 배송지 */
     font-size: 15px;
     display: inline-block;
     vertical-align: top;
     margin-top: 10px;
 }
-#editBox ul li > div:nth-child(2) > div > p:nth-of-type(1) > span:nth-child(2) > a:nth-child(4) {
+#editBox ul li > div:nth-child(2) > div > p:nth-of-type(1) > span:nth-child(2) > a {
     font-weight: bold;
-    margin-left: 220px;
+    margin-left: 50px;
     display: inline-block;
     vertical-align: top;
     text-decoration: none;
     color: black;
 }
 #editBox ul li > div:nth-child(2) > div > p > input:nth-child(2) {
-    width: 486px;
+    width: 440px;
     box-sizing: border-box;
 }
 #editBox ul li > div:nth-child(2) > div > p:nth-of-type(4) > span:nth-child(2) > span > input {
@@ -102,7 +104,7 @@
     width: 120px;
     box-sizing: border-box;
 }
-#editBox ul li > div:nth-child(2) > div > p:nth-of-type(4) > span:nth-child(2) > span > span { /* 우편번호 찾기 */
+#addressButton { /* 우편번호 찾기 */
     font-size: 15px;
     display: inline-block;
     border: 1px solid #548235;
@@ -117,7 +119,7 @@
 }
 #editBox ul li > div:nth-child(2) > div > p:nth-of-type(4) > span:nth-child(2) > input {
     display: block;
-    width: 486px;
+    width: 440px;
     box-sizing: border-box;
 }
 .buttonBox {
@@ -131,8 +133,12 @@
     border: 1px solid #548235;
     border-radius: 10px;
     color: white;
+    cursor: pointer;
 }
 .buttonBox a:nth-child(2) {
+    box-sizing: border-box;
+    display: inline-block;
+    text-decoration: none;
     background-color: white;
     width: 80px;
     padding: 10px;

@@ -95,3 +95,9 @@
         </form>
     </div>
 </div>
+<div xmlns:th="http://www.w3.org/1999/xhtml" id="notice" th:if="${msg}">
+    <div>
+        <p th:text="${msg}"></p>
+        <a href="#" onclick="return false;">확인</a>
+    </div>
+</div>

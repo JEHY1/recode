@@ -3,22 +3,25 @@ package com.example.recode.service;
 import com.example.recode.domain.Payment;
 import com.example.recode.domain.PaymentDetail;
 import com.example.recode.domain.Product;
-import com.example.recode.dto.MyPageViewResponse;
-import com.example.recode.dto.OrderCheckResponse;
-import com.example.recode.dto.PaymentRequest;
-import com.example.recode.dto.ProductOrderCheckResponse;
+import com.example.recode.domain.User;
+import com.example.recode.dto.*;
 import com.example.recode.repository.CartRepository;
 import com.example.recode.repository.PaymentDetailRepository;
 import com.example.recode.repository.PaymentRepository;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.security.Principal;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -90,7 +93,7 @@ public class PaymentService {
         int deliveryCount = 0; //배송중인 결제 내역
         int deliveryCompleteCount = 0; //배송완료인 결제 내역
         int cancelCount = 0; //취소된 상품수량
-        int exchangeCount = 0; //교환된 상품 수량
+//        int exchangeCount = 0; //교환된 상품 수량
         int returnCount = 0; //반품된 상품 수량
 
         List<Payment> list = findPaymentByPrincipal(principal);
@@ -106,19 +109,19 @@ public class PaymentService {
             else if(payment.getPaymentStatus().equals("배송중")){
                 deliveryCount++;
             }
-            else{
+            else if(payment.getPaymentStatus().equals("배송완료")){
                 deliveryCompleteCount++;
             }
 
             for(PaymentDetail paymentDetail : findPaymentDetailByPaymentId(payment.getPaymentId())){
                 String paymentDetailStatus = paymentDetail.getPaymentDetailStatus();
-                if(paymentDetailStatus.equals("취소") || paymentDetailStatus.equals("취소진행중")){
+                if(paymentDetailStatus.equals("주문취소")){
                     cancelCount++;
                 }
-                else if(paymentDetailStatus.equals("교환") || paymentDetailStatus.equals("교환진행중")){
-                    exchangeCount++;
-                }
-                else if(paymentDetailStatus.equals("반품") || paymentDetailStatus.equals("반품진행중")){
+//                else if(paymentDetailStatus.equals("교환") || paymentDetailStatus.equals("교환진행중")){
+//                    exchangeCount++;
+//                }
+                else if(paymentDetailStatus.equals("반품대기") || paymentDetailStatus.equals("반품완료")){
                     returnCount++;
                 }
             }
@@ -130,7 +133,7 @@ public class PaymentService {
                 .deliveryCount(deliveryCount)
                 .deliveryCompleteCount(deliveryCompleteCount)
                 .cancelCount(cancelCount)
-                .exchangeCount(exchangeCount)
+//                .exchangeCount(exchangeCount)
                 .returnCount(returnCount)
                 .build();
     }
@@ -154,8 +157,8 @@ public class PaymentService {
                     .orElse(null);
         }
         else if(startDate != null && endDate != null){
-            LocalDateTime end = LocalDateTime.parse(startDate, formatter);
-            LocalDateTime start = LocalDateTime.parse(endDate, formatter);
+            LocalDateTime start = LocalDate.parse(startDate, formatter).atStartOfDay();
+            LocalDateTime end = LocalDate.parse(endDate, formatter).atStartOfDay();
             payments = paymentRepository.findPaymentsInDateRangeAndUserId(userService.getUserId(principal), start, end)
                     .orElse(null);
         }
@@ -194,4 +197,217 @@ public class PaymentService {
                 .paymentDetailPrice(paymentdetail.getPaymentDetailPrice())
                 .build();
     }
+
+    public PeriodResponse getPeriod(Integer unitPeriod, String startDate, String endDate){
+
+        String currentDate = LocalDateTime.now().toString();
+
+        if(startDate != null && endDate != null){
+            return PeriodResponse.builder()
+                    .currentYear(currentDate.substring(0, 4))
+                    .currentMonthAndDay(currentDate.substring(5, 7) + currentDate.substring(8, 10))
+                    .startYear(startDate.substring(0, 4))
+                    .startMonth(startDate.substring(4, 6))
+                    .startDay(startDate.substring(6))
+                    .endYear(endDate.substring(0, 4))
+                    .endMonth(endDate.substring(4, 6))
+                    .endDay(endDate.substring(6))
+                    .build();
+        }
+        else{
+            unitPeriod = unitPeriod == null ? 1 : unitPeriod;
+
+            String before = LocalDateTime.now().minus(Period.ofMonths(unitPeriod)).toString();
+
+            return PeriodResponse.builder()
+                    .currentYear(currentDate.substring(0, 4))
+                    .currentMonthAndDay(currentDate.substring(5, 7) + currentDate.substring(8, 10))
+                    .startYear(before.substring(0, 4))
+                    .startMonth(before.substring(5, 7))
+                    .startDay(before.substring(8, 10))
+                    .endYear(currentDate.substring(0, 4))
+                    .endMonth(currentDate.substring(5, 7))
+                    .endDay(currentDate.substring(8, 10))
+                    .build();
+        }
+    }
+
+    @Transactional
+    public PaymentDetail paymentDetailManage(OrderManageRequest request){
+        PaymentDetail paymentDetail = findPaymentDetailByPaymentDetailId(request.getPaymentDetailId());
+
+        if(paymentDetail != null){
+            Payment payment = findPaymentByPaymentId(paymentDetail.getPaymentId());
+            List<PaymentDetail> list = findPaymentDetailByPaymentId(payment.getPaymentId());
+
+            if(request.getPaymentDetailStatusRequest().equals("주문취소")){
+                paymentDetail.updateStatus(request.getPaymentDetailStatusRequest());
+                boolean isAllCancel = true;
+                for(PaymentDetail _paymentDetail : list){
+                    if(!_paymentDetail.getPaymentDetailStatus().equals("주문취소")){
+                        isAllCancel = false;
+                        break;
+                    }
+                }
+                
+                if(isAllCancel){
+                    payment.updatePaymentStatus("주문취소");
+                }
+            }
+            else if(request.getPaymentDetailStatusRequest().equals("반품신청")){
+                paymentDetail.updateStatus("반품대기");
+                boolean isAllReturn = true;
+                for(PaymentDetail _paymentDetail : list){
+                    if(!_paymentDetail.getPaymentDetailStatus().equals("반품대기")){
+                        isAllReturn = false;
+                        break;
+                    }
+                }
+                
+                if(isAllReturn){
+                    payment.updatePaymentStatus("반품진행");
+                }
+            }
+        }
+
+
+        return paymentDetail;
+    }
+
+    public PaymentDetail findPaymentDetailByPaymentDetailId(long paymentDetailId){
+        return paymentDetailRepository.findById(paymentDetailId).orElse(null);
+    }
+
+    public Payment findPaymentByPaymentId(long paymentId){
+        return paymentRepository.findById(paymentId).orElse(null);
+    }
+
+    public List<ProductNameForm> getPaymentDetailProductInProductName(String productName){
+
+        List<PaymentDetail> list = paymentDetailRepository.findAll();
+        Set<ProductNameForm> nameList = new HashSet<>();
+        list.forEach(paymentDetail -> {
+            Product product = productService.findProductByProductId(paymentDetail.getProductId());
+
+            if(product.getProductName().contains(productName)){
+                int index = product.getProductName().indexOf(productName);
+                nameList.add(ProductNameForm.builder()
+                        .frontText(product.getProductName().substring(0, index))
+                        .searchText(productName)
+                        .endText(product.getProductName().substring(index + productName.length()))
+                        .build());
+//                nameList.add(new ProductNameForm(product.getProductName().substring(0, index), productName, product.getProductName().substring(index + productName.length())));
+            }
+        });
+
+        return nameList.stream().toList();
+    }
+
+    public List<UserRealNameForm> getUserNameInfoInUsername(String username){
+        Set<UserRealNameForm> nameList = new HashSet<>();
+        List<User> list = userService.findUserByUsernameContaining(username);
+
+        list.forEach(user -> {
+            int index = user.getUsername().indexOf(username);
+            nameList.add(UserRealNameForm.builder()
+                    .frontText(user.getUsername().substring(0, index))
+                    .searchText(username)
+                    .endText(user.getUsername().substring(index + username.length()))
+                    .realName(" (" + user.getUserRealName() + ")")
+                    .build());
+        });
+
+        return nameList.stream().toList();
+    }
+
+    public DateForm getServerDate(Integer period){
+        period = period == null ? 120 : period;
+        String endDate = LocalDate.now().toString();
+        String startDate = LocalDate.now().minus(Period.ofMonths(period)).toString();
+
+        if(period == 120){
+            return DateForm.builder()
+                    .currentYear(endDate.substring(0, 4))
+                    .currentMonthAndDay(endDate.substring(5, 7) + endDate.substring(8, 10))
+                    .startYear(startDate.substring(0, 4))
+                    .startMonth("01")
+                    .startDay("01")
+                    .endYear(endDate.substring(0, 4))
+                    .endMonth(endDate.substring(5, 7))
+                    .endDay(endDate.substring(8, 10))
+                    .build();
+        }
+
+        return DateForm.builder()
+                .currentYear(endDate.substring(0, 4))
+                .currentMonthAndDay(endDate.substring(5, 7) + endDate.substring(8, 10))
+                .startYear(startDate.substring(0, 4))
+                .startMonth(startDate.substring(5, 7))
+                .startDay(startDate.substring(8, 10))
+                .endYear(endDate.substring(0, 4))
+                .endMonth(endDate.substring(5, 7))
+                .endDay(endDate.substring(8, 10))
+                .build();
+    }
+
+    public List<AdminPaymentInfoResponse> getPaymentInfos(String productName, String username, String startDate, String endDate, Integer minPrice,  Integer maxPrice, String paymentStatus, String paymentDetailStatus){
+        if(startDate != null && endDate != null){
+            LocalDateTime start = LocalDate.parse(startDate, formatter).atStartOfDay();
+            LocalDateTime end = LocalDate.parse(endDate, formatter).atStartOfDay();
+
+            List<Payment> payments = paymentRepository.findPaymentsInDateRange(start, end)
+                    .orElse(null);
+            List<Payment> filteredPayments = new ArrayList<>();
+
+            System.err.println(payments);
+
+            if(payments != null){
+                for(Payment payment : payments){
+                    if((maxPrice == null ? true : payment.getPaymentPrice() <= maxPrice) && (minPrice == null ? true : payment.getPaymentPrice() >= minPrice) && (paymentStatus.equals("전체") ? true : paymentStatus.equals(payment.getPaymentStatus()))){
+                        if(paymentDetailStatus.equals("전체")){
+
+                            filteredPayments.add(payment);
+                        }
+                        else{
+                            List<PaymentDetail> paymentDetails = findPaymentDetailByPaymentId(payment.getPaymentId());
+                            for(PaymentDetail paymentDetail : paymentDetails){
+                                if(paymentDetail.getPaymentDetailStatus().equals(paymentDetailStatus)){
+                                    filteredPayments.add(payment);
+                                    break;
+                                }
+                            }
+                        }
+                    }
+                }
+
+
+                payments = filteredPayments;
+                filteredPayments = new ArrayList<>();
+
+
+
+                if(!payments.isEmpty() && productName == null && username == null){
+                    return null;
+                }
+
+                if(productName != null){
+
+
+                }
+
+            }
+
+
+
+        }
+        else{
+            List<Payment> payments = paymentRepository.findAll();
+            System.err.println(payments);
+        }
+
+
+        return null;
+    }
+
+
 }

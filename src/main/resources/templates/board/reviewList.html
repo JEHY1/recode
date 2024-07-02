@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RECODE 사용후기 페이지</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/reViews.css">
+    <script src="/js/reViews.js"></script>
+    <script src="/js/jquery.js"></script>
+    <script src="/js/header.js"></script>
+</head>
+
+<body>
+    <th:block th:include="layouts/header"></th:block>
+<div class="container">
+    <div class="content">
+        <div class="titleArea">
+            <h2>사용후기</h2>
+        </div>
+        <form>
+            <table id="userReviewList">
+                <tr th:each="review : ${reviews}">
+<!--                    <td th:text="${iterStat}">1</td>-->
+                    <td>
+                        <div>
+                            <a th:href="@{/review/{id}(id=${review.reviewId})}">
+<!--                                <img class="userProImg" th:src="@{/img/{imageName}(imageName=${review.imageName})}">-->
+                            </a>
+                        </div>
+                    </td>
+                    <td class="txtEm">
+                        <a th:href="@{/review/{id}(id=${review.reviewId})}" th:text="${review.reviewTitle}"></a>
+                    </td>
+                    <td th:text="${review.userId}"></td>
+                    <td th:text="${#temporals.format(review.reviewCreateDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${review.reviewViews}"></td>
+                </tr>
+            </table>
+            <!-- 페이징 처리 -->
+            <div>
+                <span th:if="${currentPage > 0}">
+                    <a th:href="@{/reviews(page=${currentPage - 1}, size=10)}">Previous</a>
+                </span>
+                <span th:if="${currentPage < totalPages - 1}">
+                    <a th:href="@{/reviews(page=${currentPage + 1}, size=10)}">Next</a>
+                </span>
+            </div>
+        </form>
+    </div>
+</div>
+<th:block th:include="layouts/footer"></th:block>
+</body>
+</html>

@@ -16,10 +16,10 @@
         <div class="box">
             <p>아이디 찾기 완료</p>
             <div id="findFinishBox">
-                <p><span>황예지</span> 회원님의 아이디입니다.</p>
-                <p>yeil0627</p>
+                <p><span th:text="${user.userRealName}"></span> 회원님의 아이디입니다.</p>
+                <p th:text="${user.username}"></p>
             </div>
-            <a href="#">로그인</a>
+            <a href="/login">로그인</a>
         </div>
     </main>
     <th:block th:include="layouts/footer"></th:block>

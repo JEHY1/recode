@@ -12,7 +12,7 @@ public class MyPageViewResponse {
     private int deliveryCount = 0;
     private int deliveryCompleteCount = 0;
     private int cancelCount = 0;
-    private int exchangeCount = 0;
+//    private int exchangeCount = 0;
     private int returnCount = 0;
 
     @Builder
@@ -22,7 +22,7 @@ public class MyPageViewResponse {
         this.deliveryCount = deliveryCount;
         this.deliveryCompleteCount = deliveryCompleteCount;
         this.cancelCount = cancelCount;
-        this.exchangeCount = exchangeCount;
+//        this.exchangeCount = exchangeCount;
         this.returnCount = returnCount;
     }
 }

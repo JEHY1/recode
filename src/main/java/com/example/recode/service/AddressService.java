@@ -1,9 +1,7 @@
 package com.example.recode.service;
 
 import com.example.recode.domain.Address;
-import com.example.recode.dto.AddressEasyViewResponse;
-import com.example.recode.dto.AddressNicknameListResponse;
-import com.example.recode.dto.ManagementAddressRequest;
+import com.example.recode.dto.*;
 import com.example.recode.repository.AddressRepository;
 import com.example.recode.repository.UserRepository;
 import jakarta.transaction.Transactional;
@@ -92,5 +90,17 @@ public class AddressService {
 
     public void deleteAddressByAddressId(long addressId){
         addressRepository.deleteById(addressId);
+    }
+
+    @Transactional
+    public void updateAdminUserAddress(AdminUserRequest dto) { // 관리자 페이지에서 회원정보 수정
+
+        userService.findById(dto.getUserId()).updateAdminUser(dto); // 관리자 페이지에서 User 수정
+
+        List<AdminAddressRequest> list = dto.getAddresses();
+        list.forEach(address -> {
+            findAddressByAddressId(address.getAddressId()).updateAdminAddress(address); // 관리자 페이지에서 Address 수정
+        });
+
     }
 }

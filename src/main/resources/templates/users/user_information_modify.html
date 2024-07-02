@@ -12,73 +12,78 @@
     <title>회원정보 수정</title>
 </head>
 <body>
-    <th:block th:include="layouts/header"></th:block>
-    <main>
-        <div class="box">
-            <p>회원정보 확인/수정</p>
-            <form autocomplete="off" onsubmit="return mySubmit()">
-                <div id="modifyBox">
-                    <p>
-                        <span>아이디</span>
-                        <span>
-                            <span>yeil0626</span>
+<th:block th:include="layouts/header"></th:block>
+<main>
+    <div class="box">
+        <p>회원정보 확인/수정</p>
+        <form autocomplete="off" method="post">
+            <div id="modifyBox">
+                <p>
+                    <span>아이디</span>
+                    <span>
+                            <span th:text="${user.username}"></span>
                         </span>
-                    </p>
-                    <p>
-                        <span>이름</span>
-                        <span>
-                            <span>황예지</span>
+                </p>
+                <p>
+                    <span>이름</span>
+                    <span>
+                            <span th:text="${user.userRealName}"></span>
                         </span>
-                    </p>
-                    <p>
-                        <span>비밀번호</span>
-                        <span>
+                </p>
+                <p>
+                    <span>비밀번호</span>
+                    <span>
                             <a href="#" id="pwButton" onclick="return false;">비밀번호 변경</a>
-                            <span id="pwBox">
+                            <span th:text="${pwChange}"></span>
+                            <span id="pwBox"> <!-- 비밀번호 변경 버튼 누르면 생성 -->
                                 <span>
-                                    <input type="password" placeholder="기존 비밀번호를 입력하세요.">
-                                    <span>오류문구 예시</span>
+                                    <input type="password" id="userPw" placeholder="기존 비밀번호를 입력하세요.">
+                                    <span></span>
                                 </span>
                                 <span>
-                                    <input type="password" placeholder="새 비밀번호를 입력하세요.">
-                                    <span>오류문구 예시</span>
+                                    <input type="password" id="newUserPw1" placeholder="새 비밀번호를 입력하세요." name="userPassword">
+                                    <span></span>
                                 </span>
                                 <span>
-                                    <input type="password" placeholder="새 비밀번호를 재입력하세요.">
-                                    <span>오류문구 예시</span>
+                                    <input type="password" id="newUserPw2" placeholder="새 비밀번호를 재입력하세요.">
+                                    <span></span>
+                                </span>
+                                <span>
+                                    <button type="submit" formaction="/user/information/modify/password">확인</button>
+                                    <button type="button">취소</button>
                                 </span>
                             </span>
                         </span>
-                    </p>
-                    <p>
-                        <label for="userPhone">연락처</label>
-                        <span>
-                            <input type="tel" id="userPhone" placeholder="- 를 포함하여 입력해주세요.">
-                            <span>오류문구 예시</span>
+                </p>
+                <p>
+                    <label for="userPhone">연락처</label>
+                    <span>
+                            <input type="tel" id="userPhone" placeholder="- 를 포함하여 입력해주세요." maxlength="13" name="userPhone" th:value="${user.userPhone}">
+                            <span></span>
                         </span>
-                    </p>
-                    <p>
-                        <label for="userEmail">이메일</label>
-                        <span>
-                            <input type="email" id="userEmail">
-                            <span>오류문구 예시</span>
+                </p>
+                <p>
+                    <label for="userEmail">이메일</label>
+                    <span>
+                            <input type="email" id="userEmail" name="userEmail" th:value="${user.userEmail}">
+                            <span></span>
                         </span>
-                    </p>
-                    <p>
-                        <span>배송지</span>
-                        <span>
-                            <a href="/user/address/list" id="deliveryButton">배송지 목록 보기</a>
+                </p>
+                <p>
+                    <span>배송지</span>
+                    <span>
+                            <a href="javascript:void(0);" id="deliveryButton">배송지 목록 보기</a>
                         </span>
-                    </p>
-                </div>
-                <div class="buttonBox">
-                    <button type="submit">수정</button>
-                    <a href="#">취소</a>
-                </div>
-                <p>탈퇴를 원하시면 우측의 회원탈퇴 버튼을 눌러주세요.<a href="#">회원탈퇴</a></p>
-            </form>
-        </div>
-    </main>
-    <th:block th:include="layouts/footer"></th:block>
+                </p>
+            </div>
+            <div class="buttonBox">
+                <button type="submit" formaction="/user/information/modify/create">수정</button>
+                <a href="/user/myPage">취소</a>
+            </div>
+            <p>탈퇴를 원하시면 우측의 회원탈퇴 버튼을 눌러주세요.<a href="/user/delete/confirm/new">회원탈퇴</a></p>
+        </form>
+    </div>
+</main>
+<th:block th:include="layouts/footer"></th:block>
 </body>
 </html>

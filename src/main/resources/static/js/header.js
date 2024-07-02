@@ -35,16 +35,4 @@ $(function() {
         }
     });
 
-    // hover - header 색
-    $("header").hover(
-        function(){
-            if($(window).scrollTop() == 0) {
-                $("header").css("background-color","#ffffffee");
-            }
-        },
-        function(){
-            if($(window).scrollTop() == 0) {
-                $("header").css("background-color","#ffffff00");
-            }
-        });
 });

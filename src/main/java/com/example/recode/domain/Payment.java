@@ -109,4 +109,8 @@ public class Payment {
         this.paymentFrontDoorSecret = paymentFrontDoorSecret;
         this.paymentDeliveryBoxNum = paymentDeliveryBoxNum;
     }
+
+    public void updatePaymentStatus(String paymentStatus){
+        this.paymentStatus = paymentStatus;
+    }
 }

@@ -33,8 +33,10 @@
             font-size: 30px;
             font-weight: bold;
         }
-    </style>
 
+
+
+    </style>
 </head>
 <body>
 <th:block th:include="layouts/header"></th:block>
@@ -49,7 +51,7 @@
 
         <div class="row mx-auto w-100 py-5" style="border-bottom: 2px gray solid;">
             <div class="col" style="border-right: 1px solid gainsboro;">
-                <div class="text-center fs-20-b">입금대기</div>
+                <div class="text-center fs-20-b">결제대기</div>
                 <div class="text-center count" th:text="${deliveryInfo.paymentReadyCount}">0</div>
             </div>
             <div class="col" style="border-right: 1px solid gainsboro;">
@@ -65,14 +67,14 @@
                 <div class="text-center count" th:text="${deliveryInfo.deliveryCompleteCount}">0</div>
             </div>
             <div class="col">
-                <div class="row mx-auto w-100">
+                <div class="row mx-auto w-100 mt-1">
                     <div class="text-center col-auto ms-auto" style="font-size: 20px;">&#8226; 취소 : </div>
                     <div class="text-center col-auto me-auto p-0 fs-20-b" th:text="${deliveryInfo.cancelCount}">0</div>
                 </div>
-                <div class="row mx-auto w-100">
-                    <div class="text-center col-auto ms-auto" style="font-size: 20px;">&#8226; 교환 : </div>
-                    <div class="text-center col-auto me-auto p-0 fs-20-b" th:text="${deliveryInfo.exchangeCount}">0</div>
-                </div>
+<!--                <div class="row mx-auto w-100">-->
+<!--                    <div class="text-center col-auto ms-auto" style="font-size: 20px;">&#8226; 교환 : </div>-->
+<!--                    <div class="text-center col-auto me-auto p-0 fs-20-b" th:text="${deliveryInfo.exchangeCount}">0</div>-->
+<!--                </div>-->
                 <div class="row mx-auto w-100">
                     <div class="text-center col-auto ms-auto" style="font-size: 20px;">&#8226; 반품 : </div>
                     <div class="text-center col-auto me-auto p-0 fs-20-b" th:text="${deliveryInfo.returnCount}">0</div>

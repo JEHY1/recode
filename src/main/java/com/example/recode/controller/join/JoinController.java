@@ -1,7 +1,7 @@
 package com.example.recode.controller.join;
 
 import com.example.recode.domain.User;
-import com.example.recode.dto.JoinRequest;
+import com.example.recode.dto.*;
 import com.example.recode.service.UserService;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 @Controller
 @RequiredArgsConstructor
@@ -32,43 +33,6 @@ public class JoinController {
         System.err.println("sss");
         return "redirect:/join/" + userId + "/finish";
     }
-
-    @GetMapping("/join/{userId}/finish") // join_finish 페이지
-    public String showJoinFinish(@PathVariable Long userId, Model model) {
-        User userEntity = userService.findById(userId);
-        model.addAttribute("user", userEntity);
-        return "logins/join_finish";
-    }
-
-    @GetMapping("/login") // login 페이지
-    public String login() {
-        return "logins/login";
-    }
-    @GetMapping("/logout") // logout 시키기
-    public String logout(HttpServletRequest request, HttpServletResponse response) {
-        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
-        return "redirect:/";
-    }
-
-    @GetMapping("/find/id") // find_id 페이지
-    public String showFindId() {
-        return "logins/find_id";
-    }
-    @GetMapping("/find/pw") // find_pw 페이지
-    public String showFindPw() {
-        return "logins/find_pw";
-    }
-
-    @GetMapping("/find/id/finish") // find_id_finish 페이지
-    public String showFindIdFinish() {
-        return "logins/find_id_finish";
-    }
-
-    @GetMapping("/find/pw/finish") // find_pw_finish 페이지
-    public String showFindPwFinish() {
-        return "logins/find_pw_finish";
-    }
-
     @PostMapping("/join/idCheck") // 아이디 중복 확인 - join.js에 ajax 연결
     @ResponseBody
     public String idCheck(String username) {
@@ -78,7 +42,7 @@ public class JoinController {
         return userService.idCheck(username);
     }
 
-    @PostMapping("/join/phoneCheck") // 휴대폰번호 중복 확인 - join.js에 ajax 연결
+    @PostMapping("/join/phoneCheck") // 연락처 중복 확인 - join.js에 ajax 연결
     @ResponseBody
     public String phoneCheck(String userPhone) {
 
@@ -95,6 +59,18 @@ public class JoinController {
         return userService.emailCheck(userEmail);
     }
 
+    @GetMapping("/join/{userId}/finish") // join_finish 페이지
+    public String showJoinFinish(@PathVariable Long userId, Model model) {
+        User userEntity = userService.findById(userId);
+        model.addAttribute("user", userEntity);
+        return "logins/join_finish";
+    }
+
+    @GetMapping("/login") // login 페이지
+    public String login() {
+        return "logins/login";
+    }
+
     @PostMapping("/login/check") // 로그인 시 아이디, 비밀번호 확인 - login.js에 ajax 연결
     @ResponseBody
     public String loginCheck(String username, String userPassword) {
@@ -104,4 +80,68 @@ public class JoinController {
 
         return userService.loginCheck(username, userPassword);
     }
+
+    @GetMapping("/logout") // logout 시키기
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
+        return "redirect:/";
+    }
+
+    @GetMapping("/find/id/new") // find_id 페이지
+    public String newFindId() {
+        return "logins/find_id";
+    }
+
+    @PostMapping("find/id/create") // find_id 페이지 post
+    public String createFindId(FindIdRequest request, RedirectAttributes rttr) {
+        User userEntity = userService.findByUserEmail(request.getUserEmail());
+        if(userEntity != null && request.getUserRealName().equals(userEntity.getUserRealName())) {
+            return "redirect:/find/id/" + userEntity.getUserId() + "/finish";
+        }
+        else {
+            rttr.addFlashAttribute("msg", "아이디를 찾을 수 없습니다.");
+            return "redirect:/find/id/new";
+        }
+    }
+
+    @GetMapping("/find/id/{userId}/finish") // find_id_finish 페이지
+    public String showFindIdFinish(@PathVariable Long userId, Model model) {
+        User userEntity = userService.findById(userId);
+        model.addAttribute("user", userEntity);
+        return "logins/find_id_finish";
+    }
+
+    @GetMapping("/find/pw/new") // find_pw 페이지
+    public String newFindPw() {
+        return "logins/find_pw";
+    }
+
+    @PostMapping("/find/pw/create") // find_pw 페이지 post
+    public String createFindPw(FindPwRequest request, RedirectAttributes rttr) {
+        User userEntity = userService.findByUserEmail(request.getUserEmail());
+        if(userEntity != null && request.getUsername().equals(userEntity.getUsername()) && request.getUserRealName().equals(userEntity.getUserRealName())) {
+            return "redirect:/find/pw/" + userEntity.getUserId() + "/finish/new";
+        }
+        else {
+            rttr.addFlashAttribute("msg", "사용자 정보가 일치하지 않습니다.");
+            return "redirect:/find/pw/new";
+        }
+
+    }
+
+    @GetMapping("/find/pw/{userId}/finish/new") // find_pw_finish 페이지
+    public String newFindPwFinish(@PathVariable Long userId, Model model) {
+        User userEntity = userService.findById(userId);
+        model.addAttribute("user", userEntity);
+        return "logins/find_pw_finish";
+    }
+
+    @PostMapping("/find/pw/finish/create")
+    public String createFindPwFinish(ResetPasswordRequest request, RedirectAttributes rttr) { // find_pw_finish 페이지 post
+        userService.resetPassword(request); // 비밀번호 재설정
+        rttr.addFlashAttribute("msg", "비밀번호가 재설정 되었습니다.");
+        return "redirect:/login";
+    }
+
+
 }

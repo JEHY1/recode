@@ -22,21 +22,26 @@
     </div>
     <form>
       <table id="userReviewList">
-        <tr th:each="qna, iterStat : ${qnas}">
-          <td th:text="${iterStat.count}">1</td>
+        <tr th:each="iterStat : ${qna}">
+          <td>1</td>
+
           <td>
             <div>
-              <a th:href="@{/qna/{id}(id=${qna.qnAId})}">
+              <a th:href="@{/qna/{id}(id=${iterStat.QnAId})}">
                 <img class="userProImg" src="">
               </a>
             </div>
           </td>
+
           <td class="txtEm">
-            <a th:href="@{/qna/{id}(id=${qna.qnAId})}" th:text="${qna.QnAQuestionTitle}">Title을 호출 합니다.</a>
+            <a th:href="@{/qna/{id}(id=${iterStat.QnAId})}" th:text="${iterStat.QnAQuestionTitle}">Title을 호출 합니다.</a>
           </td>
-          <td th:text="${qna.userId}">작성자</td>
-          <td th:text="${#temporals.format(qna.QnACreateDate, 'yyyy-MM-dd')}">2024-06-12</td>
-          <td th:text="${qna.qnAViews}">조회수</td>
+
+          <td th:text="${iterStat.userId}">작성자</td>
+
+          <td th:text="${#temporals.format(iterStat.QnACreateDate, 'yyyy-MM-dd')}">2024-06-12</td>
+
+          <td th:text="${iterStat.QnAViews}">조회수</td>
         </tr>
       </table>
     </form>

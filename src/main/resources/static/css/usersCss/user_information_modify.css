@@ -54,10 +54,16 @@
     border-radius: 7px;
     text-align: center;
     font-weight: bold;
-    margin: 5.6px 0;
+    margin: 5.6px 5px 5.6px 0;
+}
+#modifyBox > p:nth-child(3) > span:nth-child(2) > span:nth-child(2) { /* 비밀번호 변경 완료 문구 창 */
+    font-size: 12px;
+    color: #999;
+    font-weight: bold;
 }
 #pwBox { /* 비밀번호 변경 창 */
     display: none;
+    padding: 5px 0;
 }
 #pwBox > span { /* 비밀번호 변경 창에서 input, 오류창 감싸는 span */
     display: inline-block;
@@ -75,7 +81,30 @@
 }
 #pwBox > span > span { /* 비밀번호 변경 오류창 */
     padding-left: 5px;
+    font-size: 10px;
+}
+#pwBox > span:last-child { /* 비밀번호 변경 확인, 취소 감싸는 span */
+    margin-left: 5px;
+}
+#pwBox > span > button:nth-child(1) { /* 비밀번호 변경 확인 버튼 */
+    background-color: #548235;
+    padding: 5px 10px;
+    border: 1px solid #548235;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
     font-size: 12px;
+    cursor: pointer;
+}
+#pwBox > span > button:nth-child(2) { /* 비밀번호 변경 취소 버튼 */
+    background-color: white;
+    padding: 5px 10px;
+    border: 1px solid #548235;
+    border-radius: 5px;
+    color: #548235;
+    font-weight: bold;
+    font-size: 12px;
+    cursor: pointer;
 }
 #modifyBox > p > span:nth-child(2) > input:nth-child(1) { /* 사용자정보 수정 가능 할 때 */
     box-sizing: border-box;
@@ -91,7 +120,7 @@
 #modifyBox > p:nth-child(4) > span:nth-child(2) > span:nth-child(2), 
 #modifyBox > p:nth-child(5) > span:nth-child(2) > span:nth-child(2) { /* 연락처, 이메일 오류창 */
     padding-left: 5px;
-    font-size: 12px;
+    font-size: 10px;
 }
 .buttonBox {
     text-align: center;
@@ -136,5 +165,6 @@
     color: white;
     background-color: #548235;
     text-decoration: none;
+    vertical-align: top;
 }
 

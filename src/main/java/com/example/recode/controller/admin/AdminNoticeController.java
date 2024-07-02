@@ -36,10 +36,10 @@ public class AdminNoticeController {
     public String createAdminNotice(NoticeRequest request, Principal principal, RedirectAttributes rttr) {
         Notice saved = noticeService.save(request, principal);
         if(request.getNoticeId() == null) {
-            rttr.addFlashAttribute("msg", "등록 되었습니다.");
+            rttr.addFlashAttribute("msg", "공지사항이 등록 되었습니다.");
         }
         else {
-            rttr.addFlashAttribute("msg", "수정 되었습니다.");
+            rttr.addFlashAttribute("msg", "공지사항이 수정 되었습니다.");
         }
 
         return "redirect:/admin/notice/" + saved.getNoticeId() + "/show";
@@ -47,7 +47,7 @@ public class AdminNoticeController {
     @GetMapping("/admin/notice/{noticeId}/delete") // 공지사항 삭제
     public String deleteAdminNotice(@PathVariable Long noticeId, RedirectAttributes rttr) {
         noticeService.deleteById(noticeId);
-        rttr.addFlashAttribute("msg", "삭제 되었습니다.");
+        rttr.addFlashAttribute("msg", "공지사항이 삭제 되었습니다.");
 
         return "redirect:/admin/notice/index";
     }

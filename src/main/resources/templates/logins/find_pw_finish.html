@@ -8,6 +8,7 @@
     <link rel="stylesheet" href="/css/footer.css">
     <script src="/js/jquery.js"></script>
     <script src="/js/header.js"></script>
+    <script src="/js/find_pw_finish.js"></script>
     <title>비밀번호 재설정</title>
 </head>
 <body>
@@ -15,20 +16,21 @@
     <main>
         <div class="box">
             <p>비밀번호 재설정</p>
-            <p><span>yeil0627</span>님의 비밀번호를 재설정합니다.</p>
-            <form id="findFinishBox">
+            <p><span th:text="${user.username}"></span>님의 비밀번호를 재설정합니다.</p>
+            <form id="findFinishBox" action="/find/pw/finish/create" method="post">
+                <input type="hidden" name="userId" th:value="${user.userId}">
                 <p>
                     <label for="userPw1">새 비밀번호</label>
                     <span>
-                        <input type="password" id="userPw1" autofocus>
-                        <span>오류문구 예시</span>
+                        <input type="password" id="userPw1" autofocus name="userPassword">
+                        <span></span>
                     </span>
                 </p>
                 <p>
                     <label for="userPw2">새 비밀번호 확인</label>
                     <span>
                         <input type="password" id="userPw2">
-                        <span>오류문구 예시</span>
+                        <span></span>
                     </span>
                 </p>
                 <button type="submit">확인</button>

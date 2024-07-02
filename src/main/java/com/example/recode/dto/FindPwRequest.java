@@ -5,7 +5,9 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class PwCheckRequest {
+public class FindPwRequest {
 
-    private String userPassword;
+    private String username;
+    private String userRealName;
+    private String userEmail;
 }

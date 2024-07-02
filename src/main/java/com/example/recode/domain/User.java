@@ -1,6 +1,7 @@
 package com.example.recode.domain;
 
 import com.example.recode.dto.AdminUserRequest;
+import com.example.recode.dto.UpdateUserRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
 import lombok.Builder;
@@ -107,5 +108,14 @@ public class User implements UserDetails {
         this.userEmail = dto.getUserEmail();
         this.userRole = dto.getUserRole();
         return this;
+    }
+
+    public void updatePassword(String userPassword) { // 회원정보 수정에서 비밀번호 변경
+        this.userPassword = userPassword;
+    }
+
+    public void updateUser(UpdateUserRequest dto) { // 회원정보 수정(연락처, 이메일)
+        this.userPhone = dto.getUserPhone();
+        this.userEmail = dto.getUserEmail();
     }
 }

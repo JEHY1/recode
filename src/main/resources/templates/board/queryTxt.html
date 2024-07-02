@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="ko" xmlns:th="http://www.thymeleaf.org">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>RECODE 공지사항 페이지</title>
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/boardCss/noticeList.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/js/header.js"></script>
+</head>
+<body>
+<th:block th:include="layouts/header"></th:block>
+<div class="container">
+    <div class="content">
+        <div class="titleArea">
+            <h2>문의내용</h2>
+        </div>
+        <form>
+            <table>
+                <!-- DB에서 가져온 데이터를 Thymeleaf 반복문을 이용하여 표시 -->
+                <tr th:each="qna : ${qnaList}">
+                    <td th:text="${qna.QnAId}">1</td>
+                    <td class="txtEm">
+                        <p th:text="${qna.qna_question_title}">Title을 호출 합니다.</p>
+                    </td>
+                    <td th:text="${qna.user_id}">작성자</td>
+                    <td th:text="${#dates.format(qna.QnACreateDate, 'yyyy-MM-dd')}">2024-06-12</td>
+                    <td th:text="${qna.QnAviews}">조회수</td>
+                </tr>
+                <tr>
+                    <td class="txtBody" colspan="6" th:text="${qna.QnAQuestionContent}"></td>
+                </tr>
+            </table>
+        </form>
+    </div>
+    <div class="btnDiv">
+        <a href="/board/queryList" class="back-btn">목록</a>
+    </div>
+</div>
+<th:block th:include="layouts/footer"></th:block>
+</body>
+</html>

@@ -39,17 +39,17 @@ public class NoticeService {
     }
 
     @Transactional
-    public Notice save(NoticeRequest dto, Principal principal) {
+    public Notice save(NoticeRequest dto, Principal principal) { // 공지사항 등록&수정
 
         if(dto.getNoticeId() != null) {
-            return findById(dto.getNoticeId()).update(dto);
+            return findById(dto.getNoticeId()).update(dto); // 공지사항 수정
         }
         return noticeRepository.save(Notice.builder()
                 .noticeId(dto.getNoticeId())
                 .userId(userService.getUserId(principal))
                 .noticeTitle(dto.getNoticeTitle())
                 .noticeContent(dto.getNoticeContent())
-                .build());
+                .build()); // 공지사항 등록
     }
 
     public Notice findById(Long noticeId) { // noticeId로 Notice 가져오기

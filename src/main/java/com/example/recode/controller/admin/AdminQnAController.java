@@ -41,23 +41,23 @@ public class AdminQnAController {
         String beforeAnswer = qnAService.findById(request.getQnAId()).getQnAAnswer();
         QnA saved = qnAService.saveAnswer(request);
         if(beforeAnswer == null) {
-            rttr.addFlashAttribute("msg", "등록 되었습니다.");
+            rttr.addFlashAttribute("msg", "문의답변이 등록 되었습니다.");
         }
         else {
-            rttr.addFlashAttribute("msg", "수정 되었습니다.");
+            rttr.addFlashAttribute("msg", "문의답변이 수정 되었습니다.");
         }
         return "redirect:/admin/qna/" + saved.getQnAId() + "/show";
     }
     @GetMapping("/admin/qna/{QnAId}/delete") // 상품문의 삭제
     public String deleteAdminQna(@PathVariable Long QnAId, RedirectAttributes rttr) {
         qnAService.deleteById(QnAId);
-        rttr.addFlashAttribute("msg", "삭제 되었습니다.");
+        rttr.addFlashAttribute("msg", "상품문의가 삭제 되었습니다.");
         return "redirect:/admin/qna/index";
     }
     @GetMapping("/admin/qna/{QnAId}/answer/delete") // 답변 삭제
     public String deleteAdminQnaAnswer(@PathVariable Long QnAId, RedirectAttributes rttr) {
         qnAService.deleteAnswer(QnAId);
-        rttr.addFlashAttribute("msg", "삭제 되었습니다.");
+        rttr.addFlashAttribute("msg", "문의답변이 삭제 되었습니다.");
         return "redirect:/admin/qna/" + QnAId + "/insert";
     }
 

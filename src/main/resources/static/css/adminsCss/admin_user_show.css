@@ -34,6 +34,8 @@
     box-sizing: border-box;
     width: 600px;
     padding: 7px;
+    height: 320px;
+    overflow-y: scroll;
 }
 #showBox ul li > div:nth-child(2) > div { /* 배송지 추가 */
     border-bottom: 1px solid #ccc;
@@ -59,13 +61,13 @@
 }
 #showBox ul li > div:nth-child(2) > div > p > span:nth-child(2) {
     display: inline-block;
-    width: 468px;
+    width: 440px;
     padding: 7px 9px;
 }
 #showBox ul li > div:nth-child(2) > div > p:nth-of-type(1) > span:nth-child(2) > span:nth-child(1) {
     box-sizing: border-box;
     display: inline-block;
-    width: 120px;
+    width: 300px;
 }
 #showBox ul li > div:nth-child(2) > div > p:nth-of-type(1) > span:nth-child(2) > span:nth-child(2) { /* 기본 배송지 */
     font-size: 15px;

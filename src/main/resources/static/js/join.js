@@ -136,23 +136,23 @@ $(function() {
         }
     });
 
-    // 휴대폰번호
+    // 연락처
     $("#userPhone1, #userPhone2, #userPhone3").on("input", function() {
         let userPhone = $("#userPhone1").val() + $("#userPhone2").val() + $("#userPhone3").val();
         let userPhoneUnderBar = $("#userPhone1").val() + "-" + $("#userPhone2").val() + "-" + $("#userPhone3").val(); // "-" 포함 휴대폰 번호
-        let checkPhone = RegExp(/^[0-9]*$/); // 휴대폰번호 유효성 검사 (숫자로만)
+        let checkPhone = RegExp(/^[0-9]*$/); // 연락처 유효성 검사 (숫자로만)
 
-        // 휴대폰번호 공백 확인
+        // 연락처 공백 확인
         if(userPhone == "" || userPhone == null) {
-            $("#userPhone1").parent().next().html("휴대폰번호를 입력해주세요.").css("color","red");
+            $("#userPhone1").parent().next().html("연락처를 입력해주세요.").css("color","red");
             phoneCheck = false;
         }
-        // 휴대폰번호 유효성 체크
-        else if(!checkPhone.test($.trim(userPhone))){
+        // 연락처 유효성 체크
+        else if(!checkPhone.test($.trim(userPhone))) {
             $("#userPhone1").parent().next().html("숫자로만 입력해주세요.").css("color","red");
             phoneCheck = false;
         }
-        // 휴대폰번호 중복 체크
+        // 연락처 중복 체크
         else {
             $.ajax({
                 url:'/join/phoneCheck',
@@ -163,11 +163,11 @@ $(function() {
                 dataType : 'text',
                 success : function(data) {
                     if (data == "duplicated") {
-                        $("#userPhone1").parent().next().html("중복된 휴대폰번호입니다.").css("color","red");
+                        $("#userPhone1").parent().next().html("중복된 연락처입니다.").css("color","red");
                         phoneCheck = false;
                     }
                     else if (data == "available") {
-                        $("#userPhone1").parent().next().html("").css("color","green");
+                        $("#userPhone1").parent().next().html("");
                         phoneCheck = true;
                     }
                 }

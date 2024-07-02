@@ -1,5 +1,6 @@
 package com.example.recode.domain;
 
+import com.example.recode.dto.AdminAddressRequest;
 import com.example.recode.dto.ManagementAddressRequest;
 import jakarta.persistence.*;
 import lombok.AccessLevel;
@@ -83,5 +84,19 @@ public class Address {
 
     public void updateDefault(){
         this.addressDefault = 0;
+    }
+
+    public Address updateAdminAddress(AdminAddressRequest dto) { // 관리자 페이지에서 Address 수정
+
+        this.addressPostalCode = dto.getAddressPostalCode();
+        this.addressRoadNameAddress = dto.getAddressRoadNameAddress();
+        this.addressDetailAddress = dto.getAddressDetailAddress();
+        this.addressRecipientName = dto.getAddressRecipientName();
+        this.addressRecipientPhone = dto.getAddressRecipientPhone();
+        this.addressDeliveryRequest = dto.getAddressDeliveryRequest();
+        this.addressNickname = dto.getAddressNickname();
+        this.addressDefault = dto.getAddressDefault();
+
+        return this;
     }
 }

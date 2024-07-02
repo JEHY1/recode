@@ -1,6 +1,4 @@
 $(function() {
-
-    console.log('ready');
     // submit 됐을 때
     $("#loginBox").submit(function() {
 

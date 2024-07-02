@@ -42,4 +42,8 @@ PaymentDetail {
         this.paymentDetailStatus = paymentDetailStatus;
         this.paymentDetailPrice = paymentDetailPrice;
     }
+
+    public void updateStatus(String paymentDetailStatus){
+        this.paymentDetailStatus = paymentDetailStatus;
+    }
 }

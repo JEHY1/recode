@@ -44,7 +44,7 @@
 }
 #findFinishBox > p > span > span:nth-child(2) { /* 오류창 */
     padding-left: 5px;
-    font-size: 12px;
+    font-size: 10px;
 }
 #findFinishBox button {
     box-sizing: border-box;
