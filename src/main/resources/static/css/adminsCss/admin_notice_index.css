@@ -1,6 +1,8 @@
 .box {
-    width: 1200px;
+    width: 1500px;
     margin: 0 auto;
+    height: 676px;
+    position: relative;
 }
 #boxTitle { /* 제목 */
     text-align: center;
@@ -11,15 +13,28 @@
 }
 #selectBox {
     margin-bottom: 20px;
-    margin-left: 20px;
+}
+#selectBox a:nth-of-type(1) {
+    box-sizing: border-box;
+    display: inline-block;
+    text-decoration: none;
+    background-color: white;
+    width: 70px;
+    padding: 8px;
+    border: 1px solid #548235;
+    border-radius: 10px;
+    color: #548235;
+    text-align: center;
 }
 #selectBox select {
     padding: 10px;
     width: 150px;
+    vertical-align: top;
+    margin-left: 270px;
 }
 #selectBox input {
     padding: 9px;
-    width: 430px;
+    width: 530px;
     vertical-align: top;
 }
 #selectBox button {
@@ -31,10 +46,7 @@
     color: #548235;
     vertical-align: top;
 }
-#selectBox button:hover {
-    font-weight: bold;
-}
-#selectBox a {
+#selectBox a:nth-of-type(2) {
     box-sizing: border-box;
     display: inline-block;
     text-decoration: none;
@@ -46,10 +58,7 @@
     color: white;
     text-align: center;
     margin-top: -5px;
-    margin-left: 335px;
-}
-#selectBox a:hover {
-    font-weight: bold;
+    margin-left: 210px;
 }
 table {
     width: 100%;
@@ -97,18 +106,30 @@ td:nth-child(8) a:nth-child(2) {
     border-radius: 10px;
     color: #548235;
 }
-.buttonBox {
+#pageBox {
     text-align: center;
     margin-top: 30px;
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
-.buttonBox a {
-    box-sizing: border-box;
+#pageBox a {
     display: inline-block;
     text-decoration: none;
-    background-color: white;
-    width: 80px;
-    padding: 10px;
-    border: 1px solid #548235;
-    border-radius: 10px;
+    font-size: 25px;
+    color: black;
+    padding: 7px;
+    margin: 0 5px;
+    width: 33px;
+    border-radius: 50%;
+}
+#pageBox a:first-child, #pageBox a:last-child {
+    font-weight: bold;
+}
+#pageBox a:first-child:hover, #pageBox a:last-child:hover {
     color: #548235;
+}
+#pageBox a:not(:first-child, :last-child):hover {
+    background-color: #eee;
 }

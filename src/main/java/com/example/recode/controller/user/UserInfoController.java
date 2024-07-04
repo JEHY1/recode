@@ -88,7 +88,7 @@ public class UserInfoController {
     }
     @PostMapping("/user/delete/confirm/create") // user_delete_confirm 페이지 post
     public String createUserDeleteConfirm(Principal principal, HttpServletRequest request, HttpServletResponse response) {
-        userService.deleteUserByPrincipal(principal);
+        userService.deleteUser(principal);
         new SecurityContextLogoutHandler().logout(request, response, SecurityContextHolder.getContext().getAuthentication());
         return "redirect:/user/delete/finish";
     }

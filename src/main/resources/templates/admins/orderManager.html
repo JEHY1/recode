@@ -55,6 +55,9 @@
       background-color: gray;
     }
 
+    .selectable:hover{
+      background-color: gainsboro;
+    }
 
   </style>
 
@@ -68,8 +71,14 @@
   <div class="col-3"></div>
   <div class="col-auto ms-4">선택항목 상태변경</div>
   <select class="col-auto me-4" style="width: 180px; height:30px;">
-    <option>선택</option>
+    <option class="d-hidden">선택</option>
+    <option>결제대기</option>
     <option>배송준비중</option>
+    <option>배송중</option>
+    <option>배송완료</option>
+    <option>주문취소</option>
+    <option>반품진행</option>
+    <option>반품완료</option>
   </select>
   <button class="col-auto btn btn-secondary py-0" type="button" style="height: 30px;">변경하기</button>
 </div>
@@ -101,10 +110,10 @@
     <input type="hidden" id="endDay" th:value="${serverDate.endDay}">
     <div class="row mx-auto w-100 pt-5">
       <div class="col-3">기간</div>
-      <div type="button" class="text-center col-auto me-auto border bg-white p-0" style="width: 80px;" onclick="getPeriod(this)">3개월<input type="hidden" value="3"></div>
-      <div type="button" class="text-center col-auto mx-auto border bg-white p-0" style="width: 80px;" onclick="getPeriod(this)">6개월<input type="hidden" value="6"></div>
-      <div type="button" class="text-center col-auto mx-auto border bg-white p-0" style="width: 80px;" onclick="getPeriod(this)">12개월<input type="hidden" value="12"></div>
-      <div type="button" class="text-center col-auto mx-auto me-4 border bg-gray color-white p-0" style="width: 80px;" onclick="getPeriod(this)">전체<input type="hidden" value="120"></div>
+      <div type="button" class="text-center col-auto me-auto border bg-white p-0 period-btn" style="width: 80px;" onclick="getPeriod(this)">3개월<input type="hidden" value="3"></div>
+      <div type="button" class="text-center col-auto mx-auto border bg-white p-0 period-btn" style="width: 80px;" onclick="getPeriod(this)">6개월<input type="hidden" value="6"></div>
+      <div type="button" class="text-center col-auto mx-auto border bg-white p-0 period-btn" style="width: 80px;" onclick="getPeriod(this)">12개월<input type="hidden" value="12"></div>
+      <div type="button" class="text-center col-auto mx-auto me-4 border bg-white p-0 period-btn" style="width: 80px;" onclick="getPeriod(this)">전체<input type="hidden" value="120"></div>
     </div>
 
     <div class="row mx-auto w-100 pt-2">
@@ -255,7 +264,7 @@
       <div class="col-3">상품상태</div>
       <select class="col me-4" id="paymentDetailStatusSel">
         <option>전체</option>
-        <option>결제대기</option>
+        <option>결제대기중</option>
         <option>배송준비중</option>
         <option>배송중</option>
         <option>배송완료</option>
@@ -276,106 +285,51 @@
     </div>
   </div>
 
-  <div class="col row w-100 mx-auto">
+  <div class="col row-auto w-100 mx-auto">
 
-    <div class="border-y row mx-auto w-100 my-0">
-      <input type="checkbox" class="col-auto">
-      <div class="col-auto" style="width: 100px;">No.</div>
-      <div class="col text-center">날짜</div>
-      <div class="col-6">주문 상품</div>
-      <div class="col text-center p-0">구매자(실명)</div>
-      <div class="col text-center">금액</div>
-      <div class="col text-center">상태</div>
-    </div>
+    <div class="w-100" style="height:808px;">
+      <div class="border-y row mx-auto w-100 my-0" style="height: 35px;">
+        <input type="checkbox" class="col-auto" id="allSelectCheckBox">
+        <div class="col-auto" style="width: 100px;">No.</div>
+        <div class="col text-center">날짜</div>
+        <div class="col-6">주문 상품</div>
+        <div class="col text-center p-0">구매자(실명)</div>
+        <div class="col text-center">금액</div>
+        <div class="col text-center">상태</div>
+      </div>
 
-    <div class="border-b row mx-auto w-100" style="height: 75px;">
-      <input type="checkbox" class="col-auto">
-      <div class="col-auto d-flex align-items-center" style="width: 100px;">1</div>
-      <div class="col d-flex align-items-center">2024-06-24</div>
-      <div class="col-6 d-flex align-items-center">주문 상품</div>
-      <div class="col d-flex align-items-center justify-content-center p-0">구매자(실명)</div>
-      <div class="col d-flex align-items-center justify-content-center">금액</div>
-      <div class="col text-center">상태</div>
-    </div>
-    <div class="border-b row mx-auto w-100" style="height: 75px;">
-      <input type="checkbox" class="col-auto">
-      <div class="col d-flex align-items-center">2</div>
-      <div class="col-6 d-flex align-items-center">주문 상품</div>
-      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
-      <div class="col d-flex align-items-center justify-content-center">금액</div>
-      <div class="col text-center">상태</div>
-    </div>
-    <div class="border-b row mx-auto w-100" style="height: 75px;">
-      <input type="checkbox" class="col-auto">
-      <div class="col d-flex align-items-center">3</div>
-      <div class="col-6 d-flex align-items-center">주문 상품</div>
-      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
-      <div class="col d-flex align-items-center justify-content-center">금액</div>
-      <div class="col text-center">상태</div>
-    </div>
-    <div class="border-b row mx-auto w-100" style="height: 75px;">
-      <input type="checkbox" class="col-auto">
-      <div class="col d-flex align-items-center">4</div>
-      <div class="col-6 d-flex align-items-center">주문 상품</div>
-      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
-      <div class="col d-flex align-items-center justify-content-center">금액</div>
-      <div class="col text-center">상태</div>
-    </div>
-    <div class="border-b row mx-auto w-100" style="height: 75px;">
-      <input type="checkbox" class="col-auto">
-      <div class="col d-flex align-items-center">5</div>
-      <div class="col-6 d-flex align-items-center">주문 상품</div>
-      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
-      <div class="col d-flex align-items-center justify-content-center">금액</div>
-      <div class="col text-center">상태</div>
-    </div>
-    <div class="border-b row mx-auto w-100" style="height: 75px;">
-      <input type="checkbox" class="col-auto">
-      <div class="col d-flex align-items-center">6</div>
-      <div class="col-6 d-flex align-items-center">주문 상품</div>
-      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
-      <div class="col d-flex align-items-center justify-content-center">금액</div>
-      <div class="col text-center">상태</div>
-    </div>
-    <div class="border-b row mx-auto w-100" style="height: 75px;">
-      <input type="checkbox" class="col-auto">
-      <div class="col d-flex align-items-center">7</div>
-      <div class="col-6 d-flex align-items-center">주문 상품</div>
-      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
-      <div class="col d-flex align-items-center justify-content-center">금액</div>
-      <div class="col text-center">상태</div>
-    </div>
-    <div class="border-b row mx-auto w-100" style="height: 75px;">
-      <input type="checkbox" class="col-auto">
-      <div class="col d-flex align-items-center">8</div>
-      <div class="col-6 d-flex align-items-center">주문 상품</div>
-      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
-      <div class="col d-flex align-items-center justify-content-center">금액</div>
-      <div class="col text-center">상태</div>
-    </div>
-    <div class="border-b row mx-auto w-100" style="height: 75px;">
-      <input type="checkbox" class="col-auto">
-      <div class="col d-flex align-items-center">9</div>
-      <div class="col-6 d-flex align-items-center">주문 상품</div>
-      <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
-      <div class="col d-flex align-items-center justify-content-center">금액</div>
-      <div class="col text-center">상태</div>
-    </div>    <div class="border-b row mx-auto w-100" style="height: 75px;">
-    <input type="checkbox" class="col-auto">
-    <div class="col d-flex align-items-center">10</div>
-    <div class="col-6 d-flex align-items-center">주문 상품</div>
-    <div class="col d-flex align-items-center justify-content-center">구매자(실명)</div>
-    <div class="col d-flex align-items-center justify-content-center">금액</div>
-    <div class="col text-center">상태</div>
-  </div>
+      <div id="itemField">
+        <div th:each="orderInfoList : ${orderInfoPage}" class="d-hidden">
+          <div th:each="orderInfo : ${orderInfoList}" class="border-b row mx-auto w-100" style="height: 75px;">
+            <input type="checkbox" class="col-auto">
+            <div class="col row mx-auto p-0 selectable">
+              <input type="hidden" th:value="${orderInfo.paymentId}">
+              <div class="col-auto d-flex align-items-center number" style="width: 100px;">1</div>
+              <div class="col d-flex align-items-center text-center" th:text="${#temporals.format(orderInfo.paymentDate, 'yyyy-MM-dd HH:mm:ss')}">2024-06-24</div>
+              <div class="col-6 d-flex align-items-center" th:text="${orderInfo.productName}">주문 상품</div>
+              <div class="col d-flex align-items-center justify-content-center p-0" th:text="${orderInfo.userRealName}">구매자(실명)</div>
+              <div class="col d-flex align-items-center justify-content-center" th:text="${orderInfo.paymentPrice}">금액</div>
+              <div class="col text-center" th:text="${orderInfo.paymentStatus}">상태</div>
+            </div>
+          </div>
+        </div>
+      </div>
 
+    </div>
 
     <div class="row mt-auto">
+      <input type="hidden" id="pageSize">
       <button class="col-auto ms-auto"><</button>
-      <div class="col-auto p-0 text-center" style="width: 50px;">1</div>
+      <div class="col-auto">
+        <div class="row w-auto mx-auto p-0 text-center" id="pageSelectField">
+        </div>
+      </div>
+
       <button class="col-auto me-auto">></button>
     </div>
   </div>
+
+
 
 
 

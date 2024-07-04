@@ -8,6 +8,10 @@ function httpRequest(url, method, body){
     });
 }
 
+function wait(ms) {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 function removeAllChildNodes(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
@@ -25,6 +29,15 @@ function getUserName(Comp){
 }
 
 function getPeriod(Comp){
+    Array.from(document.getElementsByClassName('period-btn')).forEach(button => {
+        button.classList.remove('bg-gray');
+        button.classList.remove('color-white');
+        button.classList.add('bg-white');
+    });
+    Comp.classList.remove('bg-white');
+    Comp.classList.add('bg-gray');
+    Comp.classList.add('color-white');
+
     let body = JSON.stringify({
         unitPeriod : Comp.children[0].value
     });
@@ -50,6 +63,11 @@ const productNameSearch = document.getElementById('productNameSearch');
 
 if(productNameSearch){
     productNameSearch.addEventListener('focus', () => document.getElementById('productNameSearchedField').classList.remove('d-hidden'));
+    productNameSearch.addEventListener('blur', () => {
+        wait(100)
+        .then(() => document.getElementById('productNameSearchedField').classList.add('d-hidden'));
+    });
+
 
     productNameSearch.addEventListener('input', () => {
         if(productNameSearch.value !== ''){
@@ -103,6 +121,11 @@ const userRealNameSearch = document.getElementById('userRealNameSearch');
 
 if(userRealNameSearch){
     userRealNameSearch.addEventListener('focus', () => document.getElementById('UserRealNameSearchedField').classList.remove('d-hidden'));
+
+    userRealNameSearch.addEventListener('blur', () => {
+        wait(100)
+        .then(() => document.getElementById('UserRealNameSearchedField').classList.add('d-hidden'));
+    });
 
     userRealNameSearch.addEventListener('input', () => {
         if(userRealNameSearch.value !== ''){
@@ -168,9 +191,27 @@ if(searchButton){
         param += document.getElementById('paymentStatusSel').value !== '' ? 'paymentStatus=' + document.getElementById('paymentStatusSel').value  + '&' : '';
         param += document.getElementById('paymentDetailStatusSel').value !== '' ? 'paymentDetailStatus=' + document.getElementById('paymentDetailStatusSel').value  + '&' : '';
 
-        location.replace('/admin/orderManager?' + param);
+        location.replace('/admin/orderManager?' + param); //로그를 안남김(뒤로가기 불가);
+//        location.href='/admin/orderManager?' + param;
     });
 }
+
+const detailViewButton = document.getElementsByClassName('selectable');
+
+if(detailViewButton){
+    Array.from(detailViewButton).forEach(button => {
+        button.addEventListener('click', () => location.href = '/admin/orderDetailManager/' + button.children[0].value);
+    });
+}
+
+const AllSelectCheckBox = document.getElementById('allSelectCheckBox');
+
+if(AllSelectCheckBox){
+    AllSelectCheckBox.addEventListener('click', () => {
+        document.getElementById
+    });
+}
+
 
 
 //페이지 로딩시 초기값
@@ -198,5 +239,38 @@ if(document.getElementById('currentYear')){
     document.getElementById('endMonthSel').children[parseInt(document.getElementById('endMonth').value) - 1].setAttribute('selected', '');
     document.getElementById('endDaySel').children[parseInt(document.getElementById('endDay').value) - 1].setAttribute('selected', '');
 }
+
+//넘버링
+if(document.getElementsByClassName('number')){
+    Array.from(document.getElementsByClassName('number')).forEach((comp, index) => comp.textContent = index + 1);
+}
+
+//첫 페이지 보이기
+const itemField = document.getElementById('itemField');
+
+if(itemField.children[0] != null){
+    itemField.children[0].classList.remove('d-hidden');
+    itemFiled.children[0].setAttribute('id', 'selectedPage');
+}
+
+//페이지 수량 확인
+document.getElementById('pageSize').value = itemField.childElementCount;
+if(parseInt(document.getElementById('pageSize').value) > 0){
+    let size = parseInt(document.getElementById('pageSize').value);
+    for(let i = 0; i < (size > 5 ? 5 : size); i++){
+
+        let comp = document.createElement('div');
+        comp.setAttribute('class', 'col-auto');
+        comp.setAttribute('style', 'width:40px;');
+        comp.textContent = i + 1;
+
+        document.getElementById('pageSelectField').appendChild(comp);
+        console.log(i + 1);
+    }
+}
+
+
+
+
 
 

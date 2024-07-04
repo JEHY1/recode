@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/adminsCss/admin_user_index.css">
-    <link rel="stylesheet" href="/css/footer.css">
     <script src="/js/jquery.js"></script>
     <script src="/js/header.js"></script>
     <title>관리자 - 회원 목록</title>
@@ -16,6 +15,7 @@
         <div class="box">
             <p id="boxTitle">회원 목록</p>
             <form id="selectBox">
+                <a href="#">삭제</a>
                 <select>
                     <option value="" hidden>검색분류</option>
                     <option value="아이디">아이디</option>
@@ -23,6 +23,7 @@
                     <option value="연락처">연락처</option>
                     <option value="이메일">이메일</option>
                     <option value="가입일">가입일</option>
+                    <option value="탈퇴일">탈퇴일</option>
                 </select>
                 <input type="search">
                 <button type="submit">검색</button>
@@ -30,12 +31,13 @@
             <div id="indexBox">
                 <table>
                     <colgroup>
-                        <col width="50px">
                         <col width="70px">
-                        <col width="140px">
-                        <col width="153px">
+                        <col width="70px">
+                        <col width="160px">
+                        <col width="170px">
                         <col width="200px">
-                        <col width="280px">
+                        <col width="373px">
+                        <col width="150px">
                         <col width="150px">
                         <col width="155px">
                     </colgroup>
@@ -48,57 +50,38 @@
                             <th>연락처</th>
                             <th>이메일</th>
                             <th>가입일</th>
+                            <th>탈퇴일</th>
                             <th>관리</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <tr> <!-- 리스트 하나 -->
+                        <tr th:each="user : ${users}"> <!-- 리스트 하나 -->
                             <td><input type="checkbox"></td>
-                            <td>1</td>
-                            <td>dsdfke421</td>
-                            <td>황예지</td>
-                            <td>010-1234-5678</td>
-                            <td>fdkjfdfk53@gmail.com</td>
-                            <td>2024-06-04</td>
+                            <td th:text="${userStat.count}"></td>
+                            <td th:text="${user.username}"></td>
+                            <td th:text="${user.userRealName}"></td>
+                            <td th:text="${user.userPhone}"></td>
+                            <td th:text="${user.userEmail}"></td>
+                            <td th:text="${#temporals.format(user.userSubmitDate, 'yyyy-MM-dd')}"></td>
+                            <td th:text="${user.userDeleteDate == null ? '-' : #temporals.format(user.userDeleteDate, 'yyyy-MM-dd')}"></td>
                             <td>
-                                <a href="/admin/user/1/show">보기</a>
-                                <a href="#">삭제</a>
-                            </td>
-                        </tr>
-                        <tr> <!-- 리스트 하나 -->
-                            <td><input type="checkbox"></td>
-                            <td>1</td>
-                            <td>esdfdsee610</td>
-                            <td>이성제</td>
-                            <td>010-1234-5678</td>
-                            <td>fdkjfdfk53@gmail.com</td>
-                            <td>2024-06-04</td>
-                            <td>
-                                <a href="/admin/user/2/show">보기</a>
-                                <a href="#">삭제</a>
-                            </td>
-                        </tr>
-                        <tr> <!-- 리스트 하나 -->
-                            <td><input type="checkbox"></td>
-                            <td>1</td>
-                            <td>aedfkdse713</td>
-                            <td>김재현</td>
-                            <td>010-1234-5678</td>
-                            <td>fdkjfdfk53@gmail.com</td>
-                            <td>2024-06-04</td>
-                            <td>
-                                <a href="/admin/user/6/show">보기</a>
-                                <a href="#">삭제</a>
+                                <a th:href="'/admin/user/' + ${user.userId} + '/show'">보기</a>
+                                <a th:href="'/admin/user/' + ${user.userId} + '/delete'" th:style="${user.userDeleteDate == null ? '' : 'text-decoration: line-through;'}">삭제</a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
-            <div class="buttonBox">
-                <a href="#">삭제</a>
+            <div id="pageBox">
+                <a href="#">〈</a>
+                <a href="#">1</a>
+                <a href="#" style="background-color: #548235; color: white;">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">〉</a>
             </div>
         </div>
     </main>
-    <th:block th:include="layouts/footer"></th:block>
 </body>
 </html>

@@ -89,6 +89,7 @@ public class ReviewService {
         reviewDto.setReviewCreateDate(LocalDate.from(review.getReviewCreateDate()));
         reviewDto.setReviewViews(review.getReviewViews());
         reviewDto.setReviewScore(review.getReviewScore());
+
         return reviewDto;
     }
 

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/adminsCss/admin_notice_insert.css">
-    <link rel="stylesheet" href="/css/footer.css">
     <script src="/js/jquery.js"></script>
     <script src="/js/header.js"></script>
     <title>관리자 - 공지사항 등록</title>
@@ -31,11 +30,10 @@
                 </div>
                 <div class="buttonBox">
                     <button type="submit" th:text="${notice != null ? '수정' : '등록'}"></button>
-                    <a href="#">취소</a>
+                    <a th:href="'/admin/notice/' + ${notice.noticeId} + '/show'">취소</a>
                 </div>
             </div>
         </form>
     </main>
-    <th:block th:include="layouts/footer"></th:block>
 </body>
 </html>

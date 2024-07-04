@@ -74,7 +74,7 @@ public class AdminQnAController {
     @GetMapping("/admin/qna/index") // admin_qna_index 상품문의 목록 페이지
     public String indexAdminQna(Model model) {
         List<QnAViewResponse> qnAViewResponseList = qnAService.getAllQnAInfo();
-        model.addAttribute("qnAs", qnAViewResponseList);
+        model.addAttribute("QnAs", qnAViewResponseList);
 
         return "admins/admin_qna_index";
     }

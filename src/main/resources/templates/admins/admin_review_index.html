@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/adminsCss/admin_review_index.css">
-    <link rel="stylesheet" href="/css/footer.css">
     <script src="/js/jquery.js"></script>
     <script src="/js/header.js"></script>
     <title>관리자 - 리뷰 목록</title>
@@ -16,6 +15,7 @@
         <div class="box">
             <p id="boxTitle">리뷰 목록</p>
             <form id="selectBox">
+                <a href="#">삭제</a>
                 <select>
                     <option value="" hidden>검색분류</option>
                     <option value="상품명">상품명</option>
@@ -29,12 +29,12 @@
             <div id="indexBox">
                 <table>
                     <colgroup>
-                        <col width="50px">
+                        <col width="70px">
                         <col width="70px">
                         <col width="150px">
-                        <col width="150px">
-                        <col width="263px">
-                        <col width="140px">
+                        <col width="200px">
+                        <col width="473px">
+                        <col width="160px">
                         <col width="70px">
                         <col width="150px">
                         <col width="155px">
@@ -70,11 +70,16 @@
                     </tbody>
                 </table>
             </div>
-            <div class="buttonBox">
-                <a href="#">삭제</a>
+            <div id="pageBox">
+                <a href="#">〈</a>
+                <a href="#">1</a>
+                <a href="#" style="background-color: #548235; color: white;">2</a>
+                <a href="#">3</a>
+                <a href="#">4</a>
+                <a href="#">5</a>
+                <a href="#">〉</a>
             </div>
         </div>
     </main>
-    <th:block th:include="layouts/footer"></th:block>
 </body>
 </html>

@@ -27,10 +27,10 @@ $(function() {
     // scroll - header 색
     $(window).on("scroll", function() {
         if($(window).scrollTop() == 0) {
-            $("header").css("background-color","#ffffff00");
+            $("header").css({"background-color":"#ffffff00", "border-bottom":"none"});
         }
         else {
-            $("header").css("background-color","#ffffffee");
+            $("header").css({"background-color":"#ffffffee", "border-bottom":"1px solid #ccc"});
 
         }
     });

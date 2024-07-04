@@ -50,6 +50,9 @@ public class User implements UserDetails {
     @Column(name = "user_submit_date", nullable = false)
     private LocalDateTime userSubmitDate;
 
+    @Column(name = "user_delete_date")
+    private LocalDateTime userDeleteDate;
+
     @Column(name = "user_role", nullable = false)
     private String userRole;
 
@@ -90,7 +93,7 @@ public class User implements UserDetails {
     }
 
     @Builder
-    public User(Long userId, String username, String userPassword, String userRealName, String userPhone, String userEmail, LocalDateTime userSubmitDate, String userRole) {
+    public User(Long userId, String username, String userPassword, String userRealName, String userPhone, String userEmail, LocalDateTime userSubmitDate, LocalDateTime userDeleteDate, String userRole) {
         this.userId = userId;
         this.username = username;
         this.userPassword = userPassword;
@@ -98,6 +101,7 @@ public class User implements UserDetails {
         this.userPhone = userPhone;
         this.userEmail = userEmail;
         this.userSubmitDate = userSubmitDate;
+        this.userDeleteDate = userDeleteDate;
         this.userRole = userRole;
     }
 
@@ -118,4 +122,9 @@ public class User implements UserDetails {
         this.userPhone = dto.getUserPhone();
         this.userEmail = dto.getUserEmail();
     }
+
+    public void deleteUser() { // userDeleteDate 추가하기 - 회원 탈퇴/삭제
+        this.userDeleteDate = LocalDateTime.now();
+    }
+
 }

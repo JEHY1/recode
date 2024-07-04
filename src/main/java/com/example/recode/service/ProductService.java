@@ -138,4 +138,14 @@ public class ProductService {
         }
 
     }
+
+    public List<Product> findProductAllByProductIdIn(List<Long> productIds){
+        return productRepository.findAllByProductIdIn(productIds)
+                .orElse(null);
+    }
+
+    public List<Product> newProduct() {
+        return productRepository.newProduct()
+                .orElseThrow(() -> new IllegalArgumentException("not found product"));
+    }
 }

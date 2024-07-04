@@ -6,14 +6,14 @@ import com.example.recode.dto.NoticeRequest;
 import com.example.recode.dto.NoticeViewResponse;
 import com.example.recode.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -23,8 +23,8 @@ public class NoticeService {
     private final UserService userService;
 
 
-    public List<NoticeDto> getAllNotices() {
-        return noticeRepository.findAll().stream().map(this::convertEntityToDto).collect(Collectors.toList());
+    public Page<Notice> getAllNotices(Pageable pageable) {
+        return noticeRepository.findAll(pageable);
     }
 
     public NoticeDto convertEntityToDto(Notice notice) {
@@ -77,4 +77,20 @@ public class NoticeService {
     public Notice updateView(Long noticeId) { // 조회수 증가
         return findById(noticeId).updateViews();
     }
+
+//    public void processInteger(Integer to) {
+//        if (to != null) {
+//            int intValue = to.intValue();
+//            // intValue를 사용하는 코드 작성
+//        } else {
+//            // to가 null인 경우 처리할 로직 추가
+//        }
+//    }
+
+    public Page<NoticeViewResponse> noticeViewList(Pageable pageable) { // 페이징 처리한 Page<NoticeViewResponse> 가져옴
+        Page<Notice> noticeList = noticeRepository.findAll(pageable); // 페이징 처리한 Page<Notice>
+        Page<NoticeViewResponse> noticeViewList = noticeList.map(notice -> new NoticeViewResponse(notice, userService.getUsername(notice.getUserId())));
+        return noticeViewList;
+    }
 }
+

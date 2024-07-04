@@ -22,26 +22,44 @@
         </div>
         <form>
             <table>
-                <tr>
-                    <th>#</th>
-                    <th>Title</th>
-                    <th>Author</th>
-                    <th>Date</th>
-                    <th>Views</th>
-                </tr>
-                <tr th:each="notice : ${notices}">
+                <!--                <tr>-->
+                <!--                    <th>#</th>-->
+                <!--                    <th>Title</th>-->
+                <!--                    <th>Author</th>-->
+                <!--                    <th>Date</th>-->
+                <!--                    <th>Views</th>-->
+                <!--                </tr>-->
+                <tr th:each="notice : ${list}">
                     <td th:text="${notice.noticeId}">1</td>
                     <td class="txtEm">
                         <a th:href="@{/notice/{id}(id=${notice.noticeId})}" th:text="${notice.noticeTitle}">Title</a>
                     </td>
-                    <td th:text="${notice.username}">작성자</td>
+                    <td th:text="${notice.userId}">작성자</td>
                     <td th:text="${#temporals.format(notice.noticeCreateDate, 'yyyy-MM-dd')}">2024-06-12</td>
                     <td th:text="${notice.noticeViews}">조회수</td>
                 </tr>
             </table>
+
+            <a th:href="@{/notices(page=0)}">&lt;&lt;</a>
+
+            <th:block th:each="page : ${#numbers.sequence(startPage, lastPage)}">
+                <!-----------------현제페이지가 아닌경우 a테그 이동가능 (이때 page=1 부터 쿼리 스트링) ------------ param. 파라미터  쿼리 스트링 중에 특정 값 을 넣어 넘겨줌 a링크에 물려있음  ------->
+                <a th:if="${page != firstPage}" th:href="'/notices?page=' + ${page - 1}"
+                   th:text="${page}"></a>
+
+                <strong th:if="${page == firstPage}" th:text="${page}" style="color : red "></strong>
+
+            </th:block>
+
+            <a th:href="@{/notices(page=${list.totalPages - 1})}">&gt;&gt;</a>
+
+
+
+
         </form>
     </div>
 </div>
+
 <th:block th:include="layouts/footer"></th:block>
 </body>
 </html>

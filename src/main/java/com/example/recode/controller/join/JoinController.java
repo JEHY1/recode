@@ -30,7 +30,6 @@ public class JoinController {
     @PostMapping("/join/create") // join 페이지 post
     public String createJoin(JoinRequest request) {
         Long userId = userService.save(request);
-        System.err.println("sss");
         return "redirect:/join/" + userId + "/finish";
     }
     @PostMapping("/join/idCheck") // 아이디 중복 확인 - join.js에 ajax 연결

@@ -83,7 +83,7 @@ public class UserService {
 
     public String loginCheck(String username, String userPassword) { // 로그인 시 아이디, 비밀번호 확인 - login.js에 ajax 연결
         User user = userRepository.findByUsername(username).orElse(null);
-        if(user == null) { // 유저 없음
+        if(user == null || user.getUserDeleteDate() != null) { // 없는 user 이거나 탈퇴한 user 일 경우
             return "error_id"; // 아이디 오류
         }
         else {
@@ -151,14 +151,24 @@ public class UserService {
             }
         }
     }
+    @Transactional
+    public void deleteUser(Principal principal) { // 로그인 된 사용자 userDeleteDate 추가하기 - 회원 탈퇴
+        getUserByPrincipal(principal).deleteUser();
+    }
 
-    public void deleteUserByPrincipal(Principal principal) { // 로그인 된 사용자 userId로 User 삭제 - 회원 탈퇴
-        userRepository.deleteById(getUserId(principal));
+    @Transactional
+    public void deleteUser(Long userId) { // userId로 userDeleteDate 추가하기 - 관리자페이지에서 회원 삭제
+        findById(userId).deleteUser();
     }
 
     public List<User> findUserByUsernameContaining(String username){
         return userRepository.findByUsernameContaining(username)
                 .orElse(null);
     }
+
+    public List<User> findAll() { // List<User> 가져오기
+        return userRepository.findAll();
+    }
+
 
 }

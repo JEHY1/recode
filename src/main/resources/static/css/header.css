@@ -20,6 +20,7 @@ header {
 }
 header:hover {
     background-color: #ffffffee !important;
+    border-bottom: 1px solid #ccc !important;
 }
 #logo {
     display: inline-block;
@@ -59,7 +60,7 @@ header > ul > li > ul { /* 중분류 ul */
     list-style: none;
     padding: 0;
     position: absolute;
-    top: 160px;
+    top: 161px;
     left: 38px;
     text-align: left;
     width: 72px;
@@ -109,7 +110,7 @@ header > ul > li > ul > li > a:hover {
     list-style: none;
     padding: 0;
     position: absolute;
-    top: 160px;
+    top: 161px;
     left: -30px;
     text-align: left;
     width: 127px;

@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/adminsCss/admin_notice_index.css">
-    <link rel="stylesheet" href="/css/footer.css">
     <script src="/js/jquery.js"></script>
     <script src="/js/header.js"></script>
     <title>관리자 - 공지사항 목록</title>
@@ -16,6 +15,7 @@
         <div class="box">
             <p id="boxTitle">공지사항 목록</p>
             <form id="selectBox">
+                <a href="#">삭제</a>
                 <select>
                     <option value="" hidden>검색분류</option>
                     <option value="제목">제목</option>
@@ -29,11 +29,11 @@
             <div id="indexBox">
                 <table>
                     <colgroup>
-                        <col width="50px">
+                        <col width="70px">
                         <col width="70px">
                         <col width="150px">
-                        <col width="413px">
-                        <col width="140px">
+                        <col width="673px">
+                        <col width="160px">
                         <col width="70px">
                         <col width="150px">
                         <col width="155px">
@@ -67,11 +67,22 @@
                     </tbody>
                 </table>
             </div>
-            <div class="buttonBox">
-                <a href="#">삭제</a>
+            <div id="pageBox">
+                <a th:href="${notices.isFirst() ? 'javascript:void(0)' : '/admin/notice/index?page=' + (nowPage-2)}" th:style="${notices.isFirst() ? 'color:#ccc' : ''}">〈</a>
+                <a href="#" th:each="page : ${#numbers.sequence(startPage, endPage)}" th:text="${page}" th:href="${page == nowPage ? 'javascript:void(0)' : '/admin/notice/index?page=' + (page - 1)}" th:style="${page == nowPage ? 'background-color: #548235; color: white;' : '' }">1</a>
+<!--                <a href="#" style="background-color: #548235; color: white;">2</a>-->
+<!--                <a href="#">3</a>-->
+<!--                <a href="#">4</a>-->
+<!--                <a href="#">5</a>-->
+                <a th:href="${notices.hasNext() ? '/admin/notice/index?page=' + (nowPage-1) : 'javascript:void(0)'}" th:style="${notices.hasNext() ? '' : 'color:#ccc'}">〉</a>
             </div>
+<!--            <a th:href="@{/admin/notice/index(page=${notices.isFirst() ? nowPage-1 : nowPage-2})}" th:style="${notices.isFirst() ? 'color:#eee' : ''}">〈</a>-->
+<!--            <th:block th:each="page : ${#numbers.sequence(startPage, endPage)}">-->
+<!--                <a th:if="${page != nowPage}" th:href="@{/admin/notice/index(page=${page-1})}" th:text="${page}"></a>-->
+<!--                <strong th:if="${page == nowPage}" th:text="${page}" style="color:red"></strong>-->
+<!--            </th:block>-->
+<!--            <a th:href="@{/admin/notice/index(page=${notices.hasNext() ? nowPage : nowPage-1})}" th:style="${notices.hasNext() ? '' : 'color:#eee'}">〉</a>-->
         </div>
     </main>
-    <th:block th:include="layouts/footer"></th:block>
 </body>
 </html>

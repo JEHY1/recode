@@ -22,6 +22,7 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -350,7 +351,9 @@ public class PaymentService {
                 .build();
     }
 
-    public List<AdminPaymentInfoResponse> getPaymentInfos(String productName, String username, String startDate, String endDate, Integer minPrice,  Integer maxPrice, String paymentStatus, String paymentDetailStatus){
+    public List<List<AdminPaymentInfoResponse>> getPaymentInfos(String productName, String username, String startDate, String endDate, Integer minPrice,  Integer maxPrice, String paymentStatus, String paymentDetailStatus){
+
+        //시작날 종료날 존재할경우 (첫 입장시 없음)
         if(startDate != null && endDate != null){
             LocalDateTime start = LocalDate.parse(startDate, formatter).atStartOfDay();
             LocalDateTime end = LocalDate.parse(endDate, formatter).atStartOfDay();
@@ -359,16 +362,16 @@ public class PaymentService {
                     .orElse(null);
             List<Payment> filteredPayments = new ArrayList<>();
 
-            System.err.println(payments);
-
             if(payments != null){
                 for(Payment payment : payments){
+                    //상품 검색조건(최대 가격, 최소가격, 결재내역 상태) 조건이 일치한 경우
                     if((maxPrice == null ? true : payment.getPaymentPrice() <= maxPrice) && (minPrice == null ? true : payment.getPaymentPrice() >= minPrice) && (paymentStatus.equals("전체") ? true : paymentStatus.equals(payment.getPaymentStatus()))){
-                        if(paymentDetailStatus.equals("전체")){
 
+                        //결제내역 상세조건이 전체 인경우
+                        if(paymentDetailStatus.equals("전체")){
                             filteredPayments.add(payment);
                         }
-                        else{
+                        else{ //결제내역 상세조건이 전체가 아닌경우 결제 내역 상세에서 해당 조건이 하나라도 포함된 상품이 있는지 확인하여 filter
                             List<PaymentDetail> paymentDetails = findPaymentDetailByPaymentId(payment.getPaymentId());
                             for(PaymentDetail paymentDetail : paymentDetails){
                                 if(paymentDetail.getPaymentDetailStatus().equals(paymentDetailStatus)){
@@ -380,21 +383,44 @@ public class PaymentService {
                     }
                 }
 
-
                 payments = filteredPayments;
                 filteredPayments = new ArrayList<>();
 
-
-
-                if(!payments.isEmpty() && productName == null && username == null){
-                    return null;
-                }
-
+                //상품이름이 검색조건에 포함된 경우
                 if(productName != null){
+                    //결제에 포함된 상품들에서 검색상품이름이 포함된 경우가 하나라도 있는지 없는지 확인 filter
+                    for(Payment payment : payments){
+                        List<PaymentDetail> paymentDetails = findPaymentDetailByPaymentId(payment.getPaymentId());
+                        List<Long> productIds = paymentDetails.stream().mapToLong(paymentDetail -> paymentDetail.getProductId()).boxed().collect(Collectors.toList());
+                        List<Product> products = productService.findProductAllByProductIdIn(productIds);
+                        for(Product product : products){
 
-
+                            if(product.getProductName().contains(productName)){
+                                System.err.println("검색된 상품 : " + product.getProductName());
+                                filteredPayments.add(payment);
+                                break;
+                            }
+                        }
+                    }
+                    payments = filteredPayments;
+                    filteredPayments = new ArrayList<>();
                 }
 
+                //검색조건에 username 이 있는경우 확인하여 filter
+                if(username != null){
+                    for(Payment payment : payments){
+                        User user = userService.findById(payment.getUserId());
+                        if(user.getUsername().contains(username)){
+                            filteredPayments.add(payment);
+                        }
+                    }
+
+                    payments = filteredPayments;
+                    filteredPayments = new ArrayList<>();
+                }
+                System.err.println(paymentToAdminPaymentInfoResponse(payments, productName));
+
+                return adminPaymentInfoResponsePaging(paymentToAdminPaymentInfoResponse(payments, productName), 10);
             }
 
 
@@ -402,12 +428,90 @@ public class PaymentService {
         }
         else{
             List<Payment> payments = paymentRepository.findAll();
-            System.err.println(payments);
         }
-
 
         return null;
     }
 
+    public List<List<AdminPaymentInfoResponse>> adminPaymentInfoResponsePaging(List<AdminPaymentInfoResponse> adminPaymentInfoResponses, int size){
+
+        List<List<AdminPaymentInfoResponse>> pages = new ArrayList<>();
+        List<AdminPaymentInfoResponse> list = new ArrayList<>();
+        int index = 0;
+
+        for(AdminPaymentInfoResponse info : adminPaymentInfoResponses){
+            list.add(info);
+            index++;
+
+            if(index % size == 0){
+                pages.add(list);
+                list = new ArrayList<>();
+            }
+        }
+
+        if(!list.isEmpty()){
+            pages.add(list);
+        }
+
+        return pages;
+    }
+
+
+    //Payment 리스트-> AdminPaymentInfoResponse 리스트
+    public List<AdminPaymentInfoResponse> paymentToAdminPaymentInfoResponse(List<Payment> payments, String productSearched){
+
+        List<AdminPaymentInfoResponse> list = new ArrayList<>();
+
+        payments.forEach(payment -> {
+            long paymentId = payment.getPaymentId();
+            List<Product> products = productService.findProductAllByProductIdIn(findPaymentDetailByPaymentId(payment.getPaymentId()).stream().mapToLong(paymentDetail -> paymentDetail.getProductId()).boxed().collect(Collectors.toList()));
+            String productName = "";
+            String userRealName;
+            int paymentPrice = payment.getPaymentPrice();
+            String paymentStatus = payment.getPaymentStatus();
+
+
+
+            for(Product product : products){
+                if(product.getProductName().contains(productSearched == null ? "" : productSearched)){
+                    productName = product.getProductName();
+                }
+            }
+            if(products.size() > 1){
+                productName += " 외 " + (products.size() - 1) + "개 상품";
+            }
+
+            User user = userService.findById(payment.getUserId());
+            userRealName = user.getUsername() + " (" + user.getUserRealName() + ")";
+
+            list.add(AdminPaymentInfoResponse.builder()
+                    .paymentId(paymentId)
+                    .productName(productName)
+                    .userRealName(userRealName)
+                    .paymentPrice(paymentPrice)
+                    .paymentStatus(paymentStatus)
+                    .paymentDate(payment.getPaymentDate())
+                    .build());
+
+        });
+
+        return list;
+    }
+
+    public List<OrderDetailManagerViewResponse> getOrderDetailInfo(long paymentId){
+        return findPaymentDetailByPaymentId(paymentId).stream().map(this::toOrderDetailManagerViewResponse).collect(Collectors.toList());
+    }
+
+    public OrderDetailManagerViewResponse toOrderDetailManagerViewResponse(PaymentDetail paymentDetail){
+
+        Product product = productService.findProductByProductId(paymentDetail.getProductId());
+        return OrderDetailManagerViewResponse.builder()
+                .paymentDetailId(paymentDetail.getPaymentDetailId())
+                .productRepImgSrc(product.getProductRepresentativeImgSrc())
+                .productName(product.getProductName())
+                .productPrice(paymentDetail.getPaymentDetailPrice())
+                .paymentDetailStatus(paymentDetail.getPaymentDetailStatus())
+                .build();
+    }
 
 }
