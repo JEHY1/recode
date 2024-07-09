@@ -9,6 +9,9 @@ import com.example.recode.repository.ProductRepository;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -147,5 +150,30 @@ public class ProductService {
     public List<Product> newProduct() {
         return productRepository.newProduct()
                 .orElseThrow(() -> new IllegalArgumentException("not found product"));
+    }
+
+    public Page<Product> findProductByProductCategory(String productCategory, Pageable pageable){
+
+        return productRepository.findAllByProductCategory(productCategory, pageable)
+                .orElseThrow(() -> new IllegalArgumentException("not found product"));
+    }
+
+    public Page<Product> findProductByProductNameContaining(String searchText, Pageable pageable){
+
+        return productRepository.findAllByProductNameContaining(searchText, pageable)
+                .orElseThrow(() -> new IllegalArgumentException("not found product"));
+
+    }
+
+    public Page<Product> searchProduct(String searchText, String productCategory, Pageable pageable){
+
+        if(searchText != null){
+            return findProductByProductNameContaining(searchText, pageable);
+        }
+        else if(productCategory != null){
+            return findProductByProductCategory(productCategory, pageable);
+        }
+
+        return null;
     }
 }

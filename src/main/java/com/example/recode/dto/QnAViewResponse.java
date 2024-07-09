@@ -10,23 +10,23 @@ import java.time.LocalDateTime;
 @Getter
 public class QnAViewResponse {
 
-    private Long QnAId;
+    private Long qnAId;
     private long userId;
     private String username;
     private String productName;
-    private String QnAQuestionTitle;
-    private String QnAAnswer;
-    private LocalDateTime QnACreateDate;
-    private int QnAViews;
+    private String qnAQuestionTitle;
+    private String qnAAnswer;
+    private LocalDateTime qnACreateDate;
+    private int qnAViews;
 
     public QnAViewResponse(QnA qnA, String username, String productName) {
-        this.QnAId = qnA.getQnAId();
+        this.qnAId = qnA.getQnAId();
         this.userId = qnA.getUserId();
         this.username = username;
         this.productName = productName;
-        this.QnAQuestionTitle = qnA.getQnAQuestionTitle();
-        this.QnAAnswer = qnA.getQnAAnswer();
-        this.QnACreateDate = qnA.getQnACreateDate();
-        this.QnAViews = qnA.getQnAViews();
+        this.qnAQuestionTitle = qnA.getQnAQuestionTitle();
+        this.qnAAnswer = qnA.getQnAAnswer();
+        this.qnACreateDate = qnA.getQnACreateDate();
+        this.qnAViews = qnA.getQnAViews();
     }
 }

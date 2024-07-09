@@ -1,21 +1,14 @@
 package com.example.recode.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "payment_detail_tb")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class
-
-
-
-
-PaymentDetail {
+@ToString
+public class PaymentDetail {
 
     @Id
     @Column(name = "payment_detail_id", updatable = false)

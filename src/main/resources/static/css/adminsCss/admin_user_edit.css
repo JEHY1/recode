@@ -1,13 +1,22 @@
+main { /* main 크기 고정 */
+    width: 1823px;
+}
 .box {
-    width: 830px;
+    width: 910px;
     margin: 0 auto;
 }
 #boxTitle { /* 제목 */
     text-align: center;
-    margin-top: 200px;
-    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-bottom: 40px;
     font-size: 25px;
     font-weight: bold;
+}
+#editBox {
+    padding: 20px 40px 40px 40px;
+    border-radius: 30px;
+    background-color: #f7f7f7;
+    margin-bottom: 40px;
 }
 #editBox ul {
     list-style: none;
@@ -34,17 +43,19 @@
     width: 600px;
     padding: 7px 9px;
 }
-#editBox ul li > div:nth-child(2) {
+#editBox ul li > div:nth-child(2) { /* 배송지 scroll 박스 */
     display: inline-block;
     box-sizing: border-box;
     width: 600px;
     padding: 7px;
-    height: 320px;
+    height: 330px;
     overflow-y: scroll;
+    border: 1px solid black;
+    background-color: white;
 }
 #editBox ul li > div:nth-child(2) > div { /* 배송지 추가 */
     border-bottom: 1px solid #ccc;
-    padding-left: 7px;
+    padding-left: 15px;
     padding-bottom: 15px;
     margin-bottom: 15px;
 }
@@ -104,7 +115,7 @@
     width: 120px;
     box-sizing: border-box;
 }
-#addressButton { /* 우편번호 찾기 */
+#editBox ul li > div:nth-child(2) > div > p:nth-of-type(4) > span:nth-child(2) > span > span { /* 우편번호 찾기 */
     font-size: 15px;
     display: inline-block;
     border: 1px solid #548235;
@@ -147,3 +158,5 @@
     color: #548235;
     margin-left: 10px;
 }
+
+

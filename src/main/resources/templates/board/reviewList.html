@@ -7,14 +7,14 @@
     <title>RECODE 사용후기 페이지</title>
     <link rel="stylesheet" href="/css/header.css">
     <link rel="stylesheet" href="/css/footer.css">
-    <link rel="stylesheet" href="/css/reViews.css">
+    <link rel="stylesheet" href="/css/boardCss/reViews.css">
     <script src="/js/reViews.js"></script>
     <script src="/js/jquery.js"></script>
     <script src="/js/header.js"></script>
 </head>
 
 <body>
-    <th:block th:include="layouts/header"></th:block>
+<th:block th:include="layouts/header"></th:block>
 <div class="container">
     <div class="content">
         <div class="titleArea">
@@ -22,32 +22,38 @@
         </div>
         <form>
             <table id="userReviewList">
-                <tr th:each="review : ${reviews}">
-<!--                    <td th:text="${iterStat}">1</td>-->
+                <tr th:each="review, iterStat : ${reviews.content}">
+                    <td th:text="${iterStat.index + 1 + (pageNumber * 10)}"></td>
                     <td>
                         <div>
-                            <a th:href="@{/review/{id}(id=${review.reviewId})}">
-<!--                                <img class="userProImg" th:src="@{/img/{imageName}(imageName=${review.imageName})}">-->
+                            <a th:href="@{/review/{id}(id=${review.review.reviewId})}">
+                                <img class="reviewImg" th:if="${#lists.size(review.imgUrls) > 0}" th:src="${review.imgUrls[0]}" alt="empty">
                             </a>
                         </div>
                     </td>
                     <td class="txtEm">
-                        <a th:href="@{/review/{id}(id=${review.reviewId})}" th:text="${review.reviewTitle}"></a>
+                        <a th:href="@{/review/{id}(id=${review.review.reviewId})}" th:text="${review.review.reviewTitle}"></a>
                     </td>
-                    <td th:text="${review.userId}"></td>
-                    <td th:text="${#temporals.format(review.reviewCreateDate, 'yyyy-MM-dd')}"></td>
-                    <td th:text="${review.reviewViews}"></td>
+                    <td th:text="${review.review.userId}"></td>
+                    <td th:text="${#temporals.format(review.review.reviewCreateDate, 'yyyy-MM-dd')}"></td>
+                    <td th:text="${review.review.reviewViews}"></td>
+                    <td>
+                        <div class="star-rating">
+                            <label th:each="star : ${#numbers.sequence(1, 5)}"
+                                   th:classappend="${star <= review.review.reviewScore} ? 'red' : ''"></label>
+                        </div>
+                    </td>
                 </tr>
             </table>
             <!-- 페이징 처리 -->
-            <div>
-                <span th:if="${currentPage > 0}">
-                    <a th:href="@{/reviews(page=${currentPage - 1}, size=10)}">Previous</a>
-                </span>
-                <span th:if="${currentPage < totalPages - 1}">
-                    <a th:href="@{/reviews(page=${currentPage + 1}, size=10)}">Next</a>
-                </span>
-            </div>
+            <a th:href="@{/reviews(page=0)}">&lt;&lt;</a>
+
+            <th:block th:each="page : ${#numbers.sequence(startPage, lastPage)}">
+                <a th:if="${page != currentPage}" th:href="@{/reviews(page=${page - 1})}" th:text="${page}"></a>
+                <strong th:if="${page == currentPage}" th:text="${page}" style="color : red "></strong>
+            </th:block>
+
+            <a th:href="@{/reviews(page=${totalPages - 1})}">&gt;&gt;</a>
         </form>
     </div>
 </div>

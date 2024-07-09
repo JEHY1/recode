@@ -92,5 +92,17 @@ public class NoticeService {
         Page<NoticeViewResponse> noticeViewList = noticeList.map(notice -> new NoticeViewResponse(notice, userService.getUsername(notice.getUserId())));
         return noticeViewList;
     }
+
+    public Page<NoticeViewResponse> noticeViewTitleSearchList(String searchKeyword, Pageable pageable) { // 제목으로 검색해서 페이징 처리한 Page<NoticeViewResponse> 가져옴
+        Page<Notice> noticeSearchList = noticeRepository.findByNoticeTitleContaining(searchKeyword, pageable); // 제목으로 검색해서 페이징 처리한 Page<Notice>
+        Page<NoticeViewResponse> noticeViewSearchList = noticeSearchList.map(notice -> new NoticeViewResponse(notice, userService.getUsername(notice.getUserId())));
+        return noticeViewSearchList;
+    }
+
+    public void deleteByIds(List<Long> noticeIds) { // noticeIds 리스트로 Notice 삭제
+        for (Long noticeId : noticeIds) {
+            noticeRepository.deleteById(noticeId);
+        }
+    }
 }
 

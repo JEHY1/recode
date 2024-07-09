@@ -124,7 +124,8 @@ public class User implements UserDetails {
     }
 
     public void deleteUser() { // userDeleteDate 추가하기 - 회원 탈퇴/삭제
-        this.userDeleteDate = LocalDateTime.now();
+
+        this.userDeleteDate = this.userDeleteDate == null? LocalDateTime.now() : this.userDeleteDate;
     }
 
 }

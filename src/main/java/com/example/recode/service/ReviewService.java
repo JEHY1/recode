@@ -1,16 +1,16 @@
 package com.example.recode.service;
 
+import com.example.recode.domain.Notice;
 import com.example.recode.domain.Review;
 import com.example.recode.domain.ReviewImg;
-import com.example.recode.dto.ReviewDto;
-import com.example.recode.dto.ReviewImgDto;
-import com.example.recode.dto.ReviewResponse;
+import com.example.recode.dto.*;
 import com.example.recode.repository.ProductRepository;
 import com.example.recode.repository.ReviewImgRepository;
 import com.example.recode.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
@@ -27,6 +27,7 @@ public class ReviewService {
     private final ReviewImgRepository reviewImgRepository;
     private final UserService userService;
     private final ProductService productService;
+    private final ReviewImgService reviewImgService; // reviewImgService 필드추가
 
     public Review getReviewFindById(Long reviewId) { // reviewId로 Review 가져오기
         return reviewRepository.findById(reviewId)
@@ -56,54 +57,50 @@ public class ReviewService {
     }
 
 
-    public Page<Review> getReviews(int page, int size) {
-        return reviewRepository.findAll(PageRequest.of(page, size));
-    }
-    public Optional<ReviewDto> getReviewById(Long id) {
-        return reviewRepository.findById(id).map(this::convertToReviewDto);
+    public Page<Review> getAllReview(Pageable pageable) {
+        return reviewRepository.findAll(pageable);
     }
 
-//    public Optional<ReviewImgDto> getReviewImgById(Long id) {
-//        Optional<Review> reviewOpt = reviewRepository.findById(id);
-//        if (reviewOpt.isEmpty()) {
-//            return Optional.empty();
-//        }
-//
-//        Review review = reviewOpt.get();
-//        List<String> imgUrls = reviewImgRepository.findByReviewId(review.getReviewId())
-//                .orElse(new ArrayList<>())
-//                .stream()
-//                .map(ReviewImg::getImgUrl)
-//                .collect(Collectors.toList());
-//
-//        return Optional.of(convertToReviewImgDto(review, imgUrls));
-//    }
-
-    private ReviewDto convertToReviewDto(Review review) {
-        ReviewDto reviewDto = new ReviewDto();
-        reviewDto.setReviewId(review.getReviewId());
-        reviewDto.setUserId(review.getUserId());
-        reviewDto.setProductId(review.getProductId());
-        reviewDto.setReviewTitle(review.getReviewTitle());
-        reviewDto.setReviewContent(review.getReviewContent());
-        reviewDto.setReviewCreateDate(LocalDate.from(review.getReviewCreateDate()));
-        reviewDto.setReviewViews(review.getReviewViews());
-        reviewDto.setReviewScore(review.getReviewScore());
-
-        return reviewDto;
+    public Page<ReviewResponse> reviewViewList(Pageable pageable) { // 페이징 처리한 Page<ReviewResponse> 가져옴
+        Page<Review> reviewList = reviewRepository.findAll(pageable); // 페이징 처리한 Page<Review>
+        Page<ReviewResponse> reviewViewList = reviewList.map(review -> new ReviewResponse(review, userService.getUsername(review.getUserId()), productService.findProductByProductId(review.getProductId()).getProductName()));
+        return reviewViewList;
     }
 
-    private ReviewImgDto convertToReviewImgDto(Review review, List<String> imgUrls) {
-        ReviewImgDto reviewImgDto = new ReviewImgDto();
-        reviewImgDto.setReviewId(review.getReviewId());
-        reviewImgDto.setUserId(review.getUserId());
-        reviewImgDto.setProductId(review.getProductId());
-        reviewImgDto.setReviewTitle(review.getReviewTitle());
-        reviewImgDto.setReviewContent(review.getReviewContent());
-        reviewImgDto.setReviewCreateDate(LocalDate.from(review.getReviewCreateDate()));
-        reviewImgDto.setReviewViews(review.getReviewViews());
-        reviewImgDto.setReviewScore(review.getReviewScore());
-        reviewImgDto.setImgUrls(imgUrls);
-        return reviewImgDto;
+    public void deleteByIds(List<Long> reviewIds) { // reviewIds 리스트로 Review 삭제
+        for (Long reviewId : reviewIds) {
+            reviewRepository.deleteById(reviewId);
+        }
+    }
+
+    public Review findById(Long id) {
+        return reviewRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("Review not found"));
+    }
+
+    public ReviewWithImagesResponse getReviewWithImages(Long reviewId) {
+        Review review = getReviewFindById(reviewId);
+        List<ReviewImg> reviewImgs = reviewImgService.getReviewImgFindByReviewId(reviewId);
+        List<String> imgUrls = new ArrayList<>();
+        if (reviewImgs != null) {
+            for (ReviewImg img : reviewImgs) {
+                imgUrls.add(img.getReviewImgSrc());
+            }
+        }
+        return new ReviewWithImagesResponse(review, imgUrls);
+    }
+
+    public Page<ReviewWithImagesResponse> getAllReviewWithImages(Pageable pageable) {
+        Page<Review> reviews = getAllReview(pageable);
+        return reviews.map(review -> {
+            List<ReviewImg> reviewImgs = getReviewImgFindByReviewId(review.getReviewId());
+            List<String> imgUrls = new ArrayList<>();
+            if (reviewImgs != null) {
+                for (ReviewImg img : reviewImgs) {
+                    imgUrls.add(img.getReviewImgSrc());
+                }
+            }
+            return new ReviewWithImagesResponse(review, imgUrls);
+        });
     }
 }

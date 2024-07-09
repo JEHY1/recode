@@ -1,28 +1,37 @@
+main { /* main 크기 고정 */
+    width: 1823px;
+}
 .box {
-    width: 630px;
+    width: 710px;
     margin: 0 auto;
 }
 .boxTitle { /* 제목 */
     text-align: center;
-    margin-top: 200px;
-    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-bottom: 40px;
     font-size: 25px;
     font-weight: bold;
 }
-#showBox div {
+#showBox {
+    padding: 20px 40px 40px 40px;
+    border-radius: 30px;
+    background-color: #f7f7f7;
+    margin-bottom: 40px;
+}
+#showBox div:nth-of-type(1) {
     padding: 25px 10px;
 }
-#showBox div img {
+#showBox div:nth-of-type(1) img {
     width: 100px;
     vertical-align: middle;
 }
-#showBox div a {
+#showBox div:nth-of-type(1) a {
     margin-left: 15px;
     vertical-align: middle;
     text-decoration: none;
     color: black;
 }
-#showBox div a:hover {
+#showBox div:nth-of-type(1) a:hover {
     font-weight: bold;
 }
 #showBox ul {
@@ -55,7 +64,7 @@
     background-color: #548235;
     width: 80px;
     padding: 10px;
-    border: 1px solid white;
+    border: 1px solid #548235;
     border-radius: 10px;
     color: white;
     text-decoration: none;
@@ -74,17 +83,14 @@
 }
 #answerBox {
     border-top: 1px solid #ccc;
-    margin-top: 80px;
-    padding: 25px;
 }
-#answerBox p:nth-child(1) {
-    text-align: center;
-    margin-top: 30px;
-    margin-bottom: 50px;
-    font-size: 25px;
-    font-weight: bold;
+#answerBox > div {
+    padding: 40px;
+    border-radius: 30px;
+    background-color: #f7f7f7;
+    margin-bottom: 40px;
 }
-#answerBox textarea {
+#answerBox > div textarea {
     box-sizing: border-box;
     width: 100%;
     height: 200px;
@@ -99,4 +105,3 @@
     color: white;
     cursor: pointer;
 }
-

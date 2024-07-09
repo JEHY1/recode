@@ -4,7 +4,7 @@ function httpRequest(url, method, body){
         headers: {
             "Content-Type" : "application/json"
         },
-        body: body
+        body: body,
     });
 }
 
@@ -72,7 +72,9 @@ const QnATitleButtons = document.getElementsByClassName('QnATitle-btn');
 if(QnATitleButtons){
     Array.from(QnATitleButtons).forEach(button => {
         button.addEventListener('click', () => {
-            console.log('click');
+
+            Array.from(QnATitleButtons).forEach(button2 => button2.nextElementSibling.classList.add('d-hidden'));
+
             if(button.nextElementSibling.classList.contains('d-hidden')){
                 button.nextElementSibling.classList.remove('d-hidden');
             }
@@ -122,6 +124,8 @@ const QnAPageUpButton = document.getElementById('QnAPageUp-btn');
 if(QnAPageUpButton){
     QnAPageUpButton.addEventListener('click', () => {
         if(document.getElementById('QnA-show').nextElementSibling != null){
+            Array.from(QnATitleButtons).forEach(button => button.nextElementSibling.classList.add('d-hidden'));
+
             let currentPage = document.getElementById('QnA-show');
             currentPage.setAttribute('id', '');
             currentPage.classList.add('d-hidden');
@@ -144,6 +148,8 @@ const QnAPageDownButton = document.getElementById('QnAPageDown-btn');
 if(QnAPageDownButton){
     QnAPageDownButton.addEventListener('click', () => {
         if(document.getElementById('QnAPage').textContent !== '1'){
+            Array.from(QnATitleButtons).forEach(button => button.nextElementSibling.classList.add('d-hidden'));
+
             let currentPage = document.getElementById('QnA-show');
             currentPage.setAttribute('id', '');
             currentPage.classList.add('d-hidden');
@@ -188,5 +194,79 @@ const buyButton = document.getElementById('buy-btn');
 if(buyButton){
     buyButton.addEventListener('click', () => {
         document.getElementById('requestPaymentView').submit();
+    });
+}
+
+//문의 등록
+const qnaSubmitButton = document.getElementById('qnaSubmit-btn');
+
+if(qnaSubmitButton){
+    qnaSubmitButton.addEventListener('click', () => {
+        let title = document.getElementById('submitQnaTitle').value;
+        let content = document.getElementById('submitQnaContent').value;
+
+        if(title.value === ''){
+            alert('제목을 작성해주세요.');
+            return;
+        }
+
+        if(content.value === ''){
+            alert('내용을 작성해주세요.');
+            return;
+        }
+
+        let body = JSON.stringify({
+            productId : document.getElementById('productId').value,
+            qnaTitle: title,
+            qnaContent: content
+        });
+
+        httpRequest(`/user/qna/submit`, 'POST', body)
+        .then(response => {
+            if(response.ok){
+                alert('등록되었습니다.');
+                document.getElementById('close-btn').click();
+            }
+        });
+    });
+}
+
+function resetQnAForm(){
+    document.getElementById('submitQnaTitle').value = '';
+    document.getElementById('submitQnaContent').value = '';
+}
+
+function checkLogin(){
+    httpRequest(`/checkLogin`, 'GET', null)
+    .then(response => {
+        console.log(response);
+        if(response.ok){
+            return response.json();
+        }
+    })
+    .then(data => {
+        console.log(data);
+        console.log(data.value);
+        if(data.value === false){
+            location.href = "/login";
+        }
+    });
+}
+
+const loginButton = document.getElementById('login-btn');
+
+if(loginButton){
+    loginButton.addEventListener('click', () => {
+        let body = JSON.stringify({
+            username : document.getElementById('username').value,
+            password : document.getElementById('password').value
+        });
+
+        console.log(body);
+
+        httpRequest(`/login`, 'POST', body)
+        .then(response => {
+            console.log(response);
+        });
     });
 }

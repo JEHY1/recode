@@ -351,12 +351,12 @@ public class PaymentService {
                 .build();
     }
 
-    public List<List<AdminPaymentInfoResponse>> getPaymentInfos(String productName, String username, String startDate, String endDate, Integer minPrice,  Integer maxPrice, String paymentStatus, String paymentDetailStatus){
+    public AdminPaymentTotalInfoResponse getPaymentInfos(String productName, String username, String startDate, String endDate, Integer minPrice,  Integer maxPrice, String paymentStatus, String paymentDetailStatus){
 
         //시작날 종료날 존재할경우 (첫 입장시 없음)
         if(startDate != null && endDate != null){
             LocalDateTime start = LocalDate.parse(startDate, formatter).atStartOfDay();
-            LocalDateTime end = LocalDate.parse(endDate, formatter).atStartOfDay();
+            LocalDateTime end = LocalDate.parse(endDate, formatter).atStartOfDay().plus(Period.ofDays(1));
 
             List<Payment> payments = paymentRepository.findPaymentsInDateRange(start, end)
                     .orElse(null);
@@ -420,17 +420,74 @@ public class PaymentService {
                 }
                 System.err.println(paymentToAdminPaymentInfoResponse(payments, productName));
 
-                return adminPaymentInfoResponsePaging(paymentToAdminPaymentInfoResponse(payments, productName), 10);
+                int totalDeposit = 0;
+                int totalPaymentCompleteDeposit = 0;
+                int totalPaymentNonDeposit = 0;
+                int totalPaymentCancelDeposit = 0;
+                int totalDepositCount = 0;
+                int totalPaymentCompleteDepositCount = 0;
+                int totalPaymentNonDepositCount = 0;
+                int totalPaymentCancelDepositCount = 0;
+                int totalPaymentCount = 0;
+                int totalPaymentCompleteCount = 0;
+                int totalPaymentNonCount = 0;
+                int totalPaymentCancelCount = 0;
+
+                List<Long> paymentIds = payments.stream().mapToLong(payment -> payment.getPaymentId()).boxed().collect(Collectors.toList());
+
+                for(PaymentDetail paymentDetail : findPaymentDetailByPaymentIdIn(paymentIds)){
+                    totalDeposit += paymentDetail.getPaymentDetailPrice();
+                    totalDepositCount++;
+                    if(paymentDetail.getPaymentDetailStatus().equals("결제대기")){
+                        totalPaymentNonDeposit += paymentDetail.getPaymentDetailPrice();
+                        totalPaymentNonDepositCount++;
+                    }
+                    else if(paymentDetail.getPaymentDetailStatus().contains("배송")){
+                        totalPaymentCompleteDeposit += paymentDetail.getPaymentDetailPrice();
+                        totalPaymentCompleteDepositCount++;
+                    }
+                    else{
+                        totalPaymentCancelDeposit += paymentDetail.getPaymentDetailPrice();
+                        totalPaymentCancelDepositCount++;
+                    }
+                }
+
+                for(Payment payment : payments){
+                    totalPaymentCount++;
+                    if(payment.getPaymentStatus().equals("결제대기")){
+                        totalPaymentNonCount++;
+                    }
+                    else if(payment.getPaymentStatus().contains("배송")){
+                        totalPaymentCompleteCount++;
+                    }
+                    else{
+                        totalPaymentCancelCount++;
+                    }
+                }
+                return AdminPaymentTotalInfoResponse.builder()
+                        .paymentInfo(adminPaymentInfoResponsePaging(paymentToAdminPaymentInfoResponse(payments, productName), 10))
+                        .totalDeposit(totalDeposit)
+                        .totalPaymentCompleteDeposit(totalPaymentCompleteDeposit)
+                        .totalPaymentNonDeposit(totalPaymentNonDeposit)
+                        .totalPaymentCancelDeposit(totalPaymentCancelDeposit)
+                        .totalDepositCount(totalDepositCount)
+                        .totalPaymentNonDepositCount(totalPaymentNonDepositCount)
+                        .totalPaymentCompleteDepositCount(totalPaymentCompleteDepositCount)
+                        .totalPaymentCancelDepositCount(totalPaymentCancelDepositCount)
+                        .totalPaymentCount(totalPaymentCount)
+                        .totalPaymentNonCount(totalPaymentNonCount)
+                        .totalPaymentCompleteCount(totalPaymentCompleteCount)
+                        .totalPaymentCancelCount(totalPaymentCancelCount)
+                        .build();
+
             }
-
-
 
         }
         else{
             List<Payment> payments = paymentRepository.findAll();
         }
 
-        return null;
+        return new AdminPaymentTotalInfoResponse();
     }
 
     public List<List<AdminPaymentInfoResponse>> adminPaymentInfoResponsePaging(List<AdminPaymentInfoResponse> adminPaymentInfoResponses, int size){
@@ -514,4 +571,38 @@ public class PaymentService {
                 .build();
     }
 
+    @Transactional
+    public List<Payment> ordersUpdate(AdminOrderManageRequest request){
+
+        List<Payment> payments = new ArrayList<>();
+        request.getPaymentIds().forEach(id -> {
+            Payment payment = findPaymentByPaymentId(id);
+            payment.updatePaymentStatus(request.getPaymentStatus());
+            payments.add(payment);
+        });
+        return payments;
+    }
+
+    @Transactional
+    public List<PaymentDetail> orderDetailsUpdate(AdminOrderDetailManageRequest request){
+
+        List<PaymentDetail> paymentDetails = new ArrayList<>();
+        request.getPaymentDetailIds().forEach(id -> {
+            PaymentDetail paymentDetail = findPaymentDetailByPaymentDetailId(id);
+            paymentDetail.updateStatus(request.getPaymentDetailStatus());
+            paymentDetails.add(paymentDetail);
+        });
+        return paymentDetails;
+    }
+
+    public String getCustomerName(long paymentId){
+        User user = userService.findById(findPaymentByPaymentId(paymentId).getUserId());
+        return user.getUsername() + " (" + user.getUserRealName() + ")";
+
+    }
+
+    public List<PaymentDetail> findPaymentDetailByPaymentIdIn(List<Long> paymentIds){
+        return paymentDetailRepository.findAllByPaymentIdIn(paymentIds)
+                .orElseThrow(() -> new IllegalArgumentException("not found paymentDetail"));
+    }
 }

@@ -7,7 +7,7 @@ import lombok.Getter;
 @Getter
 public class QnaAnswerRequest {
 
-    private Long QnAId;
-    private String QnAAnswer;
+    private Long qnAId;
+    private String qnAAnswer;
 
 }

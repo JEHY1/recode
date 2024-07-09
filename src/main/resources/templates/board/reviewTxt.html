@@ -5,9 +5,11 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>RECODE 상품후기 페이지</title>
-    <link rel="stylesheet" href="header.css">
-    <link rel="stylesheet" href="footer.css">
-    <link rel="stylesheet" href="reviewTxt.css">
+    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/footer.css">
+    <link rel="stylesheet" href="/css/boardCss/reViewTxt.css">
+    <script src="/js/jquery.js"></script>
+    <script src="/js/header.js"></script>
 </head>
 
 <body>
@@ -26,15 +28,22 @@
                         <p th:text="${review.reviewTitle}"></p>
                     </td>
                     <td th:text="${review.userId}"></td>
-                    <td th:text="${review.reviewCreateDate}"></td>
+                    <td th:text="${#temporals.format(review.reviewCreateDate, 'yyyy-MM-dd')}"></td>
+
+                    <td>
+                        <div class="star-rating">
+                            <label th:each="star : ${#numbers.sequence(1, 5)}"
+                                   th:classappend="${star <= review.reviewScore} ? 'red' : ''"></label>
+                        </div>
+                    </td>
                     <td th:text="${review.reviewViews}"></td>
                 </tr>
                 <tr>
                     <div>
                         <td class="txtBody" colspan="6">
-                            <div>
+                            <div th:if="${#lists.size(reviewImgs) > 0}">
                                 <a href="">
-                                    <img class="userProImg" th:src="@{/img/fritag007.jpg}">
+                                    <img class="userProImg" th:each="img : ${reviewImgs}" th:src="@{/img/{imgSrc}(imgSrc=${img})}">
                                 </a>
                             </div>
                             <p th:text="${review.reviewContent}"></p>
@@ -45,7 +54,7 @@
         </div>
     </div>
     <div class="btnDiv">
-        <a href="board/reviews" class="back-btn">목록</a>
+        <a href="/reviews" class="back-btn">목록</a>
     </div>
 </div>
 

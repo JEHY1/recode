@@ -80,7 +80,6 @@ tr > td:nth-child(4), td:nth-child(5){
 .back-btn {
     width: 100px;
     border: solid #eee 1px;
-    /* background-color: #eee; */
     font-size: 13px;
     text-align: center;
     color: #ccc;

@@ -1,13 +1,22 @@
+main { /* main 크기 고정 */
+    width: 1823px;
+}
 .box {
-    width: 830px;
+    width: 910px;
     margin: 0 auto;
 }
 #boxTitle { /* 제목 */
     text-align: center;
-    margin-top: 200px;
-    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-bottom: 40px;
     font-size: 25px;
     font-weight: bold;
+}
+#showBox {
+    padding: 20px 40px 40px 40px;
+    border-radius: 30px;
+    background-color: #f7f7f7;
+    margin-bottom: 40px;
 }
 #showBox ul {
     list-style: none;
@@ -29,17 +38,19 @@
     width: 600px;
     padding: 7px 9px;
 }
-#showBox ul li > div:nth-child(2) {
+#showBox ul li > div:nth-child(2) { /* 배송지 scroll 박스 */
     display: inline-block;
     box-sizing: border-box;
     width: 600px;
     padding: 7px;
-    height: 320px;
+    height: 330px;
     overflow-y: scroll;
+    border: 1px solid #eee;
+
 }
 #showBox ul li > div:nth-child(2) > div { /* 배송지 추가 */
     border-bottom: 1px solid #ccc;
-    padding-left: 7px;
+    padding-left: 15px;
     padding-bottom: 15px;
     margin-bottom: 15px;
 }
@@ -63,6 +74,7 @@
     display: inline-block;
     width: 440px;
     padding: 7px 9px;
+    box-sizing: border-box;
 }
 #showBox ul li > div:nth-child(2) > div > p:nth-of-type(1) > span:nth-child(2) > span:nth-child(1) {
     box-sizing: border-box;
@@ -117,3 +129,5 @@
     text-decoration: none;
     margin-left: 10px;
 }
+
+

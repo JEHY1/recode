@@ -17,6 +17,8 @@ public class OrderManagerController {
     @GetMapping("/admin/orderManager")
     public String orderManager(@RequestParam(required = false) String productName, @RequestParam(required = false) String username, @RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate, @RequestParam(required = false) Integer minPrice, @RequestParam(required = false) Integer maxPrice, @RequestParam(required = false) String paymentStatus, @RequestParam(required = false) String paymentDetailStatus,  Model model){
 
+        System.err.println(paymentService.getPaymentInfos(productName, username, startDate, endDate, minPrice, maxPrice, paymentStatus, paymentDetailStatus));
+
         model.addAttribute("serverDate", paymentService.getServerDate(null));
         model.addAttribute("orderInfoPage", paymentService.getPaymentInfos(productName, username, startDate, endDate, minPrice, maxPrice, paymentStatus, paymentDetailStatus));
 
@@ -30,9 +32,9 @@ public class OrderManagerController {
         System.err.println(paymentId);
 
         model.addAttribute("orderDetailList", paymentService.getOrderDetailInfo(paymentId));
-
-
+        System.err.println(paymentService.findPaymentByPaymentId(paymentId));
         model.addAttribute("payment", paymentService.findPaymentByPaymentId(paymentId));
+        model.addAttribute("customerName", paymentService.getCustomerName(paymentId));
 
         return "/admins/orderDetailManager";
     }

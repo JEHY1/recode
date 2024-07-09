@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/admin_header.css">
     <link rel="stylesheet" href="/css/adminsCss/admin_qna_show.css">
     <script src="/js/jquery.js"></script>
-    <script src="/js/header.js"></script>
+    <script src="/js/admin_header.js"></script>
     <title>관리자 - 상품문의/답변 보기</title>
 </head>
 <body>
@@ -22,12 +22,12 @@
                 <ul>
                     <li>
                         <p>제목</p>
-                        <p th:text="${QnA.QnAQuestionTitle}"></p>
+                        <p th:text="${QnA.qnAQuestionTitle}"></p>
                         <p></p>
                     </li>
                     <li>
                         <p>내용</p>
-                        <p th:text="${QnA.QnAQuestionContent}"></p>
+                        <p th:text="${QnA.qnAQuestionContent}"></p>
                     </li>
                     <li>
                         <p>작성자</p>
@@ -35,26 +35,28 @@
                     </li>
                     <li>
                         <p>조회수</p>
-                        <p th:text="${QnA.QnAViews}"></p>
+                        <p th:text="${QnA.qnAViews}"></p>
                     </li>
                     <li>
                         <p>등록일</p>
-                        <p th:text="${#temporals.format(QnA.QnACreateDate, 'yyyy-MM-dd HH:mm:ss')}"></p>
+                        <p th:text="${#temporals.format(QnA.qnACreateDate, 'yyyy-MM-dd HH:mm:ss')}"></p>
                     </li>
                 </ul>
-            </div>
-            <div class="buttonBox">
-                <a th:href="'/admin/qna/' + ${QnA.QnAId} + '/delete'">삭제</a>
-                <a href="/admin/qna/index">목록</a>
+                <div class="buttonBox">
+                    <a th:href="'/admin/qna/' + ${QnA.qnAId} + '/delete'">삭제</a>
+                    <a href="/admin/qna/index">목록</a>
+                </div>
             </div>
             <div id="answerBox">
-                <p>답변 보기</p>
-                <p th:utext="${QnA.QnAAnswer != null ? '<span>등록일</span>' + #temporals.format(QnA.QnAAnswerDate, 'yyyy-MM-dd HH:mm:ss') : ''}"></p>
-                <p th:text="${QnA.QnAAnswer}"></p>
-            </div>
-            <div class="buttonBox">
-                <a th:href="'/admin/qna/' + ${QnA.QnAId} + '/insert'">수정</a>
-                <a th:href="'/admin/qna/' + ${QnA.QnAId} + '/answer/delete'">삭제</a>
+                <p class="boxTitle">답변 보기</p>
+                <div>
+                    <p th:utext="${QnA.qnAAnswer != null ? '<span>등록일</span>' + #temporals.format(QnA.qnAAnswerDate, 'yyyy-MM-dd HH:mm:ss') : ''}"></p>
+                    <p th:text="${QnA.qnAAnswer}"></p>
+                    <div class="buttonBox">
+                        <a th:href="'/admin/qna/' + ${QnA.qnAId} + '/insert'">수정</a>
+                        <a th:href="'/admin/qna/' + ${QnA.qnAId} + '/answer/delete'">삭제</a>
+                    </div>
+                </div>
             </div>
         </div>
     </main>

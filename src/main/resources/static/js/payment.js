@@ -490,7 +490,7 @@ function paymentFormChange(paymentPrice){
         console.log(paymentPrice);
         console.log(paymentPriceText);
     }
-    return paymentPriceText = paymentPrice + paymentPriceText;
+    return paymentPrice + paymentPriceText + '원';
 }
 
 const paymentButton = document.getElementById('payment-btn');

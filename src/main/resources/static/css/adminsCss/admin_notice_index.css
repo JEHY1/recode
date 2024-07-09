@@ -1,18 +1,21 @@
+main { /* main 크기 고정 */
+    width: 1823px;
+}
 .box {
     width: 1500px;
+    height: 903px;
     margin: 0 auto;
-    height: 676px;
     position: relative;
 }
 #boxTitle { /* 제목 */
     text-align: center;
-    margin-top: 200px;
-    margin-bottom: 60px;
+    margin-top: 50px;
+    margin-bottom: 40px;
     font-size: 25px;
     font-weight: bold;
 }
 #selectBox {
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 #selectBox a:nth-of-type(1) {
     box-sizing: border-box;
@@ -52,7 +55,7 @@
     text-decoration: none;
     background-color: #548235;
     width: 160px;
-    padding: 10px;
+    padding: 8px;
     border: 1px solid #548235;
     border-radius: 10px;
     color: white;
@@ -67,12 +70,12 @@ table {
 th {
     border-top: 1px solid black;
     border-bottom: 1px solid black;
-    height: 70px;
+    height: 50px;
 }
 td {
     border-bottom: 1px solid #ccc;
     text-align: center;
-    height: 70px;
+    height: 60px;
 }
 tr:last-child td {
     border-bottom: 1px solid black;
@@ -108,7 +111,7 @@ td:nth-child(8) a:nth-child(2) {
 }
 #pageBox {
     text-align: center;
-    margin-top: 30px;
+    margin: 20px 0;
     position: absolute;
     bottom: 0;
     left: 0;

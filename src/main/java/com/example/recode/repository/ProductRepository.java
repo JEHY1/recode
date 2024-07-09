@@ -1,6 +1,8 @@
 package com.example.recode.repository;
 
 import com.example.recode.domain.Product;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -13,4 +15,7 @@ public interface ProductRepository extends JpaRepository<Product, Long> {
     Optional<List<Product>> findAllByProductIdIn(List<Long> productIds);
     @Query(value = "SELECT * FROM product_tb ORDER BY product_registration_date DESC LIMIT 4", nativeQuery = true)
     Optional<List<Product>> newProduct();
+
+    Optional<Page<Product>> findAllByProductCategory(String productCategory, Pageable pageable);
+    Optional<Page<Product>> findAllByProductNameContaining(String searchText, Pageable pageable);
 }

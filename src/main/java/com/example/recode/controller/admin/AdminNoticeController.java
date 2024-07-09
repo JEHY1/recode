@@ -12,11 +12,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.List;
 
@@ -49,11 +48,11 @@ public class AdminNoticeController {
         return "redirect:/admin/notice/" + saved.getNoticeId() + "/show";
     }
     @GetMapping("/admin/notice/{noticeId}/delete") // 공지사항 삭제
-    public String deleteAdminNotice(@PathVariable Long noticeId, RedirectAttributes rttr) {
+    public String deleteAdminNotice(@PathVariable Long noticeId, RedirectAttributes rttr, Integer page, String searchKeyword) {
         noticeService.deleteById(noticeId);
         rttr.addFlashAttribute("msg", "공지사항이 삭제 되었습니다.");
-
-        return "redirect:/admin/notice/index";
+        System.err.println(searchKeyword);
+        return "redirect:/admin/notice/index?page=" + page + "&searchKeyword=" + searchKeyword;
     }
 
     @GetMapping("/admin/notice/{noticeId}/show") // admin_notice_insert 공지사항 보기 페이지
@@ -68,25 +67,44 @@ public class AdminNoticeController {
     }
 
     @GetMapping("/admin/notice/index") // admin_notice_insert 공지사항 목록 페이지
-    public String indexAdminNotice(Model model, @PageableDefault(page = 0, size = 5, sort = "noticeId", direction = Sort.Direction.DESC) Pageable pageable) {
-        // default 페이지, 한 페이지 게시글 수, 정렬기준 컬럼, 정렬순서
-//        List<NoticeViewResponse> noticeList = noticeService.getAllNoticeInfo();
-//        model.addAttribute("notices", noticeList);
-        Page<NoticeViewResponse> noticeList = noticeService.noticeViewList(pageable);
+    public String indexAdminNotice(Model model, @PageableDefault(page = 0, size = 10, sort = "noticeId", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(required = false) Integer isDel, @RequestParam(defaultValue = "") String searchKeyword) {
+                                                                // default 페이지, 한 페이지 게시글 수, 정렬기준 컬럼, 정렬순서
+        Page<NoticeViewResponse> noticeList = null;
+        if(searchKeyword == null) {
+            noticeList = noticeService.noticeViewList(pageable);
+        }
+        else {
+            noticeList = noticeService.noticeViewTitleSearchList(searchKeyword, pageable);
+        }
+        model.addAttribute("notices", noticeList);
+        model.addAttribute("searchKeyword", searchKeyword);
 
         int nowPage = noticeList.getPageable().getPageNumber()+1; // 현재 페이지 (pageable이 갖고 있는 페이지는 0부터이기 때문에 +1)
-
-        int block = (int) Math.ceil(nowPage/5.0); // 페이지 구간 (5개씩)
-
+        int block = (int) Math.ceil(nowPage/5.0); // 페이지 구간 (5페이지 - 1구간)
         int startPage = (block - 1) * 5 + 1; // 블럭에서 보여줄 시작 페이지
-        int endPage = Math.min(startPage + 4, noticeList.getTotalPages()); // 블럭에서 보여줄 마지막 페이지
-        model.addAttribute("notices", noticeList);
+        int lastPage = noticeList.getTotalPages() == 0 ? 1 : noticeList.getTotalPages(); // 존재하는 마지막 페이지
+        int endPage = Math.min(startPage + 4, lastPage); // 블럭에서 보여줄 마지막 페이지
         model.addAttribute("nowPage", nowPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
+        if(isDel != null && isDel == 1){
+            model.addAttribute("msg", "공지사항이 삭제 되었습니다.");
+        }
 
         return "admins/admin_notice_index";
+    }
+
+    @PostMapping("/admin/notice/delete")
+    @ResponseBody
+    public String deleteAdminNoticeSelect(@RequestParam(required = false) List<Long> noticeIds) {
+        if(noticeIds != null) {
+            noticeService.deleteByIds(noticeIds);
+            return "delete";
+        }
+        else {
+            return "null";
+        }
     }
 
 }

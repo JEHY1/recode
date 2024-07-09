@@ -8,14 +8,71 @@ function httpRequest(url, method, body){
     });
 }
 
+function toCheckValueList(comps){
+    let list = [];
+    comps.forEach(checkBox => {
+        if(checkBox.checked){
+            list.push(checkBox.nextElementSibling.value);
+        }
+    });
+
+    return list;
+}
+
 function wait(ms) {
   return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+function toWon(price){
+    let PriceText = '';
+    price += '';
+
+    while(price.length > 3){
+        console.log(price.substring(price.length - 3, price.length));
+        PriceText += ',' + price.substring(price.length - 3, price.length);
+        price = price.substring(0, price.length - 3);
+        console.log(price);
+        console.log(PriceText);
+    }
+    console.log(price + PriceText + '원');
+    return price + PriceText + '원';
 }
 
 function removeAllChildNodes(parent) {
     while (parent.firstChild) {
         parent.removeChild(parent.firstChild);
     }
+}
+
+//페이지 이동
+function movePage(comp){
+    //현제 페이지의 체크박스 모두 해제
+    Array.from(document.getElementById('selectedPage').getElementsByClassName('itemCheckBox')).forEach(checkBox => checkBox.checked = false);
+    document.getElementById('allSelectCheckBox').checked = false;
+
+    //페이지 이동하기
+    document.getElementById('selectedPage').classList.add('d-hidden');
+    document.getElementById('selectedPage').setAttribute('id', '');
+    document.getElementById('itemField').children[parseInt(comp.textContent) - 1].setAttribute('id', 'selectedPage');
+    document.getElementById('selectedPage').classList.remove('d-hidden');
+
+    document.getElementById('selectedPage-btn').setAttribute('id', '');
+    comp.setAttribute('id', 'selectedPage-btn');
+
+    if(document.getElementById('selectedPage').previousElementSibling === null){
+        prevPageButton.setAttribute('disabled', '');
+    }
+    else{
+        prevPageButton.removeAttribute('disabled');
+    }
+
+    if(document.getElementById('selectedPage').nextElementSibling === null){
+        nextPageButton.setAttribute('disabled', '');
+    }
+    else{
+        nextPageButton.removeAttribute('disabled');
+    }
+
 }
 
 function getProductName(Comp){
@@ -200,15 +257,139 @@ const detailViewButton = document.getElementsByClassName('selectable');
 
 if(detailViewButton){
     Array.from(detailViewButton).forEach(button => {
-        button.addEventListener('click', () => location.href = '/admin/orderDetailManager/' + button.children[0].value);
+        button.addEventListener('click', () => location.href = '/admin/orderDetailManager/' + button.previousElementSibling.value);
     });
 }
 
+//체크박스 설정
 const AllSelectCheckBox = document.getElementById('allSelectCheckBox');
 
 if(AllSelectCheckBox){
     AllSelectCheckBox.addEventListener('click', () => {
-        document.getElementById
+        if(AllSelectCheckBox.checked){
+            Array.from(document.getElementById('selectedPage').getElementsByClassName('itemCheckBox')).forEach(checkBox => {
+                if(!checkBox.checked){
+                    checkBox.checked = true;
+                }
+            });
+        }
+        else{
+            Array.from(document.getElementById('selectedPage').getElementsByClassName('itemCheckBox')).forEach(checkBox => {
+                if(checkBox.checked){
+                    checkBox.checked = false;
+                }
+            });
+        }
+
+    });
+}
+
+//선택 상품 상태변경 버튼
+const selectedStatusChangeButton = document.getElementById('selectedStatusChange-btn');
+
+if(selectedStatusChangeButton){
+    selectedStatusChangeButton.addEventListener('click', () => {
+        if(toCheckValueList(Array.from(document.getElementById('selectedPage').getElementsByClassName('itemCheckBox'))).length === 0){
+            alert('항목을 선택하세요.');
+            return;
+        }
+
+        if(document.getElementById('statusSel').value !== '선택'){
+            let body = JSON.stringify({
+                paymentIds : toCheckValueList(Array.from(document.getElementById('selectedPage').getElementsByClassName('itemCheckBox'))),
+                paymentStatus : document.getElementById('statusSel').value
+            });
+
+            httpRequest(`/admin/orderManager`, 'POST', body)
+            .then(response => {
+                if(response.ok){
+                    return response.json();
+                }
+            })
+            .then(data => {
+                console.log(data);
+                data.forEach(paymentDetail => document.getElementById('paymentId' + paymentDetail.paymentId).nextElementSibling.children[5].textContent = paymentDetail.paymentStatus)
+                alert('변경사항이 적용되었습니다.');
+            });
+        }
+        else{
+            alert('상태를 선택해주세요.');
+        }
+
+    });
+}
+
+//이전 페이지 버튼
+const prevPageButton = document.getElementById('prevPage-btn');
+
+if(prevPageButton){
+    prevPageButton.addEventListener('click', () => {
+        //원래 페이지의 체크박스 모두 해제
+        Array.from(document.getElementById('selectedPage').getElementsByClassName('itemCheckBox')).forEach(checkBox => checkBox.checked = false);
+        document.getElementById('allSelectCheckBox').checked = false;
+
+        //각 페이지 버튼 상태 변경
+        let selectedPageButton = document.getElementById('selectedPage-btn');
+        selectedPageButton.setAttribute('id', '');
+        selectedPageButton.previousElementSibling.setAttribute('id', 'selectedPage-btn');
+
+        //페이지 보여주기
+        let currentPage = document.getElementById('selectedPage');
+        currentPage.classList.add('d-hidden');
+        currentPage.setAttribute('id', '');
+        currentPage.previousElementSibling.setAttribute('id', 'selectedPage');
+        document.getElementById('selectedPage').classList.remove('d-hidden');
+
+        if(document.getElementById('selectedPage').previousElementSibling === null){
+            prevPageButton.setAttribute('disabled', '');
+        }
+        else{
+            prevPageButton.removeAttribute('disabled');
+        }
+
+        if(document.getElementById('selectedPage').nextElementSibling === null){
+            nextPageButton.setAttribute('disabled', '');
+        }
+        else{
+            nextPageButton.removeAttribute('disabled');
+        }
+    });
+}
+
+const nextPageButton = document.getElementById('nextPage-btn');
+
+if(nextPageButton){
+    nextPageButton.addEventListener('click', () => {
+        //현제 페이지의 체크박스 모두 해제
+        Array.from(document.getElementById('selectedPage').getElementsByClassName('itemCheckBox')).forEach(checkBox => checkBox.checked = false);
+        document.getElementById('allSelectCheckBox').checked = false;
+
+        //각 페이지 버튼 상태 변경
+        let selectedPageButton = document.getElementById('selectedPage-btn');
+        selectedPageButton.setAttribute('id', '');
+        selectedPageButton.nextElementSibling.setAttribute('id', 'selectedPage-btn');
+
+        //페이지 보여주기
+        let currentPage = document.getElementById('selectedPage');
+        currentPage.classList.add('d-hidden');
+        currentPage.setAttribute('id', '');
+        currentPage.nextElementSibling.setAttribute('id', 'selectedPage');
+        document.getElementById('selectedPage').classList.remove('d-hidden');
+
+        if(document.getElementById('selectedPage').previousElementSibling === null){
+            prevPageButton.setAttribute('disabled', '');
+        }
+        else{
+            prevPageButton.removeAttribute('disabled');
+        }
+
+        if(document.getElementById('selectedPage').nextElementSibling === null){
+            nextPageButton.setAttribute('disabled', '');
+        }
+        else{
+            nextPageButton.removeAttribute('disabled');
+        }
+
     });
 }
 
@@ -250,7 +431,7 @@ const itemField = document.getElementById('itemField');
 
 if(itemField.children[0] != null){
     itemField.children[0].classList.remove('d-hidden');
-    itemFiled.children[0].setAttribute('id', 'selectedPage');
+    itemField.children[0].setAttribute('id', 'selectedPage');
 }
 
 //페이지 수량 확인
@@ -260,17 +441,45 @@ if(parseInt(document.getElementById('pageSize').value) > 0){
     for(let i = 0; i < (size > 5 ? 5 : size); i++){
 
         let comp = document.createElement('div');
-        comp.setAttribute('class', 'col-auto');
+        comp.setAttribute('class', 'col-auto cursor');
         comp.setAttribute('style', 'width:40px;');
+        comp.setAttribute('onclick', 'movePage(this)');
         comp.textContent = i + 1;
 
         document.getElementById('pageSelectField').appendChild(comp);
         console.log(i + 1);
     }
+
+    document.getElementById('pageSelectField').children[0].setAttribute('id', 'selectedPage-btn');
+    prevPageButton.setAttribute('disabled', '');
+    if(document.getElementById('pageSize').value === '1'){
+        nextPageButton.setAttribute('disabled', '');
+    }
+}
+else{
+    document.getElementById('pageBar').remove();
 }
 
 
+//초기값 설정
+//원화 변경
+if(document.getElementsByClassName('price')){
 
+    Array.from(document.getElementsByClassName('price')).forEach(comp => {
 
+        console.log('indexOf : ' + comp.textContent.indexOf(' '));
+        if(comp.textContent.indexOf(' ') === -1){
+            comp.textContent = toWon(comp.textContent)
+        }
+        else{
+            comp.textContent = toWon(comp.textContent.substring(0, comp.textContent.indexOf(' '))) + comp.textContent.substring(comp.textContent.indexOf(' '));
+        }
+    });
+}
 
+let text = "2676469 (16건)";
 
+console.log(text.indexOf(' '));
+console.log(text.substring(text.indexOf(' ')));
+console.log(toWon(text.substring(0, text.indexOf(' '))));
+console.log(text.indexOf(' ') === -1);

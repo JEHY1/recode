@@ -1,13 +1,22 @@
+main { /* main 크기 고정 */
+    width: 1823px;
+}
 .box {
-    width: 630px;
+    width: 710px;
     margin: 0 auto;
 }
 #boxTitle { /* 제목 */
     text-align: center;
-    margin-top: 200px;
-    margin-bottom: 50px;
+    margin-top: 50px;
+    margin-bottom: 40px;
     font-size: 25px;
     font-weight: bold;
+}
+#showBox {
+    padding: 20px 40px 40px 40px;
+    border-radius: 30px;
+    background-color: #f7f7f7;
+    margin-bottom: 40px;
 }
 #showBox ul {
     list-style: none;

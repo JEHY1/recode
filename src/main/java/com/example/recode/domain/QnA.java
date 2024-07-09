@@ -21,7 +21,7 @@ public class QnA {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "qna_id", updatable = false)
-    private Long QnAId;
+    private Long qnAId;
 
     @Column(name = "user_id", nullable = false)
     private long userId;
@@ -30,46 +30,46 @@ public class QnA {
     private long productId;
 
     @Column(name = "qna_question_title", nullable = false)
-    private String QnAQuestionTitle;
+    private String qnAQuestionTitle;
 
     @Column(name = "qna_question_content", nullable = false)
-    private String QnAQuestionContent;
+    private String qnAQuestionContent;
 
     @Column(name = "qna_answer")
-    private String QnAAnswer;
+    private String qnAAnswer;
 
     @CreatedDate
     @Column(name = "qna_create_date", nullable = false, updatable = false)
-    private LocalDateTime QnACreateDate;
+    private LocalDateTime qnACreateDate;
 
     @Column(name = "qna_views", nullable = false)
-    private int QnAViews;
+    private int qnAViews;
 
     @Column(name = "qna_answer_date")
-    private LocalDateTime QnAAnswerDate;
+    private LocalDateTime qnAAnswerDate;
 
     @Builder
     public QnA(Long qnAId, long userId, long productId, String qnAQuestionTitle, String qnAQuestionContent, String qnAAnswer, LocalDateTime qnACreateDate, int qnAViews, LocalDateTime qnAAnswerDate) {
-        this.QnAId = qnAId;
+        this.qnAId = qnAId;
         this.userId = userId;
         this.productId = productId;
-        this.QnAQuestionTitle = qnAQuestionTitle;
-        this.QnAQuestionContent = qnAQuestionContent;
-        this.QnAAnswer = qnAAnswer;
-        this.QnACreateDate = qnACreateDate;
-        this.QnAViews = qnAViews;
-        this.QnAAnswerDate = qnAAnswerDate;
+        this.qnAQuestionTitle = qnAQuestionTitle;
+        this.qnAQuestionContent = qnAQuestionContent;
+        this.qnAAnswer = qnAAnswer;
+        this.qnACreateDate = qnACreateDate;
+        this.qnAViews = qnAViews;
+        this.qnAAnswerDate = qnAAnswerDate;
     }
 
     public QnA saveAnswer(QnaAnswerRequest dto) { // 상품문의 답변 등록&수정
-        this.QnAAnswer = dto.getQnAAnswer();
-        this.QnAAnswerDate = this.QnAAnswerDate == null ? LocalDateTime.now() : this.QnAAnswerDate;
+        this.qnAAnswer = dto.getQnAAnswer();
+        this.qnAAnswerDate = this.qnAAnswerDate == null ? LocalDateTime.now() : this.qnAAnswerDate;
         return this;
     }
 
     public QnA deleteAnswer() { // 상품문의 답변 지우기
-        this.QnAAnswer = null;
-        this.QnAAnswerDate = null;
+        this.qnAAnswer = null;
+        this.qnAAnswerDate = null;
         return this;
     }
 }

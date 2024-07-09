@@ -5,7 +5,7 @@
             <a href="/etc/brand">브랜드</a>
         </li>
         <li>
-            <a href="#" onclick="return false;">상품</a>
+            <a href="javascript:void(0)">상품</a>
             <ul>
                 <li><a href="#">크로스백</a></li>
                 <li><a href="#">숄더백</a></li>
@@ -15,7 +15,7 @@
             </ul>
         </li>
         <li>
-            <a href="#" onclick="return false;">커뮤니티</a>
+            <a href="javascript:void(0)">커뮤니티</a>
             <ul>
                 <li><a href="/notices">공지사항</a></li>
                 <li><a href="/qnaList">상품문의</a></li>
@@ -26,10 +26,10 @@
     <div id="iconBox">
         <ul>
             <li>
-                <a href="#" onclick="return false;"></a>
+                <a href="javascript:void(0)"></a>
             </li>
             <li>
-                <a href="#" onclick="return false;"></a>
+                <a href="javascript:void(0)"></a>
                 <ul>
                     <li><a href="/login" sec:authorize="isAnonymous()">로그인</a></li>
                     <li><a href="/join/new" sec:authorize="isAnonymous()">회원가입</a></li>
@@ -42,13 +42,13 @@
                 </ul>
             </li>
             <li>
-                <a href="#" onclick="return false;"></a>
+                <a href="javascript:void(0)"></a>
             </li>
         </ul>
     </div>
 </header>
 <nav xmlns:sec="http://www.w3.org/1999/xhtml">
-    <a href="#" onclick="return false;">✕</a>
+    <a href="javascript:void(0)">✕</a>
     <div id="naviBox">
         <ul>
             <li>
@@ -86,7 +86,7 @@
     </div>
 </nav>
 <div id="search">
-    <a href="#" onclick="return false;">✕</a>
+    <a href="javascript:void(0)">✕</a>
     <div id="searchBox">
         <p>Search</p>
         <form>
@@ -98,6 +98,6 @@
 <div xmlns:th="http://www.w3.org/1999/xhtml" id="notice" th:if="${msg}">
     <div>
         <p th:text="${msg}"></p>
-        <a href="#" onclick="return false;">확인</a>
+        <a href="javascript:void(0)">확인</a>
     </div>
 </div>

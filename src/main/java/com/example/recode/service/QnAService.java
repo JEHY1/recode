@@ -1,16 +1,22 @@
 package com.example.recode.service;
 
+import com.example.recode.domain.Notice;
 import com.example.recode.domain.QnA;
+import com.example.recode.dto.NoticeViewResponse;
 import com.example.recode.dto.ProductDetailQnAViewResponse;
 import com.example.recode.dto.QnAViewResponse;
 import com.example.recode.dto.QnaAnswerRequest;
+import com.example.recode.dto.QnaSubmitRequest;
 import com.example.recode.repository.QnARepository;
 import com.example.recode.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.Principal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -72,8 +78,8 @@ public class QnAService {
         return pagingQnAs;
     }
 
-    public QnA findById(Long QnAId) { // QnAId로 QnA 가져오기
-        return qnARepository.findById(QnAId)
+    public QnA findById(Long qnAId) { // QnAId로 QnA 가져오기
+        return qnARepository.findById(qnAId)
                 .orElseThrow(() -> new IllegalArgumentException("not found QnA"));
     }
 
@@ -83,16 +89,16 @@ public class QnAService {
     }
 
     @Transactional
-    public QnA deleteAnswer(Long QnAId) { // 상품문의 답변 삭제
-        return findById(QnAId).deleteAnswer();
+    public QnA deleteAnswer(Long qnAId) { // 상품문의 답변 삭제
+        return findById(qnAId).deleteAnswer();
     }
 
     public List<QnA> findAll() { // List<QnA> 가져오기
         return qnARepository.findAll();
     }
 
-    public void deleteById(Long QnAId) { // QnAId로 QnA 삭제
-        qnARepository.deleteById(QnAId);
+    public void deleteById(Long qnAId) { // QnAId로 QnA 삭제
+        qnARepository.deleteById(qnAId);
     }
 
     public List<QnAViewResponse> getAllQnAInfo() { // List<QnAViewResponse> 가져오기
@@ -104,5 +110,32 @@ public class QnAService {
         return list;
     }
 
+    public QnA saveQnA(QnaSubmitRequest request, Principal principal){
+
+        return qnARepository.save(QnA.builder()
+                .userId(userService.getUserId(principal))
+                .productId(request.getProductId())
+                .qnAQuestionTitle(request.getQnaTitle())
+                .qnAQuestionContent(request.getQnaContent())
+                .qnAViews(0)
+                .build()
+        );
+    }
+
+    public Page<QnAViewResponse> qnAViewList(Pageable pageable) { // 페이징 처리한 Page<QnAViewResponse> 가져옴
+        Page<QnA> qnAList = qnARepository.findAll(pageable); // 페이징 처리한 Page<QnA>
+        Page<QnAViewResponse> qnAViewList = qnAList.map(qnA -> new QnAViewResponse(qnA, userService.getUsername(qnA.getUserId()), productService.findProductByProductId(qnA.getProductId()).getProductName()));
+        return qnAViewList;
+    }
+
+    public void deleteByIds(List<Long> qnAIds) { // qnAIds 리스트로 QnA 삭제
+        for (Long qnAId : qnAIds) {
+            qnARepository.deleteById(qnAId);
+        }
+    }
+
+    public Page<QnA> getAllQnAs(Pageable pageable) {
+        return qnARepository.findAll(pageable);
+    }
 
 }

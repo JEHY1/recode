@@ -4,6 +4,7 @@ import com.example.recode.domain.Notice;
 import com.example.recode.service.NoticeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
@@ -19,24 +20,48 @@ public class NoticeController {
     @Autowired
     private NoticeService noticeService;
 
+//    @GetMapping("/notices")
+//    public String getAllNotices(Model model,@PageableDefault(page = 0, size = 10,sort = "noticeId",direction = Sort.Direction.ASC) Pageable pageable) {
+//        Page<Notice> list = noticeService.getAllNotices(pageable);
+//
+//        System.err.println(list.getContent());
+//
+//        int firstPage = list.getPageable().getPageNumber() +1 ;
+//
+//        int startPage = Math.max(-4, 1);
+//
+//        int lastPage = Math.min(firstPage +5, list.getTotalPages());
+//
+//
+//        model.addAttribute("list", list);
+//        model.addAttribute("firstPage", firstPage);
+//        model.addAttribute("startPage", startPage);
+//        model.addAttribute("lastPage", lastPage);
+//
+//
+//        return "/board/noticeList";
+//    }
+
     @GetMapping("/notices")
-    public String getAllNotices(Model model,@PageableDefault(page = 0, size = 10,sort = "noticeId",direction = Sort.Direction.ASC) Pageable pageable) {
-        Page<Notice> list = noticeService.getAllNotices(pageable);
+    public String getAllNotices(Model model, Pageable pageable) {
+        // 명시적으로 페이지 크기를 설정하는 경우 (10개씩 출력)
+        int pageSize = 10;
+        Pageable pageRequest = PageRequest.of(pageable.getPageNumber(), pageSize, Sort.by("noticeId").ascending());
 
-        System.err.println(list.getContent());
+        Page<Notice> list = noticeService.getAllNotices(pageRequest);
 
-        int firstPage = list.getPageable().getPageNumber() +1 ;
-
-        int startPage = Math.max(-4, 1);
-
-        int lastPage = Math.min(firstPage +5, list.getTotalPages());
-
+        int firstPage = list.getNumber() + 1;
+        int totalPages = list.getTotalPages();
+        int startPage = Math.max(firstPage - 4, 1);
+        int lastPage = Math.min(firstPage + 5, totalPages);
 
         model.addAttribute("list", list);
         model.addAttribute("firstPage", firstPage);
         model.addAttribute("startPage", startPage);
         model.addAttribute("lastPage", lastPage);
-
+        model.addAttribute("totalPages", totalPages);
+        model.addAttribute("currentPage", firstPage);
+        model.addAttribute("pageNumber", pageable.getPageNumber());
 
         return "/board/noticeList";
     }

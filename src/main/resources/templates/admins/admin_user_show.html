@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="/css/header.css">
+    <link rel="stylesheet" href="/css/admin_header.css">
     <link rel="stylesheet" href="/css/adminsCss/admin_user_show.css">
     <script src="/js/jquery.js"></script>
-    <script src="/js/header.js"></script>
+    <script src="/js/admin_header.js"></script>
     <title>관리자 - 회원정보 보기</title>
 </head>
 <body>
@@ -84,10 +84,10 @@
                         <p th:text="${#temporals.format(user.userDeleteDate, 'yyyy-MM-dd HH:mm:ss')}"></p>
                     </li>
                 </ul>
-            </div>
-            <div class="buttonBox">
-                <a th:href="'/admin/user/' + ${user.userId} + '/edit'">수정</a>
-                <a href="/admin/user/index">목록</a>
+                <div class="buttonBox">
+                    <a th:href="'/admin/user/' + ${user.userId} + '/edit'">수정</a>
+                    <a href="/admin/user/index">목록</a>
+                </div>
             </div>
         </div>
     </main>
