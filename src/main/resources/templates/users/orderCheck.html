@@ -25,6 +25,10 @@
     border-bottom: 1px solid gainsboro;
   }
 
+  .border-b-header{
+    border-bottom: 1px solid rgb(204, 204, 204) !important;
+  }
+
   .border-r{
     border-right: 1px solid gainsboro;
   }
@@ -83,40 +87,58 @@
     background-color: white;
   }
 
+  .move-btn{
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    background-color: #903c31;
+    color: white;
+    color-white;
+    border-radius: 25px;
+    width: 50px;
+    height: 100px;
+    font-size: 35px;
+  }
+
+  .move-btn div:hover{
+    color: gray;
+  }
 
 </style>
 
 </head>
 <body>
 <th:block th:include="layouts/header"></th:block>
+<th:block th:include="layouts/scroll"></th:block>
+
 <div class="mx-auto" style="width: 1250px; padding-top: 200px;">
   <div class="mx-auto text-center pb-5" style="font-size: 46px; font-weight: bolder;">주문 내역 조회</div>
   <div class="mx-auto border mb-4" style="background-color: gainsboro; border-radius: 5px;">
 
     <div class="row py-3">
       <div class="col">
-        <div class="text-center fs-35 fw-b">0</div>
+        <div class="text-center fs-35 fw-b" th:text="${orderCheckInfos.nonDepositCount}">0</div>
         <div class="text-center">결제대기</div>
       </div>
 
       <div class="col-auto d-flex align-items-center justify-content-center fs-50">&#10095;</div>
 
       <div class="col">
-        <div class="text-center fs-35 fw-b">0</div>
+        <div class="text-center fs-35 fw-b" th:text="${orderCheckInfos.deliveryReadyCount}">0</div>
         <div class="text-center">배송준비중</div>
       </div>
 
       <div class="col-auto d-flex align-items-center justify-content-center fs-50">&#10095;</div>
 
       <div class="col">
-        <div class="text-center fs-35 fw-b">0</div>
+        <div class="text-center fs-35 fw-b" th:text="${orderCheckInfos.deliveryInCount}">0</div>
         <div class="text-center">배송중</div>
       </div>
 
       <div class="col-auto d-flex align-items-center justify-content-center fs-50">&#10095;</div>
 
       <div class="col">
-        <div class="text-center fs-35 fw-b">0</div>
+        <div class="text-center fs-35 fw-b" th:text="${orderCheckInfos.deliveryCompleteCount}">0</div>
         <div class="text-center">배송완료</div>
       </div>
     </div>
@@ -255,7 +277,7 @@
     </div>
   </div>
 
-  <th:block th:each="orderCheckInfo : ${orderCheckInfos}">
+  <th:block th:each="orderCheckInfo : ${orderCheckInfos.orderCheckInfoList}">
     <div class="row w-100 mx-auto border-b">
       <div class="col-3 d-flex align-items-center justify-content-center border-r border-b" th:text="${#temporals.format(orderCheckInfo.orderDate, 'yyyy-MM-dd')}">주문일자</div>
 
@@ -267,7 +289,7 @@
               <div class="col d-flex align-items-center" th:text="${detail.productName}">상품이름</div>
             </div>
           </div>
-          <div class="col d-flex align-items-center justify-content-center" th:text="${detail.paymentDetailPrice}">주문금액</div>
+          <div class="col d-flex align-items-center justify-content-center price" th:text="${detail.paymentDetailPrice}">주문금액</div>
           <div class="col row my-auto">
             <div class="d-flex align-items-center justify-content-center" th:text="${detail.paymentDetailStatus}"></div>
             <input type="hidden" th:value="${detail.paymentDetailId}">
@@ -280,7 +302,7 @@
     </div>
   </th:block>
 
-  <div class="border-b mb-5 row w-100 mx-auto" th:if="${orderCheckInfos.isEmpty()}">
+  <div class="border-b mb-5 row w-100 mx-auto" th:if="${orderCheckInfos.orderCheckInfoList.isEmpty()}">
     <img class="mx-auto p-0 mt-4 mb-2" src="/images/icon_img/exclamationMark.png" style="width: 200px; height: 200px;">
     <div class="text-center py-2 color-gray">기간내 주문내역이 없습니다.</div>
   </div>
@@ -288,6 +310,7 @@
 </div>
 
 <th:block th:include="layouts/footer"></th:block>
-<script src="/js/orderCheck2.js"></script>
+<script src="/js/orderCheck.js"></script>
+<script src="/js/scroll.js"></script>
 </body>
 </html>

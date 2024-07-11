@@ -28,14 +28,16 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PaymentService {
 
+    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
+
     private final PaymentRepository paymentRepository;
     private final PaymentDetailRepository paymentDetailRepository;
     private final CartRepository cartRepository;
     private final ProductService productService;
     private final UserService userService;
-    private static final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyyMMdd");
-
+    
     //결제 요청 처리
+    @Transactional
     public Payment payment(PaymentRequest request, Principal principal){
 
         //결제 요청 정보로 결제 테이블 db 추가
@@ -104,7 +106,7 @@ public class PaymentService {
             if(payment.getPaymentStatus().equals("결제대기")){
                 paymentReadyCount++;
             }
-            else if(payment.getPaymentStatus().equals("배송준비")){
+            else if(payment.getPaymentStatus().equals("배송준비중")){
                 deliveryReadyCount++;
             }
             else if(payment.getPaymentStatus().equals("배송중")){
@@ -149,10 +151,17 @@ public class PaymentService {
                 .orElseThrow(() -> new IllegalArgumentException("not found paymentDetail"));
     }
 
-    public List<OrderCheckResponse> orderCheck(Principal principal, String startDate, String endDate, Integer unitPeriod){
+    //주문에 대한 정보 확인
+    public ProductOrderCheckAllInfoResponse orderCheck(Principal principal, String startDate, String endDate, Integer unitPeriod){
 
         List<Payment> payments;
+        List<OrderCheckResponse> list = null;
+        int nonDepositCount = 0;
+        int deliveryReadyCount = 0;
+        int deliveryInCount = 0;
+        int deliveryCompleteCount = 0;
 
+        //요청된 기간에 따라 검색
         if(unitPeriod != null){
             payments = paymentRepository.findPaymentsInDateRangeAndUserId(userService.getUserId(principal), LocalDateTime.now().minus(Period.ofMonths(unitPeriod)), LocalDateTime.now())
                     .orElse(null);
@@ -168,24 +177,45 @@ public class PaymentService {
                     .orElse(null);
         }
 
-        List<OrderCheckResponse> list = null;
         if(payments != null){
-            list = payments.stream().map(this::toOrderCheckResponse).toList();
+            list = new ArrayList<>();
+
+            for(Payment payment : payments){ //각 상태의 수 확인
+                switch(payment.getPaymentStatus()){
+                    case "결제대기" :
+                        nonDepositCount++;
+                        break;
+
+                    case "배송준비중" :
+                        deliveryReadyCount++;
+                        break;
+
+                    case "배송중" :
+                        deliveryInCount++;
+                        break;
+
+                    case "배송완료" :
+                        deliveryCompleteCount++;
+                        break;
+                }
+                list.add(OrderCheckResponse.builder()
+                        .orderDate(payment.getPaymentDate())
+                        .paymentDetails(findPaymentDetailByPaymentId(payment.getPaymentId()).stream().map(this::toProductOrderCheckResponse).toList())
+                        .build()
+                );
+            }
         }
 
-        return list;
-    }
-
-    public OrderCheckResponse toOrderCheckResponse(Payment payment){
-
-        List<PaymentDetail> list = findPaymentDetailByPaymentId(payment.getPaymentId());
-
-        return OrderCheckResponse.builder()
-                .orderDate(payment.getPaymentDate())
-                .paymentDetails(findPaymentDetailByPaymentId(payment.getPaymentId()).stream().map(this::toProductOrderCheckResponse).toList())
+        return ProductOrderCheckAllInfoResponse.builder()
+                .orderCheckInfoList(list)
+                .nonDepositCount(nonDepositCount)
+                .deliveryReadyCount(deliveryReadyCount)
+                .deliveryInCount(deliveryInCount)
+                .deliveryCompleteCount(deliveryCompleteCount)
                 .build();
     }
 
+    //PaymentDetail -> ProductOrderCheckResponse
     public ProductOrderCheckResponse toProductOrderCheckResponse(PaymentDetail paymentdetail){
 
         Product product = productService.findProductByProductId(paymentdetail.getProductId());
@@ -199,6 +229,7 @@ public class PaymentService {
                 .build();
     }
 
+    //요청받은 기간(문자열) 분할
     public PeriodResponse getPeriod(Integer unitPeriod, String startDate, String endDate){
 
         String currentDate = LocalDateTime.now().toString();
@@ -217,7 +248,6 @@ public class PaymentService {
         }
         else{
             unitPeriod = unitPeriod == null ? 1 : unitPeriod;
-
             String before = LocalDateTime.now().minus(Period.ofMonths(unitPeriod)).toString();
 
             return PeriodResponse.builder()
@@ -233,6 +263,7 @@ public class PaymentService {
         }
     }
 
+    //사용자의 주문에대한 변경요청처리
     @Transactional
     public PaymentDetail paymentDetailManage(OrderManageRequest request){
         PaymentDetail paymentDetail = findPaymentDetailByPaymentDetailId(request.getPaymentDetailId());
@@ -241,9 +272,12 @@ public class PaymentService {
             Payment payment = findPaymentByPaymentId(paymentDetail.getPaymentId());
             List<PaymentDetail> list = findPaymentDetailByPaymentId(payment.getPaymentId());
 
+            //각각의 요청시 해당주문에 포함하는 모든 paymentDetail이 같은 상태가 될 경우 주문의 상태 변경
             if(request.getPaymentDetailStatusRequest().equals("주문취소")){
-                paymentDetail.updateStatus(request.getPaymentDetailStatusRequest());
                 boolean isAllCancel = true;
+
+                paymentDetail.updateStatus(request.getPaymentDetailStatusRequest());
+
                 for(PaymentDetail _paymentDetail : list){
                     if(!_paymentDetail.getPaymentDetailStatus().equals("주문취소")){
                         isAllCancel = false;
@@ -256,10 +290,12 @@ public class PaymentService {
                 }
             }
             else if(request.getPaymentDetailStatusRequest().equals("반품신청")){
-                paymentDetail.updateStatus("반품대기");
                 boolean isAllReturn = true;
+                
+                paymentDetail.updateStatus("반품진행");
+
                 for(PaymentDetail _paymentDetail : list){
-                    if(!_paymentDetail.getPaymentDetailStatus().equals("반품대기")){
+                    if(!_paymentDetail.getPaymentDetailStatus().equals("반품진행")){
                         isAllReturn = false;
                         break;
                     }
@@ -270,7 +306,6 @@ public class PaymentService {
                 }
             }
         }
-
 
         return paymentDetail;
     }
@@ -283,13 +318,15 @@ public class PaymentService {
         return paymentRepository.findById(paymentId).orElse(null);
     }
 
+    //상품 검색시 나타나는 창(검색도우미) 에 표시될 내용
     public List<ProductNameForm> getPaymentDetailProductInProductName(String productName){
 
         List<PaymentDetail> list = paymentDetailRepository.findAll();
-        Set<ProductNameForm> nameList = new HashSet<>();
+        Set<ProductNameForm> nameList = new HashSet<>(); //같은 결과 제거용
         list.forEach(paymentDetail -> {
             Product product = productService.findProductByProductId(paymentDetail.getProductId());
 
+            //결과를 검색단어를 기준으로 검색단어 앞 문자열, 검색단어, 검색단어 뒤 문자열 3개로 나눔 
             if(product.getProductName().contains(productName)){
                 int index = product.getProductName().indexOf(productName);
                 nameList.add(ProductNameForm.builder()
@@ -297,13 +334,13 @@ public class PaymentService {
                         .searchText(productName)
                         .endText(product.getProductName().substring(index + productName.length()))
                         .build());
-//                nameList.add(new ProductNameForm(product.getProductName().substring(0, index), productName, product.getProductName().substring(index + productName.length())));
             }
         });
 
         return nameList.stream().toList();
     }
 
+    //상품 검색 도우미와 비슷
     public List<UserRealNameForm> getUserNameInfoInUsername(String username){
         Set<UserRealNameForm> nameList = new HashSet<>();
         List<User> list = userService.findUserByUsernameContaining(username);
@@ -321,12 +358,13 @@ public class PaymentService {
         return nameList.stream().toList();
     }
 
+    //기간(월 단위) 을 입력받아 현재 날짜와 해당 기간 이전날짜를 생성
     public DateForm getServerDate(Integer period){
-        period = period == null ? 120 : period;
+        period = period == null ? 120 : period; //기간 미입력시 기본값 전체
         String endDate = LocalDate.now().toString();
         String startDate = LocalDate.now().minus(Period.ofMonths(period)).toString();
 
-        if(period == 120){
+        if(period == 120){ //전체(120) 은 현재 날짜로부터 10년전 1월 1일을 시작일로 함
             return DateForm.builder()
                     .currentYear(endDate.substring(0, 4))
                     .currentMonthAndDay(endDate.substring(5, 7) + endDate.substring(8, 10))
@@ -396,7 +434,6 @@ public class PaymentService {
                         for(Product product : products){
 
                             if(product.getProductName().contains(productName)){
-                                System.err.println("검색된 상품 : " + product.getProductName());
                                 filteredPayments.add(payment);
                                 break;
                             }
@@ -418,8 +455,8 @@ public class PaymentService {
                     payments = filteredPayments;
                     filteredPayments = new ArrayList<>();
                 }
-                System.err.println(paymentToAdminPaymentInfoResponse(payments, productName));
 
+                //관리자 결제내역 통계 확인용
                 int totalDeposit = 0;
                 int totalPaymentCompleteDeposit = 0;
                 int totalPaymentNonDeposit = 0;
@@ -464,6 +501,7 @@ public class PaymentService {
                         totalPaymentCancelCount++;
                     }
                 }
+                
                 return AdminPaymentTotalInfoResponse.builder()
                         .paymentInfo(adminPaymentInfoResponsePaging(paymentToAdminPaymentInfoResponse(payments, productName), 10))
                         .totalDeposit(totalDeposit)
@@ -479,9 +517,7 @@ public class PaymentService {
                         .totalPaymentCompleteCount(totalPaymentCompleteCount)
                         .totalPaymentCancelCount(totalPaymentCancelCount)
                         .build();
-
             }
-
         }
         else{
             List<Payment> payments = paymentRepository.findAll();
@@ -490,6 +526,7 @@ public class PaymentService {
         return new AdminPaymentTotalInfoResponse();
     }
 
+    //size 로 페이징
     public List<List<AdminPaymentInfoResponse>> adminPaymentInfoResponsePaging(List<AdminPaymentInfoResponse> adminPaymentInfoResponses, int size){
 
         List<List<AdminPaymentInfoResponse>> pages = new ArrayList<>();
@@ -527,13 +564,12 @@ public class PaymentService {
             int paymentPrice = payment.getPaymentPrice();
             String paymentStatus = payment.getPaymentStatus();
 
-
-
             for(Product product : products){
                 if(product.getProductName().contains(productSearched == null ? "" : productSearched)){
                     productName = product.getProductName();
                 }
             }
+
             if(products.size() > 1){
                 productName += " 외 " + (products.size() - 1) + "개 상품";
             }
@@ -559,9 +595,11 @@ public class PaymentService {
         return findPaymentDetailByPaymentId(paymentId).stream().map(this::toOrderDetailManagerViewResponse).collect(Collectors.toList());
     }
 
+    //관리자 결제 상세정보 확인페이지 정보
     public OrderDetailManagerViewResponse toOrderDetailManagerViewResponse(PaymentDetail paymentDetail){
 
         Product product = productService.findProductByProductId(paymentDetail.getProductId());
+
         return OrderDetailManagerViewResponse.builder()
                 .paymentDetailId(paymentDetail.getPaymentDetailId())
                 .productRepImgSrc(product.getProductRepresentativeImgSrc())
@@ -571,6 +609,7 @@ public class PaymentService {
                 .build();
     }
 
+    //관리자 주문 상태 변경 처리
     @Transactional
     public List<Payment> ordersUpdate(AdminOrderManageRequest request){
 
@@ -580,9 +619,11 @@ public class PaymentService {
             payment.updatePaymentStatus(request.getPaymentStatus());
             payments.add(payment);
         });
+
         return payments;
     }
 
+    //관리자 주문 상세 상태 변경 처리
     @Transactional
     public List<PaymentDetail> orderDetailsUpdate(AdminOrderDetailManageRequest request){
 
@@ -592,11 +633,13 @@ public class PaymentService {
             paymentDetail.updateStatus(request.getPaymentDetailStatus());
             paymentDetails.add(paymentDetail);
         });
+
         return paymentDetails;
     }
 
     public String getCustomerName(long paymentId){
         User user = userService.findById(findPaymentByPaymentId(paymentId).getUserId());
+
         return user.getUsername() + " (" + user.getUserRealName() + ")";
 
     }

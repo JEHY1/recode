@@ -25,7 +25,6 @@ public class PaymentApiController {
     //결제 요청 처리
     @PostMapping("/user/payment")
     public ResponseEntity<Payment> pay(@RequestBody PaymentRequest request, Principal principal){
-
         return ResponseEntity.ok()
                 .body(paymentService.payment(request, principal));
     }
@@ -33,9 +32,7 @@ public class PaymentApiController {
     //결제 명세서중 품절 상품 삭제 처리
     @PostMapping("/user/payment/cleanList")
     public ResponseEntity<DeleteCartResponse> cleanPaymentList(@RequestBody CleanPaymentListRequest request){
-
         return ResponseEntity.ok()
                 .body(new DeleteCartResponse(cartService.cleanCart(request)));
     }
-
 }

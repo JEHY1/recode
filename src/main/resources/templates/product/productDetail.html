@@ -17,6 +17,10 @@
             width: 100%;
         }
 
+        .border-b{
+            border-bottom: 1px solid rgb(204, 204, 204) !important;
+        }
+
         .border-bottom-black{
             border-bottom: solid 1px black;
         }
@@ -64,6 +68,14 @@
 
         .color-gray{
             color: gray;
+        }
+
+        .bg-gainsboro{
+            background-color: gainsboro;
+        }
+
+        .bg-brightGray{
+            background-color: #F0F0F0;
         }
 
         .d-hidden{
@@ -157,6 +169,15 @@
             height: 45px;
         }
 
+        #cart-btn2{
+            border: solid 1px gray;
+            border-radius: 3px;
+            color: gray;
+            background-color: white;
+            width: 395px;
+            height: 45px;
+        }
+
         #soldOut-btn{
             border: solid 1px gray;
             border-radius: 3px;
@@ -211,6 +232,14 @@
             width: 35px;
             height: 35px;
         }
+
+        .productInfoGraph{
+            border :2px solid gainsboro;
+        }
+
+        .QnATitle-btn:hover{
+            background-color: gainsboro;
+        }
     </style>
 </head>
 
@@ -235,11 +264,14 @@
             <p class="productTag" th:text="'#' + ${product.color} + ' #' + ${product.type}">#파랑 #스포츠백</p>
             <div class="row w-100 mx-auto" style="margin-top: 130px;">
                 <div class="col-auto p-0 pe-2" th:if="${product.discountPrice != null}">
-                    <del class="fs-2 color-gainsboro" th:text="${product.regularPrice}"><p class="m-0">150,000원</p></del>
-                    <p class="fs-1 fw-b m-0" th:text="${product.discountPrice}">130,000원</p>
+                    <del class="fs-2 color-gainsboro price" th:text="${product.regularPrice}"><p class="m-0">150,000원</p></del>
+                    <p class="fs-1 fw-b m-0 price" th:text="${product.discountPrice}">130,000원</p>
+                </div>
+                <div class="col-auto p-0 pe-2" th:if="${product.discountPrice == null}">
+                    <p class="fs-1 fw-b m-0 price" th:text="${product.regularPrice}">130,000원</p>
                 </div>
 
-                <div class="col-auto p-0 d-flex align-items-center justify-content-center my-auto" id="salePercentageView">
+                <div th:if="${product.discountPrice != null}" class="col-auto p-0 d-flex align-items-center justify-content-center my-auto" id="salePercentageView">
                     <div>
                         <div style="font-size:30px;" id="salePercentage"></div>
                         <div class="text-center">&#9662;</div>
@@ -250,17 +282,16 @@
                     <div class="col-3">배송방법</div>
                     <div class="col-9">택배</div>
                     <div class="col-3 mt-3">배송비</div>
-                    <div class="col-9 mt-3">2500원(50,000원 이상 구매 시 무료)</div>
+                    <div class="col-9 mt-3">2,500원(50,000원 이상 구매 시 무료)</div>
                 </div>
 
                 <hr style="margin-top: 100px;">
 
                 <div class="row p-0 mx-auto" style="margin-top: 100px;">
-                    <button type="button" id="cart-btn" class="col-auto" th:if="${product.productSold == 0}">ADD CART</button>
+                    <button type="button" id="cart-btn" class="col-auto" th:if="${product.productSold == 0 && principal != null}">ADD CART</button>
+                    <button type="button" id="cart-btn2" class="col-auto" th:if="${product.productSold == 0 && principal == null}" onclick="location.href='/login'">ADD CART</button>
                     <button type="button" id="buy-btn" class="ms-auto" th:if="${product.productSold == 0}">BUY IT NOW</button>
                     <button type="submit" class="col" id="soldOut-btn" th:if="${product.productSold == 1}" style="cursor: not-allowed;"><del>SOLD OUT</del></button>
-
-
                 </div>
 
             </div>
@@ -283,15 +314,34 @@
     </div>
 
     <div id="product-detail-info-tap">
+        <div class="productInfoGraph mt-5">
+            <div class="row w-100 mx-auto border-bottom-gainsboro">
+                <div class="col-2 bg-brightGray">상품이름</div>
+                <div class="col" th:text="${product.productName}"></div>
+                <div class="col-2 bg-brightGray">모델명</div>
+                <div class="col" th:text="${product.productModel}"></div>
+            </div>
+            <div class="row w-100 mx-auto border-bottom-gainsboro">
+                <div class="col-2 bg-brightGray">타입</div>
+                <div class="col" th:text="${product.type}"></div>
+                <div class="col-2 bg-brightGray">색상</div>
+                <div class="col" th:text="${product.color}"></div>
+            </div>
+            <div class="row w-100 mx-auto">
+                <div class="col-2 bg-brightGray">규격</div>
+                <div class="col" th:text="${product.size}"></div>
+                <div class="col-2 bg-brightGray">재질</div>
+                <div class="col" th:text="${product.material}"></div>
+            </div>
+
+        </div>
+
         <div th:each="productDetailImg : ${product.productDetailImgs}" class="d-flex align-items-center justify-content-center">
             <img class="mt-2" th:src="'http://192.168.106.12/fileServer' + ${productDetailImg}">
         </div>
     </div>
 
     <div id="product-sale-info-tap" class="d-hidden">
-
-
-
         <div class="mt-5 infoContent">
             <p class="infoTitle">상품결제정보</p>
             고액결제의 경우 안전을 위해 카드사에서 확인전화를 드릴 수도 있습니다. 확인과정에서 도난 카드의 사용이나 타인 명의의 주문등
@@ -323,7 +373,7 @@
             <br>
             - 상품을 공급 받으신 날로부터 7일이내 단, 가전제품의
             <br>
-            &nbsp;&nbsp;경우 포장을 개봉하였거나 포장이 훼손되어 상품가치가 상실된 경우에는 교환/반품이 불가능합니다.
+            - 경우 포장을 개봉하였거나 포장이 훼손되어 상품가치가 상실된 경우에는 교환/반품이 불가능합니다.
             <br>
             - 공급받으신 상품 및 용역의 내용이 표시.광고 내용과
             <br>
@@ -374,7 +424,7 @@
 
         <div class="row my-3 w-100 mx-auto">
             <button type="button" id="QnAWrite-btn" class="ms-auto" data-bs-toggle="modal" data-bs-target="#qnaWriteModal" onclick="checkLogin()">WRITE</button>
-            <button type="button" id="QnAList-btn">LIST</button>
+            <button type="button" id="QnAList-btn" onclick="location.href='/qnaList'">LIST</button>
         </div>
 
         <!-- Modal -->

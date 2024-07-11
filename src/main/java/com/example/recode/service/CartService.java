@@ -66,8 +66,6 @@ public class CartService {
     //상품 상세 페이지 -> 결제 페이지
     public List<PaymentCartInfoViewResponse> getCartInfoList(AtDetailPaymentViewRequest request){
         List<PaymentCartInfoViewResponse> list = new ArrayList<>();
-        System.err.println("before findProduct");
-        System.err.println(request.getProductId());
         Product product = productService.findProductByProductId(request.getProductId());
         list.add(PaymentCartInfoViewResponse.builder()
                 .cartId(null)
@@ -139,7 +137,6 @@ public class CartService {
             }
         })
         .boxed().toList();
-        System.err.println(willDeleteCartIds);
 
         //품절 상품이 포함된 cartId만 추출
         willDeleteCartIds.forEach(cartId -> {

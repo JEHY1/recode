@@ -19,15 +19,14 @@ public class UserQnaController {
 
     private final QnAService qnAService;
 
+    //qna 등록
     @PostMapping("/user/qna/submit")
     public ResponseEntity<QnA> submitQna(@RequestBody QnaSubmitRequest request, Principal principal){
-
-        System.err.println(request);
-
         return ResponseEntity.ok()
                 .body(qnAService.saveQnA(request, principal));
     }
 
+    //로그인 여부 확인
     @GetMapping("/checkLogin")
     public ResponseEntity<LoginCheckResponse> checkLogin(Principal principal){
         return ResponseEntity.ok()

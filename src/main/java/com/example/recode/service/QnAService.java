@@ -1,7 +1,9 @@
 package com.example.recode.service;
 
 import com.example.recode.domain.Notice;
+import com.example.recode.domain.Product;
 import com.example.recode.domain.QnA;
+import com.example.recode.domain.User;
 import com.example.recode.dto.NoticeViewResponse;
 import com.example.recode.dto.ProductDetailQnAViewResponse;
 import com.example.recode.dto.QnAViewResponse;
@@ -12,6 +14,7 @@ import com.example.recode.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -31,7 +34,7 @@ public class QnAService {
     private final ProductService productService;
 
     public List<QnA> findQnAByProductId(long productId){
-        return qnARepository.findByProductId(productId)
+        return qnARepository.findByProductIdOrderByQnACreateDateDesc(productId)
                 .orElseThrow(() -> new IllegalArgumentException("not found QnA"));
     }
 
@@ -128,6 +131,52 @@ public class QnAService {
         return qnAViewList;
     }
 
+    public Page<QnAViewResponse> qnAViewSearchList(Integer category, String searchKeyword, Pageable pageable) { // category 선택 후 검색해서 페이징 처리한 Page<QnAViewResponse> 가져옴
+        Page<QnAViewResponse> qnAViewSearchList = null;
+        if(category == 1) {  // category 가 '상품명'일 때
+            List<Product> productSearchList = productService.findByProductNameContaining(searchKeyword);
+            List<Long> productIds = new ArrayList<>();
+            if(productSearchList != null) {
+                productSearchList.forEach(product -> productIds.add(product.getProductId()));
+            }
+            Page<QnA> qnASearchList = qnARepository.findByProductIdIn(productIds, pageable).orElse(null); // productId List 로 페이징 처리한 Page<QnA> 가져오기
+            if(qnASearchList != null) {
+                qnAViewSearchList = qnASearchList.map(qnA -> new QnAViewResponse(qnA, userService.getUsername(qnA.getUserId()), productService.findProductByProductId(qnA.getProductId()).getProductName()));
+            }
+        }
+        else if(category == 2) {  // category 가 '제목'일 때
+            Page<QnA> qnASearchList = qnARepository.findByQnAQuestionTitleContaining(searchKeyword, pageable).orElse(null); // qnAQuestionTitle 로 검색해서 페이징 처리한 Page<QnA>
+            if(qnASearchList != null) {
+                qnAViewSearchList = qnASearchList.map(qnA -> new QnAViewResponse(qnA, userService.getUsername(qnA.getUserId()), productService.findProductByProductId(qnA.getProductId()).getProductName()));
+            }
+        }
+        else if(category == 3) {  // category 가 '작성자'일 때
+            List<User> userSearchList = userService.findUserByUsernameContaining(searchKeyword);
+            List<Long> userIds = new ArrayList<>();
+            if(userSearchList != null) {
+                userSearchList.forEach(user -> userIds.add(user.getUserId()));
+            }
+            Page<QnA> qnASearchList = qnARepository.findByUserIdIn(userIds, pageable).orElse(null); // userId List 로 페이징 처리한 Page<QnA> 가져오기
+            if(qnASearchList != null) {
+                qnAViewSearchList = qnASearchList.map(qnA -> new QnAViewResponse(qnA, userService.getUsername(qnA.getUserId()), productService.findProductByProductId(qnA.getProductId()).getProductName()));
+            }
+        }
+        else if(category == 4) { // category 가 '등록일'일 때
+            // searchKeyword 가 포함된 List<QnAViewResponse> 만듬
+            List<QnAViewResponse> keywordList = new ArrayList<>();
+            getAllQnAInfo().forEach(qnA -> {
+                if(qnA.getQnACreateDate().toString().contains(searchKeyword)){
+                    keywordList.add(qnA);
+                }
+            });
+            keywordList.sort((o1, o2) -> Math.toIntExact(o2.getQnAId() - o1.getQnAId())); // qnAId 기준 내림차순 정렬
+            int start = (int) pageable.getOffset();
+            int end = Math.min((start + pageable.getPageSize()), keywordList.size());
+            qnAViewSearchList = new PageImpl<>(keywordList.subList(start, end), pageable, keywordList.size()); // Page<qnAViewSearchList> 객체 만듬
+        }
+        return qnAViewSearchList;
+    }
+
     public void deleteByIds(List<Long> qnAIds) { // qnAIds 리스트로 QnA 삭제
         for (Long qnAId : qnAIds) {
             qnARepository.deleteById(qnAId);
@@ -137,5 +186,4 @@ public class QnAService {
     public Page<QnA> getAllQnAs(Pageable pageable) {
         return qnARepository.findAll(pageable);
     }
-
 }

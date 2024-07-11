@@ -18,12 +18,11 @@
             <form id="selectBox">
                 <a href="#">삭제</a>
                 <select>
-                    <option value="" hidden>검색분류</option>
-                    <option value="제목">제목</option>
-                    <option value="작성자">작성자</option>
-                    <option value="등록일">등록일</option>
+                    <option value="1" th:selected="${category} == '1'">제목</option>
+                    <option value="2" th:selected="${category} == '2'">작성자</option>
+                    <option value="3" th:selected="${category} == '3'">등록일</option>
                 </select>
-                <input type="search">
+                <input type="search" th:value="${param.searchKeyword}">
                 <button type="button">검색</button>
                 <a href="/admin/notice/insert">공지사항 등록</a>
             </form>
@@ -62,16 +61,16 @@
                             <td th:text="${#temporals.format(notice.noticeCreateDate, 'yyyy-MM-dd')}"></td>
                             <td>
                                 <a th:href="'/admin/notice/' + ${notice.noticeId} + '/show'">보기</a>
-                                <a th:href="'/admin/notice/' + ${notice.noticeId} + '/delete?page=' + ${notices.getNumberOfElements() != 1 ? nowPage-1 : nowPage-2} + '&searchKeyword=' + ${searchKeyword}">삭제</a>
+                                <a th:href="'/admin/notice/' + ${notice.noticeId} + '/delete?page=' + ${notices.getNumberOfElements() != 1 ? nowPage-1 : nowPage-2} + '&category=' + ${category} + '&searchKeyword=' + ${searchKeyword}">삭제</a>
                             </td>
                         </tr>
                     </tbody>
                 </table>
             </div>
             <div id="pageBox">
-                <a th:href="${notices.hasPrevious() ? '/admin/notice/index?page=' + (nowPage-2) + '&searchKeyword=' + searchKeyword : 'javascript:void(0)'}" th:style="${notices.hasPrevious() ? '' : 'color:#ccc'}">〈</a>
-                <a href="#" th:each="page : ${#numbers.sequence(startPage, endPage)}" th:text="${page}" th:href="${page == nowPage ? 'javascript:void(0)' : '/admin/notice/index?page=' + (page - 1) + '&searchKeyword=' + searchKeyword}" th:style="${page == nowPage ? 'background-color: #548235; color: white;' : '' }">1</a>
-                <a th:href="${notices.hasNext() ? '/admin/notice/index?page=' + (nowPage-1) + '&searchKeyword=' + searchKeyword : 'javascript:void(0)'}" th:style="${notices.hasNext() ? '' : 'color:#ccc'}">〉</a>
+                <a th:href="${notices.hasPrevious() ? '/admin/notice/index?page=' + (nowPage-2) + '&category=' + category + '&searchKeyword=' + searchKeyword : 'javascript:void(0)'}" th:style="${notices.hasPrevious() ? '' : 'color:#ccc'}">〈</a>
+                <a href="#" th:each="page : ${#numbers.sequence(startPage, endPage)}" th:text="${page}" th:href="${page == nowPage ? 'javascript:void(0)' : '/admin/notice/index?page=' + (page - 1) + '&category=' + category +'&searchKeyword=' + searchKeyword}" th:style="${page == nowPage ? 'background-color: #548235; color: white;' : '' }"></a>
+                <a th:href="${notices.hasNext() ? '/admin/notice/index?page=' + nowPage + '&category=' + category + '&searchKeyword=' + searchKeyword : 'javascript:void(0)'}" th:style="${notices.hasNext() ? '' : 'color:#ccc'}">〉</a>
             </div>
         </div>
     </main>

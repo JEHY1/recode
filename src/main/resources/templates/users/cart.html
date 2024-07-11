@@ -111,10 +111,24 @@
             color: white;
             border: none;
         }
+
+        .move-btn{
+            position: fixed;
+            right: 50px;
+            bottom: 50px;
+            background-color: #903c31;
+            color: white;
+            color-white;
+            border-radius: 25px;
+            width: 50px;
+            height: 100px;
+            font-size: 35px;
+        }
     </style>
 </head>
 <body>
 <th:block th:include="layouts/header"></th:block>
+<th:block th:include="layouts/scroll"></th:block>
 
 <div class="w-100" style="height:160px;"></div>
 <div class="mx-auto" style="width: 1903px;">
@@ -123,7 +137,7 @@
         <div class="col-auto mt-auto ms-auto menuSub">01장바구니 > 02주문/결제 > 03결제완료</div>
     </div>
 
-    <div class="row mx-auto" style=" width: 900px;">
+    <div class="row mx-auto" style=" width: 1500px;">
         <div class="mt-5 border-x bg-gainsboro row mx-auto">
             <input type="checkbox" class="col-auto" id="allCheckBox" autocomplete="off">
             <div class="col text-center">상품 정보</div>
@@ -155,8 +169,8 @@
 
             <form action="/user/paymentView" method="post" class="col-2 my-auto">
                 <input type="hidden" name="cartId" th:value="${cart.cartId}" class="cartIds">
-                <button type="submit" class="btn-green eachOrder-btn">바로구매</button>
-                <button type="button" class="btn-gray cartDelete-btn">삭제</button>
+                <button type="submit" class="btn-green eachOrder-btn" style="margin-left: 45px;">바로구매</button>
+                <button type="button" class="btn-gray cartDelete-btn" style="margin-left: 45px;">삭제</button>
             </form>
         </div>
 
@@ -199,7 +213,7 @@
 
 
 
-
+<script src="/js/scroll.js"></script>
 <script src="/js/cart.js"></script>
 </body>
 </html>

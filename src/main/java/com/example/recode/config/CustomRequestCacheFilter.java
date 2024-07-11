@@ -16,12 +16,13 @@ public class CustomRequestCacheFilter extends OncePerRequestFilter {
 
     private final RequestCache requestCache = new HttpSessionRequestCache();
 
+    //url 호출을 기록(로그인후 바로 이전페이지로 가기 위함)
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
         String requestURI = request.getRequestURI();
 
-        // 로그인 페이지로의 요청은 저장하지 않음
-        if (!requestURI.equals("/login") && !requestURI.startsWith("/login/") && !requestURI.equals("/checkLogin") && !requestURI.startsWith("/css") && !requestURI.startsWith("/js") && !requestURI.startsWith("/images")) {
+        // history 저장에 포함하지 않을 요청들
+        if (!requestURI.equals("/login") && !requestURI.startsWith("/login/") && !requestURI.equals("/checkLogin") && !requestURI.startsWith("/css") && !requestURI.startsWith("/js") && !requestURI.startsWith("/images") && !requestURI.startsWith("/join") && !requestURI.startsWith("/favicon.ico")) {
             requestCache.saveRequest(request, response);
         }
 

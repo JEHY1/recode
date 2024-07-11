@@ -53,11 +53,4 @@ public class CartApiController {
         return ResponseEntity.ok()
                 .body(new DeleteCartResponse(cartService.cleanCart(request)));
     }
-
-
-
-
-
-
-
 }

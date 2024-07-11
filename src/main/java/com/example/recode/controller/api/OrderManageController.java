@@ -28,14 +28,12 @@ public class OrderManageController {
 
     @PostMapping("/admin/orderManager")
     public ResponseEntity<List<Payment>> adminOrderManage(@RequestBody AdminOrderManageRequest request){
-
         return ResponseEntity.ok()
                 .body(paymentService.ordersUpdate(request));
     }
 
     @PostMapping("/admin/orderDetailManager")
     public ResponseEntity<List<PaymentDetail>> adminOrderDetailManage(@RequestBody AdminOrderDetailManageRequest request){
-
         return ResponseEntity.ok()
                 .body(paymentService.orderDetailsUpdate(request));
     }

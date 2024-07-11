@@ -1,6 +1,7 @@
 package com.example.recode.controller.user;
 import com.example.recode.domain.QnA;
 import com.example.recode.domain.Review;
+import com.example.recode.dto.ReviewDto;
 import com.example.recode.dto.ReviewWithImagesResponse;
 import com.example.recode.service.ReviewService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.util.List;
 
 @Controller
 public class ReviewController {
@@ -54,4 +56,17 @@ public class ReviewController {
         return "/board/reviewTxt";
     }
 
+    @GetMapping("/reviewPost")
+    public String showReviewForm(Model model) {
+        model.addAttribute("reviewDto", new ReviewDto());
+        return "/board/reviewPost";
+    }
+
+    @PostMapping("/reviews")
+    public String postReview(@ModelAttribute ReviewDto reviewDto, @RequestParam("files") List<MultipartFile> files) {
+        reviewService.saveReview(reviewDto, files);
+        return "redirect:/reviews";
+    }
 }
+
+

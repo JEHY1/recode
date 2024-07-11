@@ -57,8 +57,11 @@ public class Product {
     @Column(name = "product_type", nullable = false)
     private String productType;
 
+    @Column(name = "product_view_count", nullable = false)
+    private int productViewCount;
+
     @Builder
-    public Product(long productId, String productName, int productRegularPrice, int productDiscountPrice, String productModel, String productSize, String productMaterial, String productRepresentativeImgSrc, LocalDateTime productRegistrationDate, String productCategory, int productSold, String productColor, String productType) {
+    public Product(long productId, String productName, int productRegularPrice, int productDiscountPrice, String productModel, String productSize, String productMaterial, String productRepresentativeImgSrc, LocalDateTime productRegistrationDate, String productCategory, int productSold, String productColor, String productType, int productViewCount) {
         this.productId = productId;
         this.productName = productName;
         this.productRegularPrice = productRegularPrice;
@@ -72,6 +75,7 @@ public class Product {
         this.productSold = productSold;
         this.productColor = productColor;
         this.productType = productType;
+        this.productViewCount = productViewCount;
     }
 
     public void updateSold(int productSold){
@@ -83,5 +87,7 @@ public class Product {
         return this;
     }
 
-
+    public void IncProductViewCount(){
+        this.productViewCount++;
+    }
 }

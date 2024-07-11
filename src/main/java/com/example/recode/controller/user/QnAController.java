@@ -7,7 +7,6 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.data.web.PageableDefault;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,7 +19,7 @@ public class QnAController {
     @Autowired
     private QnAService qnaService;
 
-    @GetMapping("/qnalist")
+    @GetMapping("/qnaList")
     public String getAllQnAs(Model model, Pageable pageable) {
         // 명시적으로 페이지 크기를 설정하는 경우 (10개씩 출력)
         int pageSize = 10;

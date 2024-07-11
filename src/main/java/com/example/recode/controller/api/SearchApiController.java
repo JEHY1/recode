@@ -16,27 +16,23 @@ public class SearchApiController {
 
     private final PaymentService paymentService;
 
+    //상품 이름 검색기능
     @PostMapping("/admin/getIncludeNameList")
     public ResponseEntity<List<ProductNameForm>> searchProduct(@RequestBody IncludeNameListRequest request){
-
         return ResponseEntity.ok()
                 .body(paymentService.getPaymentDetailProductInProductName(request.getProductName()));
     }
 
+    //사용자이름검색기능
     @PostMapping("/admin/getIncludeUserRealNameList")
     public ResponseEntity<List<UserRealNameForm>> searchUserName(@RequestBody IncludeUserRealNameListRequest request){
-
-        System.err.println(paymentService.getUserNameInfoInUsername(request.getUsername()));
-
         return ResponseEntity.ok()
                 .body(paymentService.getUserNameInfoInUsername(request.getUsername()));
     }
 
+    //서버 시간 확인 기능
     @PostMapping("/admin/getServerDate")
     public ResponseEntity<DateForm> getServerDate(@RequestBody GetPeriodRequest request){
-
-        System.err.println(request.getUnitPeriod());
-
         return ResponseEntity.ok()
                 .body(paymentService.getServerDate(request.getUnitPeriod()));
     }

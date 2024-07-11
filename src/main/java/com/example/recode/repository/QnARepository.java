@@ -11,8 +11,10 @@ import java.util.Optional;
 
 public interface QnARepository extends JpaRepository<QnA, Long> {
 
-    Optional<List<QnA>> findByProductId(long productId);
-    Page<QnA> findAll(Pageable pageable);
+    Optional<List<QnA>> findByProductIdOrderByQnACreateDateDesc(long productId);
+    Optional<Page<QnA>> findByProductIdIn(List<Long> productIds, Pageable pageable); // productId List �� ����¡ ó���� Page<QnA> ��������
+    Optional<Page<QnA>> findByQnAQuestionTitleContaining(String searchKeyword, Pageable pageable); // qnAQuestionTitle �� �˻��ؼ� ����¡ ó���� Page<QnA>
+    Optional<Page<QnA>> findByUserIdIn(List<Long> userIds, Pageable pageable); // userId List �� ����¡ ó���� Page<QnA> ��������
 
 }
 

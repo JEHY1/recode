@@ -18,64 +18,64 @@
                 <ul>
                     <li>
                         <p>구분</p>
-                        <p>크로스백</p>
+                        <p th:text="${product.productCategory}"></p>
                     </li>
                     <li>
                         <p>상품명</p>
-                        <p>크로스백 옐로우</p>
+                        <p th:text="${product.productName}"></p>
                     </li>
                     <li>
                         <p>대표 이미지</p>
                         <div>
-                            <img src="/images/logo_img/logo.png">
+                            <img th:src="'http://192.168.106.12/fileServer' + ${product.productRepresentativeImgSrc}">
                         </div>
                     </li>
                     <li>
                         <p>판매가</p>
-                        <p>54000</p>
+                        <p th:text="${product.productRegularPrice} + '원'"></p>
                     </li>
                     <li>
                         <p>할인가</p>
-                        <p>49000</p>
+                        <p th:text="${product.productDiscountPrice} + '원'"></p>
                     </li>
                     <li>
                         <p>모델명</p>
-                        <p>MH-513</p>
+                        <p th:text="${product.productModel}"></p>
                     </li>
                     <li>
                         <p>색상</p>
-                        <p>yellow</p>
+                        <p th:text="${product.productColor}"></p>
                     </li>
                     <li>
                         <p>유형</p>
-                        <p>크로스백</p>
+                        <p th:text="${product.productType}"></p>
                     </li>
                     <li>
                         <p>규격</p>
-                        <p>52*35*27</p>
+                        <p th:text="${product.productSize}"></p>
                     </li>
                     <li>
                         <p>재질</p>
-                        <p>우레탄</p>
+                        <p th:text="${product.productMaterial}"></p>
                     </li>
                     <li>
                         <p>상세 이미지</p>
                         <div>
-                            <img src="/images/logo_img/logo.png">
+                            <img th:each="productImg : ${productImgs}" th:src="'http://192.168.106.12/fileServer' + ${productImg.productImgSrc}">
                         </div>
                     </li>
                     <li>
                         <p>판매여부</p>
-                        <p>1(판매완료)</p>
+                        <p th:text="${product.productSold == 1 ? '판매완료' : '판매중'}"></p>
                     </li>
                     <li>
                         <p>등록일</p>
-                        <p>2024-06-05 13:12:05</p>
+                        <p th:text="${#temporals.format(product.productRegistrationDate, 'yyyy-MM-dd HH:mm:ss')}"></p>
                     </li>
                 </ul>
                 <div class="buttonBox">
-                    <a href="#">수정</a>
-                    <a href="#">목록</a>
+                    <a th:href="'/admin/product/' + ${product.productId} + '/insert'">수정</a>
+                    <a href="/admin/product/index">목록</a>
                 </div>
             </div>
         </div>

@@ -12,8 +12,21 @@
 <script src="/js/header.js"></script>
 <style>
 
+  .d-relative{
+    position: relative;
+  }
+
   .cursor{
     cursor: pointer;
+  }
+
+  .fs-30{
+    font-size: 30px;
+    font-weight: 700;
+  }
+
+  .border-b{
+    border-bottom: 1px solid rgb(204, 204, 204) !important;
   }
 
   .selectedPage-btn{
@@ -78,20 +91,64 @@
     border: 1px solid gainsboro;
   }
 
+  .soldOutPanel{
+    position: absolute;
+    top: 170px;
+    left: 50px;
+    width: 300px;
+    font-size: 60px;
+    font-weight: 700;
+    color: white;
+  }
 
+  .soldOutPanel2{
+    position: absolute;
+    top: -150px;
+    left: 17px;
+    width: 300px;
+    height: 400px;
+    color: red;
+    font-size: 450px;
+    font-weight: 700;
+  }
+
+  .move-btn{
+    position: fixed;
+    right: 50px;
+    bottom: 50px;
+    background-color: #903c31;
+    color: white;
+    color-white;
+    border-radius: 25px;
+    width: 50px;
+    height: 100px;
+    font-size: 35px;
+  }
+
+  .move-btn div:hover{
+    color: gray;
+  }
 
 </style>
 <body>
 <div class="main" style="width: 1903px;">
   <th:block th:include="layouts/header"></th:block>
+  <th:block th:include="layouts/scroll"></th:block>
   <div class="content mx-auto" style="width: 1750px;">
     <div style="height : 200px;"></div>
 
+
+    <div class="text-center mb-5 fs-30" th:if="${param.productCategory}" th:text="${param.productCategory}">상품카테고리</div>
+    <div class="text-center mb-5 fs-30" th:if="${param.searchText}" th:text="'&quot;' + ${param.searchText} + '&quot; 검색 결과'">검색어</div>
+    <div class="text-center mb-5 fs-30" th:if="${param.recentViewProduct}">최근 본 상품</div>
+
     <div class="row w-100 mx-auto">
-      <div th:each="product: ${products}" class="col-auto p-0 mb-3 product d-flex justify-content-center" style="width: 402px; height: 550px; margin-left: 17px; margin-right: 17px;">
+      <div th:each="product: ${products}" class="col-auto p-0 mb-3 product d-flex justify-content-center d-relative" style="width: 402px; height: 550px; margin-left: 17px; margin-right: 17px;">
         <div>
           <img class="cursor" th:src="'http://192.168.106.12/fileServer' + ${product.productRepresentativeImgSrc}" style="width: 400px; height: 400px;" th:onclick="|location.href='/product/productDetail/ ${product.productId}'|">
-          <div class="ps-2" th:text="${product.productName}" style="font-size: 28px; font-weight: 700;">asdf</div>
+          <div class="soldOutPanel2 text-center" th:if="${product.productSold == 1}">✕</div>
+          <div class="soldOutPanel text-center" th:if="${product.productSold == 1}">sold out</div>
+          <div class="ps-2" th:text="${product.productName}" style="font-size: 28px; font-weight: 700;"></div>
           <div class="row mx-auto w-100 ps-2">
             <div class="col-auto p-0" style="color: gainsboro;" th:text="'#' + ${product.productType}"></div>
             <div class="col-auto" style="color: gainsboro;" th:text="'#' + ${product.productColor}"></div>
@@ -109,7 +166,7 @@
     </div>
   </div>
 
-  <div class="row w-100 mx-auto mt-5" style="height: 47px;" th:if="${products.totalPages != 0}">
+  <div class="row w-100 mx-auto mt-5" style="height: 47px;" th:if="${param.recentViewProduct == null && products.totalPages != 0}">
     <input type="hidden" id="totalPageSize" th:value="${products.totalPages}">
     <button class="col-auto ms-auto" id="prevPage-btn">〈</button>
     <div class="col-auto d-flex align-items-center justify-content-center" id="pageButtonField">
@@ -117,11 +174,12 @@
     <button class="col-auto me-auto" id="nextPage-btn">〉</button>
   </div>
 
-  <div th:if="${products.totalPages == 0}">검색 상품이 없습니다.</div>
+  <div th:if="${param.recentViewProduct == null && products.totalPages == 0}">상품이 없습니다.</div>
   <th:block th:include="layouts/footer"></th:block>
 </div>
 
 <script src="/js/productGroup.js"></script>
+<script src="/js/scroll.js"></script>
 </body>
 </html>
 

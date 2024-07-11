@@ -56,6 +56,12 @@ public class User implements UserDetails {
     @Column(name = "user_role", nullable = false)
     private String userRole;
 
+    @Column(name = "user_sms_agreement", nullable = false)
+    private Integer userSmsAgreement;
+
+    @Column(name = "user_email_agreement", nullable = false)
+    private Integer userEmailAgreement;
+
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
@@ -93,7 +99,7 @@ public class User implements UserDetails {
     }
 
     @Builder
-    public User(Long userId, String username, String userPassword, String userRealName, String userPhone, String userEmail, LocalDateTime userSubmitDate, LocalDateTime userDeleteDate, String userRole) {
+    public User(Long userId, String username, String userPassword, String userRealName, String userPhone, String userEmail, LocalDateTime userSubmitDate, LocalDateTime userDeleteDate, String userRole, Integer userSmsAgreement, Integer userEmailAgreement) {
         this.userId = userId;
         this.username = username;
         this.userPassword = userPassword;
@@ -103,6 +109,8 @@ public class User implements UserDetails {
         this.userSubmitDate = userSubmitDate;
         this.userDeleteDate = userDeleteDate;
         this.userRole = userRole;
+        this.userSmsAgreement = userSmsAgreement;
+        this.userEmailAgreement = userEmailAgreement;
     }
 
     public User updateAdminUser(AdminUserRequest dto) { // 관리자 페이지에서 회원정보 수정

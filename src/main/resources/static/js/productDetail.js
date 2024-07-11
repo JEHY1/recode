@@ -8,6 +8,20 @@ function httpRequest(url, method, body){
     });
 }
 
+function toWon(price){
+    let PriceText = '';
+    price += '';
+
+    while(price.length > 3){
+        console.log(price.substring(price.length - 3, price.length));
+        PriceText += ',' + price.substring(price.length - 3, price.length);
+        price = price.substring(0, price.length - 3);
+        console.log(price);
+        console.log(PriceText);
+    }
+    return price + PriceText + '원';
+}
+
 const productDetailInfoButton = document.getElementById('product-detail-info-btn');
 
 if(productDetailInfoButton){
@@ -19,7 +33,7 @@ if(productDetailInfoButton){
         productSaleInfoButton.classList.add('border-left-black', 'border-top-gainsboro', 'border-right-gainsboro', 'color-gainsboro');
 
         productQnAButton.classList.remove('border-top-black', 'border-right-black', 'border-bottom-white');
-        productQnAButton.classList.add('border-top-gainsboro', 'border-right-gainsboro');
+        productQnAButton.classList.add('border-top-gainsboro', 'border-right-gainsboro', 'color-gainsboro');
 
         document.getElementById('product-detail-info-tap').classList.remove('d-hidden');
         document.getElementById('product-sale-info-tap').classList.add('d-hidden');
@@ -39,7 +53,7 @@ if(productSaleInfoButton){
         productSaleInfoButton.classList.add('border-top-black', 'border-right-black', 'border-left-black', 'border-bottom-white', 'color-black');
 
         productQnAButton.classList.remove('border-top-black', 'border-right-black', 'border-bottom-white');
-        productQnAButton.classList.add('border-top-gainsboro', 'gorder-right-gainsboro', 'color-gainsboro');
+        productQnAButton.classList.add('border-top-gainsboro', 'border-right-gainsboro', 'color-gainsboro');
 
         document.getElementById('product-sale-info-tap').classList.remove('d-hidden');
         document.getElementById('product-detail-info-tap').classList.add('d-hidden');
@@ -73,7 +87,11 @@ if(QnATitleButtons){
     Array.from(QnATitleButtons).forEach(button => {
         button.addEventListener('click', () => {
 
-            Array.from(QnATitleButtons).forEach(button2 => button2.nextElementSibling.classList.add('d-hidden'));
+            Array.from(QnATitleButtons).forEach(button2 => {
+                if(button2 !== button){
+                    button2.nextElementSibling.classList.add('d-hidden')
+                }
+            });
 
             if(button.nextElementSibling.classList.contains('d-hidden')){
                 button.nextElementSibling.classList.remove('d-hidden');
@@ -175,7 +193,6 @@ if(cartButton){
             productId : document.getElementById('productId').value
         });
 
-
         httpRequest(`/user/addCart`, 'POST', body)
         .then(response => {
             if(response.ok){
@@ -184,8 +201,8 @@ if(cartButton){
             else{
                 alert('error');
             }
-        })
-    })
+        });
+    });
 }
 
 //바로 구매시 결제 페이지 이동
@@ -225,7 +242,8 @@ if(qnaSubmitButton){
         .then(response => {
             if(response.ok){
                 alert('등록되었습니다.');
-                document.getElementById('close-btn').click();
+                location.reload();
+//                document.getElementById('close-btn').click();
             }
         });
     });
@@ -237,6 +255,8 @@ function resetQnAForm(){
 }
 
 function checkLogin(){
+    let returnVal = false;
+
     httpRequest(`/checkLogin`, 'GET', null)
     .then(response => {
         console.log(response);
@@ -250,7 +270,12 @@ function checkLogin(){
         if(data.value === false){
             location.href = "/login";
         }
+        else{
+            returnVal = true;
+        }
     });
+
+    return returnVal;
 }
 
 const loginButton = document.getElementById('login-btn');
@@ -269,4 +294,15 @@ if(loginButton){
             console.log(response);
         });
     });
+}
+
+//페이지 로딩시 설정
+//원화 표시로 변경
+if(document.getElementsByClassName('price')){
+    Array.from(document.getElementsByClassName('price')).forEach(comp => comp.textContent = toWon(comp.textContent));
+}
+
+//헤더 border-bottom 적용
+if(document.getElementsByTagName('header')){
+    document.getElementsByTagName('header')[0].classList.add('border-b');
 }

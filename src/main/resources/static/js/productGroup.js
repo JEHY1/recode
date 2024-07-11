@@ -86,10 +86,8 @@ if(nextPageButton){
 }
 
 
-
-
-
 //초기값 설정
+//할인율 표시
 if(document.getElementsByClassName('salePercent')){
     Array.from(document.getElementsByClassName('salePercent')).forEach(comp => {
 
@@ -100,11 +98,15 @@ if(document.getElementsByClassName('salePercent')){
     });
 }
 
+//원화 표시
 if(document.getElementsByClassName('price')){
     Array.from(document.getElementsByClassName('price')).forEach(comp => comp.textContent = toWon(comp.textContent));
 }
 
-
+//헤더 border-bottom 적용
+if(document.getElementsByTagName('header')){
+    document.getElementsByTagName('header')[0].classList.add('border-b');
+}
 
 
 

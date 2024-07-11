@@ -15,6 +15,8 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.security.Principal;
 import java.util.List;
@@ -48,11 +50,11 @@ public class AdminNoticeController {
         return "redirect:/admin/notice/" + saved.getNoticeId() + "/show";
     }
     @GetMapping("/admin/notice/{noticeId}/delete") // 공지사항 삭제
-    public String deleteAdminNotice(@PathVariable Long noticeId, RedirectAttributes rttr, Integer page, String searchKeyword) {
+    public String deleteAdminNotice(@PathVariable Long noticeId, RedirectAttributes rttr, Integer page, Integer category, String searchKeyword) throws UnsupportedEncodingException {
         noticeService.deleteById(noticeId);
         rttr.addFlashAttribute("msg", "공지사항이 삭제 되었습니다.");
-        System.err.println(searchKeyword);
-        return "redirect:/admin/notice/index?page=" + page + "&searchKeyword=" + searchKeyword;
+        String encodeSearchKeyword = URLEncoder.encode(searchKeyword, StandardCharsets.UTF_8); // ASCII 아닌 파라미터 percent encoding
+        return "redirect:/admin/notice/index?page=" + page + "&category=" + category + "&searchKeyword=" + encodeSearchKeyword;
     }
 
     @GetMapping("/admin/notice/{noticeId}/show") // admin_notice_insert 공지사항 보기 페이지
@@ -67,18 +69,21 @@ public class AdminNoticeController {
     }
 
     @GetMapping("/admin/notice/index") // admin_notice_insert 공지사항 목록 페이지
-    public String indexAdminNotice(Model model, @PageableDefault(page = 0, size = 10, sort = "noticeId", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(required = false) Integer isDel, @RequestParam(defaultValue = "") String searchKeyword) {
+    public String indexAdminNotice(Model model, @PageableDefault(page = 0, size = 10, sort = "noticeId", direction = Sort.Direction.DESC) Pageable pageable, @RequestParam(required = false) Integer isDel, @RequestParam(defaultValue = "0") Integer category, @RequestParam(defaultValue = "") String searchKeyword) {
                                                                 // default 페이지, 한 페이지 게시글 수, 정렬기준 컬럼, 정렬순서
-        Page<NoticeViewResponse> noticeList = null;
-        if(searchKeyword == null) {
-            noticeList = noticeService.noticeViewList(pageable);
-        }
-        else {
-            noticeList = noticeService.noticeViewTitleSearchList(searchKeyword, pageable);
-        }
-        model.addAttribute("notices", noticeList);
+        model.addAttribute("category", category);
         model.addAttribute("searchKeyword", searchKeyword);
 
+        Page<NoticeViewResponse> noticeList = null;
+        if(searchKeyword == null || searchKeyword.equals("")) { // 검색 안했을 때
+            noticeList = noticeService.noticeViewList(pageable);
+        }
+        else { // searchKeyword 로 검색 됐을 때
+            noticeList = noticeService.noticeViewSearchList(category, searchKeyword, pageable);
+        }
+        model.addAttribute("notices", noticeList);
+        
+        // 페이징 관련 변수
         int nowPage = noticeList.getPageable().getPageNumber()+1; // 현재 페이지 (pageable이 갖고 있는 페이지는 0부터이기 때문에 +1)
         int block = (int) Math.ceil(nowPage/5.0); // 페이지 구간 (5페이지 - 1구간)
         int startPage = (block - 1) * 5 + 1; // 블럭에서 보여줄 시작 페이지
@@ -88,7 +93,7 @@ public class AdminNoticeController {
         model.addAttribute("startPage", startPage);
         model.addAttribute("endPage", endPage);
 
-        if(isDel != null && isDel == 1){
+        if(isDel != null && isDel == 1) { // 체크해서 삭제 했을 때 팝업창
             model.addAttribute("msg", "공지사항이 삭제 되었습니다.");
         }
 

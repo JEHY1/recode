@@ -1,9 +1,11 @@
 package com.example.recode.service;
 
+import com.example.recode.domain.History;
 import com.example.recode.domain.Product;
 import com.example.recode.domain.ProductImg;
 import com.example.recode.dto.ProductDetailViewResponse;
 import com.example.recode.dto.UploadProductRequest;
+import com.example.recode.repository.HistoryRepository;
 import com.example.recode.repository.ProductImgRepository;
 import com.example.recode.repository.ProductRepository;
 import jakarta.transaction.Transactional;
@@ -21,8 +23,10 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.security.Principal;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -33,6 +37,8 @@ public class ProductService {
     private String uploadDir;
     private final ProductRepository productRepository;
     private final ProductImgRepository productImgRepository;
+    private final UserService userService;
+    private final HistoryService historyService;
 
     public Product findProductByProductId(long productId) {
         return productRepository.findById(productId)
@@ -52,9 +58,42 @@ public class ProductService {
     }
 
     // productId -> ProductDetailViewResponse
-    public ProductDetailViewResponse getProductInfoByProductId(long productId){
+    @Transactional
+    public ProductDetailViewResponse getProductInfoByProductId(long productId, Principal principal){
         List<String> productDetailImgs = findProductImgByProductId(productId).stream().map(productImg -> productImg.getProductImgSrc()).toList();
         Product product = findProductByProductId(productId);
+        
+        // 상품 조회수 증가
+        product.IncProductViewCount();
+        
+        //히스토리 등록
+        if(principal != null){
+            long userId = userService.getUserId(principal);
+            List<History> historyList = historyService.findAllByUserId(userId);
+            History history = historyService.findByProductIdAndUserId(productId, userId);
+
+            if(history != null){
+
+                historyService.delete(history);
+            }
+
+            if(historyList.size() < 10){
+                historyService.save(History.builder()
+                        .productId(productId)
+                        .userId(userId)
+                        .build()
+                );
+            }
+            else{
+                historyService.delete(historyList.get(0));
+                historyService.save(History.builder()
+                        .productId(productId)
+                        .userId(userId)
+                        .build()
+                );
+            }
+        }
+
 
         return ProductDetailViewResponse.builder()
                 .productId(product.getProductId())
@@ -63,6 +102,8 @@ public class ProductService {
                 .productRepImg(product.getProductRepresentativeImgSrc())
                 .type(product.getProductType())
                 .color(product.getProductColor())
+                .size(product.getProductSize())
+                .material(product.getProductMaterial())
                 .regularPrice(product.getProductRegularPrice())
                 .discountPrice(product.getProductDiscountPrice() == null ? null : product.getProductDiscountPrice())
                 .productDetailImgs(productDetailImgs)
@@ -74,7 +115,6 @@ public class ProductService {
     @Transactional
     public Product uploadProduct(UploadProductRequest request){
 
-        System.err.println("1");
         Product product = productRepository.save(Product.builder()
                 .productName(request.getProductName())
                 .productModel(request.getProductModel())
@@ -87,24 +127,21 @@ public class ProductService {
                 .productSold(0)
                 .productColor(request.getProductColor())
                 .productType(request.getProductType())
+                .productViewCount(0)
                 .build());
 
-        System.err.println("1");
         //상품 등록시 대표이미지로 설정한 이미지파일 이름
         String originalFileName = request.getProductRepImg().getOriginalFilename();
         //파일 확장자 추출
         int extensionIndex = originalFileName.lastIndexOf(".");
         String extension = originalFileName.substring(extensionIndex);
 
-        System.err.println("1");
         //db에 상품 /image/productRep/product{상품아이디}RepImg.확장자 로 db저장
         product.updateRepImgSrc("/images/productRep/product" + product.getProductId() + "RepImg" + extension);
 
-        System.err.println("1");
         //파일 업로드 (application.properties 에 저장한 경로/images/productRep/)
         fileUpload(request.getProductRepImg(), product.getProductId(), extension, "productRep", "RepImg", null);
 
-        System.err.println("1");
         //상세 이미지 파일들 업로드 및 db 저장
         int imgNum = 1;
         for(MultipartFile img : request.getProductExtImg()){
@@ -120,7 +157,6 @@ public class ProductService {
                     .build());
         }
 
-        System.err.println("1");
         return product;
     }
 
@@ -136,7 +172,6 @@ public class ProductService {
             Files.copy(multipartFile.getInputStream(), copyOfLocation, StandardCopyOption.REPLACE_EXISTING);
 
         } catch (IOException e) {
-            e.printStackTrace();
             throw new IllegalArgumentException("Could not store file : " + multipartFile.getOriginalFilename());
         }
 
@@ -152,15 +187,15 @@ public class ProductService {
                 .orElseThrow(() -> new IllegalArgumentException("not found product"));
     }
 
-    public Page<Product> findProductByProductCategory(String productCategory, Pageable pageable){
+    public Page<Product> findProductByProductCategoryAndProductSold(String productCategory, int productSold, Pageable pageable){
 
-        return productRepository.findAllByProductCategory(productCategory, pageable)
+        return productRepository.findAllByProductCategoryAndProductSold(productCategory, productSold, pageable)
                 .orElseThrow(() -> new IllegalArgumentException("not found product"));
     }
 
-    public Page<Product> findProductByProductNameContaining(String searchText, Pageable pageable){
+    public Page<Product> findProductByProductNameContainingAndProductSold(String searchText, int productSold, Pageable pageable){
 
-        return productRepository.findAllByProductNameContaining(searchText, pageable)
+        return productRepository.findAllByProductNameContainingAndProductSold(searchText, productSold, pageable)
                 .orElseThrow(() -> new IllegalArgumentException("not found product"));
 
     }
@@ -168,12 +203,27 @@ public class ProductService {
     public Page<Product> searchProduct(String searchText, String productCategory, Pageable pageable){
 
         if(searchText != null){
-            return findProductByProductNameContaining(searchText, pageable);
+            return findProductByProductNameContainingAndProductSold(searchText, 0, pageable);
         }
         else if(productCategory != null){
-            return findProductByProductCategory(productCategory, pageable);
+            return findProductByProductCategoryAndProductSold(productCategory, 0, pageable);
         }
 
         return null;
+    }
+
+    //최근 본 상품목록 리스트
+    public List<Product> getRecentViewProductList(Principal principal){
+        List<History> historyList = historyService.findAllByUserId(userService.getUserId(principal));
+
+        return findProductAllByProductIdIn(historyList.stream().mapToLong(History::getProductId).boxed().collect(Collectors.toList()));
+    }
+
+    public List<Product> findByProductNameContaining(String productName) { // productName 을 포함하는 List<Product>
+        return productRepository.findByProductNameContaining(productName).orElse(null);
+    }
+
+    public void deleteById(Long productId) { // productId로 Product 삭제
+        productRepository.deleteById(productId);
     }
 }

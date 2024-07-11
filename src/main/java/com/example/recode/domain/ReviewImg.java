@@ -1,15 +1,13 @@
 package com.example.recode.domain;
 
 import jakarta.persistence.*;
-import lombok.AccessLevel;
-import lombok.Builder;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Entity
 @Table(name = "review_img_tb")
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor(access = AccessLevel.PUBLIC)  // 기본 생성자를 public으로 변경
 @Getter
+@Setter
 public class ReviewImg {
 
     @Id

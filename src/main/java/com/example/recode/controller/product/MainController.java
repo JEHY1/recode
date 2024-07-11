@@ -15,6 +15,7 @@ public class MainController {
 
     private final ProductService productService;
 
+    //메인 페이지
     @GetMapping("/")
     public String showMain(Model model) {
         List<Product> productList = productService.newProduct();

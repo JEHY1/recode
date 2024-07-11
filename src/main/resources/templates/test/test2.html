@@ -1,38 +1,44 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Symmetrical Buttons</title>
+    <title>Relative Position Example</title>
     <style>
-        .container {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            height: 100vh;
-            justify-content: space-between;
+        .soldOutPanel {
+            position: absolute; /* absolute 속성 사용 */
+            width: 300px;
+            font-size: 40px;
+            font-weight: 800;
+            color: red;
+            border-bottom: 10px solid red;
+            border-top: 10px solid red;
+            background-color: white;
+            z-index: 1000; /* 다른 요소 위에 보이도록 z-index 추가 */
         }
-        .btn {
-            width: 50px;
-            height: 50px;
-            display: flex;
 
-            justify-content: center;
-            font-size: 24px;
-            background-color: #f0f0f0;
-            border: 1px solid #ccc;
-            border-radius: 50%;
-            cursor: pointer;
+        .content {
+            height: 2000px; /* 예시를 위한 큰 높이 */
+            background: linear-gradient(white, gray);
+            position: relative; /* absolute 위치 기준을 위해 relative 추가 */
         }
     </style>
 </head>
 <body>
-<div>
-    <div class="btn" id="move-top-btn">&#8743;</div>
-    <div class="btn" id="move-bottom-btn">&#8744;</div>
-
-    <div th:text="${value1}"></div>
-    <div th:text="${value2}"></div>
+<div class="content">
+    스크롤을 테스트하기 위한 긴 컨텐츠입니다.
+    <div class="soldOutPanel" id="soldOutPanel">
+        Sold Out!
+    </div>
 </div>
+
+<script>
+    window.addEventListener('scroll', function() {
+        var soldOutPanel = document.getElementById('soldOutPanel');
+        var scrollPosition = window.scrollY;
+        soldOutPanel.style.top = (scrollPosition + 200) + 'px';
+        soldOutPanel.style.left = '50px';
+    });
+</script>
 </body>
 </html>

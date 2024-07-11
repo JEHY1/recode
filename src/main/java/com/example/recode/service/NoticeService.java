@@ -1,5 +1,6 @@
 package com.example.recode.service;
 
+import com.example.recode.domain.User;
 import com.example.recode.dto.NoticeDto;
 import com.example.recode.domain.Notice;
 import com.example.recode.dto.NoticeRequest;
@@ -7,12 +8,14 @@ import com.example.recode.dto.NoticeViewResponse;
 import com.example.recode.repository.NoticeRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.security.Principal;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.List;
 
 @Service
@@ -93,9 +96,38 @@ public class NoticeService {
         return noticeViewList;
     }
 
-    public Page<NoticeViewResponse> noticeViewTitleSearchList(String searchKeyword, Pageable pageable) { // 제목으로 검색해서 페이징 처리한 Page<NoticeViewResponse> 가져옴
-        Page<Notice> noticeSearchList = noticeRepository.findByNoticeTitleContaining(searchKeyword, pageable); // 제목으로 검색해서 페이징 처리한 Page<Notice>
-        Page<NoticeViewResponse> noticeViewSearchList = noticeSearchList.map(notice -> new NoticeViewResponse(notice, userService.getUsername(notice.getUserId())));
+    public Page<NoticeViewResponse> noticeViewSearchList(Integer category, String searchKeyword, Pageable pageable) { // category 선택 후 검색해서 페이징 처리한 Page<NoticeViewResponse> 가져옴
+        Page<NoticeViewResponse> noticeViewSearchList = null;
+        if(category == 1) {  // category 가 '제목'일 때
+            Page<Notice> noticeSearchList = noticeRepository.findByNoticeTitleContaining(searchKeyword, pageable).orElse(null); // noticeTitle 로 검색해서 페이징 처리한 Page<Notice>
+            if(noticeSearchList != null) {
+                noticeViewSearchList = noticeSearchList.map(notice -> new NoticeViewResponse(notice, userService.getUsername(notice.getUserId())));
+            }
+        }
+        else if(category == 2) {  // category 가 '작성자'일 때
+            List<User> userSearchList = userService.findUserByUsernameContaining(searchKeyword);
+            List<Long> userIds = new ArrayList<>();
+            if(userSearchList != null) {
+                userSearchList.forEach(user -> userIds.add(user.getUserId()));
+            }
+            Page<Notice> noticeSearchList = noticeRepository.findByUserIdIn(userIds, pageable).orElse(null); // userId List 로 페이징 처리한 Page<Notice> 가져오기
+            if(noticeSearchList != null) {
+                noticeViewSearchList = noticeSearchList.map(notice -> new NoticeViewResponse(notice, userService.getUsername(notice.getUserId())));
+            }
+        }
+        else if(category == 3) { // category 가 '등록일'일 때
+            // searchKeyword 가 포함된 List<NoticeViewResponse> 만듬
+            List<NoticeViewResponse> keywordList = new ArrayList<>();
+            getAllNoticeInfo().forEach(notice -> {
+                if(notice.getNoticeCreateDate().toString().contains(searchKeyword)){
+                    keywordList.add(notice);
+                }
+            });
+            keywordList.sort((o1, o2) -> Math.toIntExact(o2.getNoticeId() - o1.getNoticeId())); // noticeId 기준 내림차순 정렬
+            int start = (int) pageable.getOffset();
+            int end = Math.min((start + pageable.getPageSize()), keywordList.size());
+            noticeViewSearchList = new PageImpl<>(keywordList.subList(start, end), pageable, keywordList.size()); // Page<noticeViewSearchList> 객체 만듬
+        }
         return noticeViewSearchList;
     }
 

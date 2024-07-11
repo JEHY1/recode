@@ -52,7 +52,6 @@ public class UserViewController {
 
         model.addAttribute("carts", cartService.findCartByPrincipal(principal));
 
-        System.err.println(cartService.findCartByPrincipal(principal));
         return "users/cart";
     }
 
@@ -64,7 +63,6 @@ public class UserViewController {
         model.addAttribute("cartInfoList", cartService.getCartInfoList(request));
         model.addAttribute("defaultAddressInfo", addressService.findAddressByUserIdAndAddressDefault(principal));
 
-
         return "users/payment";
     }
 
@@ -72,7 +70,6 @@ public class UserViewController {
     @PostMapping("/user/paymentView2")
     public String paymentView2(Model model, AtDetailPaymentViewRequest request, Principal principal){
 
-        System.err.println("call paymentView 2");
         model.addAttribute("addressNicknameList", addressService.getAddressNicknameList(principal));
         model.addAttribute("cartInfoList", cartService.getCartInfoList(request));
         model.addAttribute("defaultAddressInfo", addressService.findAddressByUserIdAndAddressDefault(principal));
@@ -93,15 +90,10 @@ public class UserViewController {
     @GetMapping("/user/orderCheck")
     public String orderCheck(Model model, Principal principal, @RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate, @RequestParam(required = false) Integer unitPeriod){
 
-        System.err.println(startDate);
-        System.err.println(endDate);
-        System.err.println(unitPeriod);
-
         model.addAttribute("orderCheckInfos", paymentService.orderCheck(principal, startDate, endDate, unitPeriod));
         model.addAttribute("period", paymentService.getPeriod(unitPeriod, startDate, endDate));
         model.addAttribute("unitPeriod", unitPeriod);
 
-        System.err.println(paymentService.getPeriod(unitPeriod, startDate, endDate));
         return "/users/orderCheck";
     }
 

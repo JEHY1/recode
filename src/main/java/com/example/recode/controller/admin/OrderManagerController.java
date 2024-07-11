@@ -14,25 +14,21 @@ public class OrderManagerController {
 
     private final PaymentService paymentService;
 
+    //관리자 주문 관리 페이지(검색페이지)
     @GetMapping("/admin/orderManager")
     public String orderManager(@RequestParam(required = false) String productName, @RequestParam(required = false) String username, @RequestParam(required = false) String startDate, @RequestParam(required = false) String endDate, @RequestParam(required = false) Integer minPrice, @RequestParam(required = false) Integer maxPrice, @RequestParam(required = false) String paymentStatus, @RequestParam(required = false) String paymentDetailStatus,  Model model){
-
-        System.err.println(paymentService.getPaymentInfos(productName, username, startDate, endDate, minPrice, maxPrice, paymentStatus, paymentDetailStatus));
 
         model.addAttribute("serverDate", paymentService.getServerDate(null));
         model.addAttribute("orderInfoPage", paymentService.getPaymentInfos(productName, username, startDate, endDate, minPrice, maxPrice, paymentStatus, paymentDetailStatus));
 
-        System.err.println(paymentService.getPaymentInfos(productName, username, startDate, endDate, minPrice, maxPrice, paymentStatus, paymentDetailStatus));
-
         return "/admins/orderManager";
     }
 
+    //관리자 주문 상세 정보 확인 페이지
     @GetMapping("/admin/orderDetailManager/{paymentId}")
     public String orderDetailManager(@PathVariable long paymentId, Model model){
-        System.err.println(paymentId);
 
         model.addAttribute("orderDetailList", paymentService.getOrderDetailInfo(paymentId));
-        System.err.println(paymentService.findPaymentByPaymentId(paymentId));
         model.addAttribute("payment", paymentService.findPaymentByPaymentId(paymentId));
         model.addAttribute("customerName", paymentService.getCustomerName(paymentId));
 

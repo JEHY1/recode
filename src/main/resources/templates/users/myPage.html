@@ -20,13 +20,21 @@
             font-weight: bold;
         }
 
+        .fs-15{
+            font-size: 15px;
+        }
+
         .fs-20-b{
             font-size: 20px;
             font-weight: bold;
         }
 
         .color-gainsboro{
-            color: gainsboro;s
+            color: gainsboro;
+        }
+
+        .color-gray{
+            color: gray;
         }
 
         .count{
@@ -34,6 +42,13 @@
             font-weight: bold;
         }
 
+        .border-b{
+            border-bottom: 1px solid rgb(204, 204, 204) !important;
+        }
+
+        .communityMenu:hover{
+            background-color: gainsboro;
+        }
 
 
     </style>
@@ -87,7 +102,7 @@
                 <div class="p-4">ORDER | 주문내역조회</div>
                 <div class="row mx-auto w-100 pb-3 ps-3">
                     <img src="/images/icon_img/list.png" class="col-auto p-0" style="width: 90px; height: 90px;">
-                    <div class="col d-flex align-items-center color-gainsboro">고객님께서 주문하신 상품의<br>
+                    <div class="col d-flex align-items-center color-gainsboro fs-15">고객님께서 주문하신 상품의<br>
                         주문내역을 확인하실 수 있습니다.</div>
                 </div>
             </div>
@@ -95,7 +110,7 @@
                 <div class="p-4">PROFILE | 회원 정보</div>
                 <div class="row mx-auto w-100 pb-3 ps-3">
                     <img src="/images/icon_img/Auth.png" class="col-auto p-0"  style="width: 90px; height: 90px;">
-                    <div class="col d-flex align-items-center color-gainsboro">회원이신 고객님의 개인정보를<br>
+                    <div class="col d-flex align-items-center color-gainsboro fs-15">회원이신 고객님의 개인정보를<br>
                         관리하는 공간입니다.
                     </div>
                 </div>
@@ -104,22 +119,29 @@
                 <div class="p-4">CART | 장바구니</div>
                 <div class="row mx-auto w-100 pb-3 ps-3">
                     <img src="/images/icon_img/shoppingBag.png" class="col-auto p-0" style="width: 90px; height: 90px;">
-                    <div class="col d-flex align-items-center color-gainsboro">장바구니에 담아둔 상품을 보실 수<br>
+                    <div class="col d-flex align-items-center color-gainsboro fs-15">장바구니에 담아둔 상품을 보실 수<br>
                         있습니다.
                     </div>
                 </div>
             </div>
-            <div class="col-auto border ms-auto cursor" style="width: 425px;">
-                <div class="p-4">VIEW | 최근본상품</div>
+            <div class="col-auto border ms-auto" style="width: 425px;">
+                <div class="p-4">community | 커뮤니티</div>
                 <div class="row mx-auto w-100 pb-3 ps-3">
                     <img src="/images/icon_img/View.png" class="col-auto p-0" style="width: 90px; height: 90px;">
-                    <div class="col d-flex align-items-center color-gainsboro">최근 본 상품을 목록으로<br>
-                        다시 확인하실 수 있습니다.</div>
+                    <div class="col color-gainsboro">
+                        <div class="cursor communityMenu color-gray">QnA</div>
+                        <div class="cursor communityMenu color-gray">Review</div>
+                        <div class="cursor communityMenu color-gray" onclick="location.href='/product/productGroup?recentViewProduct=1'">최근 조회상품</div>
+                    </div>
                 </div>
             </div>
+
+
         </div>
     </div>
 </div>
 <th:block th:include="layouts/footer"></th:block>
+
+<script src="/js/myPage.js"></script>
 </body>
 </html>

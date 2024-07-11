@@ -16,9 +16,7 @@ public class IdCheckController {
 
     @PostMapping("/checkId2")
     public ResponseEntity<Void> checkId(@RequestBody IdCheckRequest request){
-        System.err.println(request.getUsername());
         return ResponseEntity.ok()
                 .build();
     }
-
 }

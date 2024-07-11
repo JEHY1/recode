@@ -8,6 +8,20 @@ function httpRequest(url, method, body){
     });
 }
 
+function toWon(price){
+    let PriceText = '';
+    price += '';
+
+    while(price.length > 3){
+        console.log(price.substring(price.length - 3, price.length));
+        PriceText += ',' + price.substring(price.length - 3, price.length);
+        price = price.substring(0, price.length - 3);
+        console.log(price);
+        console.log(PriceText);
+    }
+    return price + PriceText + '원';
+}
+
 const viewButton = document.getElementById('view-btn');
 
 if(viewButton){
@@ -244,4 +258,15 @@ if(orderManageButtons){
 
         });
     });
+}
+
+//페이지 로딩시 설정
+//원화 표시로 변경
+if(document.getElementsByClassName('price')){
+    Array.from(document.getElementsByClassName('price')).forEach(comp => comp.textContent = toWon(comp.textContent));
+}
+
+//헤더 border-bottom 적용
+if(document.getElementsByTagName('header')){
+    document.getElementsByTagName('header')[0].classList.add('border-b-header');
 }

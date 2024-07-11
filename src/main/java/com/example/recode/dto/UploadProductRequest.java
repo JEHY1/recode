@@ -12,6 +12,7 @@ import java.util.List;
 @ToString
 public class UploadProductRequest {
 
+    private Long productId;
     private String productName;
     private String productModel;
     private String productCategory;

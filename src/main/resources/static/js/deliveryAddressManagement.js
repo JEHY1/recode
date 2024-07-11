@@ -142,6 +142,15 @@ if(deleteAddressButton){
     });
 }
 
+const prevWindowButton = document.getElementById('prevWindow-btn');
+
+if(prevWindowButton){
+    prevWindowButton.addEventListener('click', () => {
+        window.history.back();
+    });
+
+}
+
 //최초 세팅
 if(document.getElementById('deliveryRequest').value === '문 앞'){
     document.getElementById('deliveryRequestSel').children[1].children[0].src  = '/images/icon_img/addressCheck.png';

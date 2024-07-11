@@ -6,16 +6,26 @@
   <link rel="stylesheet" href="/css/admin_header.css">
   <link rel="stylesheet" href="/css/footer.css">
   <script src="/js/jquery.js"></script>
-  <script src="/js/newHeader.js"></script>
+  <script src="/js/admin_header.js"></script>
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous">
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
   <style>
+
+    #menu > img { /* 헤더 이미지 설정 (bootStarp 충돌) */
+      width: 80px;
+      padding: 25px;
+    }
+
     .d-hidden{
       display: none;
     }
 
     .d-fixed{
       position: fixed;
+    }
+
+    .fs-18{
+      font-size: 18px;
     }
 
     #searchBar{
@@ -70,67 +80,80 @@
 
 </head>
 <body style="width: 1920px;">
-<th:block th:include="layouts/newAdmin_header"></th:block>
+<th:block th:include="layouts/admin_header"></th:block>
 <div class="main" style="width: 1823px;">
-  <div style="height: 160px; width: 1823px;">
-    <input type="hidden" th:value="${orderInfoPage.totalDeposit}">
-    <input type="hidden" th:value="${orderInfoPage.totalPaymentCompleteDeposit}">
-    <input type="hidden" th:value="${orderInfoPage.totalPaymentNonDeposit}">
-    <input type="hidden" th:value="${orderInfoPage.totalPaymentCancelDeposit}">
-
-    <input type="hidden" th:value="${orderInfoPage.totalDepositCount}">
-    <input type="hidden" th:value="${orderInfoPage.totalPaymentCompleteDepositCount}">
-    <input type="hidden" th:value="${orderInfoPage.totalPaymentNonDepositCount}">
-    <input type="hidden" th:value="${orderInfoPage.totalPaymentCancelDepositCount}">
-
-    <input type="hidden" th:value="${orderInfoPage.totalPaymentCount}">
-    <input type="hidden" th:value="${orderInfoPage.totalPaymentNonCount}">
-    <input type="hidden" th:value="${orderInfoPage.totalPaymentCompleteCount}">
-    <input type="hidden" th:value="${orderInfoPage.totalPaymentCancelCount}">
-
+  <div style="height: 108px; width: 1823px; font-size: 18px;">
     <div class="row w-100 mx-auto">
-      <div class="col-auto">
-        <div class="row w-100 mx-auto">
-          <div class="col-auto">총 검색결과 수 : </div>
-          <div class="col-auto" type="hidden" th:text="${orderInfoPage.totalPaymentCount} + '건'"></div>
-        </div>
-        <div class="row w-100 mx-auto">
-          <div class="col-auto">결제대기 : </div>
-          <div class="col-auto" type="hidden" th:text="${orderInfoPage.totalPaymentNonCount} + '건'"></div>
-        </div>
-        <div class="row w-100 mx-auto">
-          <div class="col-auto">결제완료 : </div>
-          <div class="col-auto" type="hidden" th:text="${orderInfoPage.totalPaymentCompleteCount} + '건'"></div>
-        </div>
-        <div class="row w-100 mx-auto">
-          <div class="col-auto">결제취소 : </div>
-          <div class="col-auto" type="hidden" th:text="${orderInfoPage.totalPaymentCancelCount} + '건'"></div>
-        </div>
-      </div>
+      <div class="col-auto" style="width: 500px; background-color: #CCC; font-size: 25px; font-weight: 700;">주문관리</div>
 
       <div class="col-auto">
-        <div class="row w-100 mx-auto">
-          <div class="col-auto">상품통계 : </div>
-          <div class="col-auto price" th:text="${orderInfoPage.totalDeposit} + ' (' + ${orderInfoPage.totalDepositCount} + '건)'" ></div>
-        </div>
-        <div class="row w-100 mx-auto">
-          <div class="col-auto">결제대기 : </div>
-          <div class="col-auto price" th:text="${orderInfoPage.totalPaymentNonDeposit} + ' (' + ${orderInfoPage.totalPaymentNonDepositCount} + '건)'" ></div>
-        </div>
-        <div class="row w-100 mx-auto">
-          <div class="col-auto">결제완료 : </div>
-          <div class="col-auto price" th:text="${orderInfoPage.totalPaymentCompleteDeposit} + ' (' + ${orderInfoPage.totalPaymentCompleteDepositCount} + '건)'" ></div>
-        </div>
-        <div class="row w-100 mx-auto">
-          <div class="col-auto">결제취소 : </div>
-          <div class="col-auto price" th:text="${orderInfoPage.totalPaymentCancelDeposit} + ' (' + ${orderInfoPage.totalPaymentCancelDepositCount} + '건)'" ></div>
-        </div>
+        <div style="height: 30px; margin-top: 5px;"></div>
+        <div style="height: 30px;">주문 건수</div>
+        <div style="height: 30px;">상품 통계</div>
       </div>
+      <div class="col-auto" style="width: 230px;">
+        <div style="height: 30px; margin-top: 5px;">전체</div>
+        <div style="height: 30px;" th:text="${orderInfoPage.totalPaymentCount} + '건'">주문 건수</div>
+        <div class="price" style="height: 30px;" th:text="${orderInfoPage.totalDeposit} + ' (' + ${orderInfoPage.totalDepositCount} + '개)'">상품 통계</div>
+      </div>
+      <div class="col-auto" style="width: 230px;">
+        <div style="height: 30px; margin-top: 5px;">결제대기</div>
+        <div style="height: 30px;" th:text="${orderInfoPage.totalPaymentNonCount} + '건'">주문 건수</div>
+        <div class="price" style="height: 30px;" th:text="${orderInfoPage.totalPaymentNonDeposit} + ' (' + ${orderInfoPage.totalPaymentNonDepositCount} + '개)'">상품 통계</div>
+      </div>
+      <div class="col-auto" style="width: 230px;">
+        <div style="height: 30px; margin-top: 5px;">결제완료</div>
+        <div style="height: 30px;" th:text="${orderInfoPage.totalPaymentCompleteCount} + '건'">주문 건수</div>
+        <div class="price" style="height: 30px;" th:text="${orderInfoPage.totalPaymentCompleteDeposit} + ' (' + ${orderInfoPage.totalPaymentCompleteDepositCount} + '개)'">상품 통계</div>
+      </div>
+      <div class="col-auto" style="width: 230px;">
+        <div style="height: 30px; margin-top: 5px;">결제취소</div>
+        <div style="height: 30px;" th:text="${orderInfoPage.totalPaymentCancelCount} + '건'">주문 건수</div>
+        <div class="price" style="height: 30px;" th:text="${orderInfoPage.totalPaymentCancelDeposit} + ' (' + ${orderInfoPage.totalPaymentCancelDepositCount} + '개)'">상품 통계</div>
+      </div>
+
+<!--      <div class="col-auto">-->
+<!--        <div class="row w-100 mx-auto">-->
+<!--          <div class="col-auto fs-18">총 검색결과 수 : </div>-->
+<!--          <div class="col-auto fs-18" type="hidden" th:text="${orderInfoPage.totalPaymentCount} + '건'"></div>-->
+<!--        </div>-->
+<!--        <div class="row w-100 mx-auto">-->
+<!--          <div class="col-auto fs-18">결제대기 : </div>-->
+<!--          <div class="col-auto fs-18" type="hidden" th:text="${orderInfoPage.totalPaymentNonCount} + '건'"></div>-->
+<!--        </div>-->
+<!--        <div class="row w-100 mx-auto">-->
+<!--          <div class="col-auto fs-18">결제완료 : </div>-->
+<!--          <div class="col-auto fs-18" type="hidden" th:text="${orderInfoPage.totalPaymentCompleteCount} + '건'"></div>-->
+<!--        </div>-->
+<!--        <div class="row w-100 mx-auto">-->
+<!--          <div class="col-auto fs-18">결제취소 : </div>-->
+<!--          <div class="col-auto fs-18" type="hidden" th:text="${orderInfoPage.totalPaymentCancelCount} + '건'"></div>-->
+<!--        </div>-->
+<!--      </div>-->
+
+<!--      <div class="col-auto">-->
+<!--        <div class="row w-100 mx-auto">-->
+<!--          <div class="col-auto fs-18">상품통계 : </div>-->
+<!--          <div class="col-auto price fs-18" th:text="${orderInfoPage.totalDeposit} + ' (' + ${orderInfoPage.totalDepositCount} + '개)'" ></div>-->
+<!--        </div>-->
+<!--        <div class="row w-100 mx-auto">-->
+<!--          <div class="col-auto fs-18">결제대기 : </div>-->
+<!--          <div class="col-auto price fs-18" th:text="${orderInfoPage.totalPaymentNonDeposit} + ' (' + ${orderInfoPage.totalPaymentNonDepositCount} + '개)'" ></div>-->
+<!--        </div>-->
+<!--        <div class="row w-100 mx-auto">-->
+<!--          <div class="col-auto fs-18">결제완료 : </div>-->
+<!--          <div class="col-auto price fs-18" th:text="${orderInfoPage.totalPaymentCompleteDeposit} + ' (' + ${orderInfoPage.totalPaymentCompleteDepositCount} + '개)'" ></div>-->
+<!--        </div>-->
+<!--        <div class="row w-100 mx-auto">-->
+<!--          <div class="col-auto fs-18">결제취소 : </div>-->
+<!--          <div class="col-auto price fs-18" th:text="${orderInfoPage.totalPaymentCancelDeposit} + ' (' + ${orderInfoPage.totalPaymentCancelDepositCount} + '개)'" ></div>-->
+<!--        </div>-->
+<!--      </div>-->
     </div>
   </div>
 
   <div class="row mx-auto" style="height: 35px; width: 1823px;">
-    <div class="col-3" style="width: 500px;"></div>
+    <div class="col-3" style="width: 500px; background-color: #CCC;"></div>
     <div class="col-auto">선택항목 상태변경</div>
     <select class="col-auto me-4" id="statusSel" style="width: 180px; height:30px;">
       <option class="d-hidden">선택</option>

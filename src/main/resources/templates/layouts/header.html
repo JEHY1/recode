@@ -7,11 +7,11 @@
         <li>
             <a href="javascript:void(0)">상품</a>
             <ul>
-                <li><a href="#">크로스백</a></li>
-                <li><a href="#">숄더백</a></li>
-                <li><a href="#">클러치</a></li>
-                <li><a href="#">지갑</a></li>
-                <li><a href="#">백팩</a></li>
+                <li><a href="/product/productGroup?productCategory=크로스백">크로스백</a></li>
+                <li><a href="/product/productGroup?productCategory=숄더백">숄더백</a></li>
+                <li><a href="/product/productGroup?productCategory=클러치">클러치</a></li>
+                <li><a href="/product/productGroup?productCategory=지갑">지갑</a></li>
+                <li><a href="/product/productGroup?productCategory=백팩">백팩</a></li>
             </ul>
         </li>
         <li>
@@ -35,10 +35,10 @@
                     <li><a href="/join/new" sec:authorize="isAnonymous()">회원가입</a></li>
                     <li><a href="/logout" sec:authorize="isAuthenticated()">로그아웃</a></li>
                     <li><a href="/admin/product/index" sec:authorize="hasRole('ADMIN')">관리자페이지</a></li>
-                    <li><a href="/user/myPage">마이페이지</a></li>
-                    <li><a href="/user/orderCheck">주문조회</a></li>
-                    <li><a href="/user/cart">장바구니(<span>0</span>)</a></li>
-                    <li><a href="#">최근본상품(<span>12</span>)</a></li>
+                    <li><a href="/user/myPage" sec:authorize="isAuthenticated()">마이페이지</a></li>
+                    <li><a href="/user/orderCheck" sec:authorize="isAuthenticated()">주문조회</a></li>
+                    <li><a href="/user/cart" sec:authorize="isAuthenticated()">장바구니(<span>0</span>)</a></li>
+                    <li><a href="/product/productGroup?recentViewProduct=1" sec:authorize="isAuthenticated()">최근본상품</a></li>
                 </ul>
             </li>
             <li>
@@ -54,11 +54,11 @@
             <li>
                 <p>상품</p>
                 <ul>
-                    <li><a href="#">크로스백</a></li>
-                    <li><a href="#">숄더백</a></li>
-                    <li><a href="#">클러치</a></li>
-                    <li><a href="#">지갑</a></li>
-                    <li><a href="#">백팩</a></li>
+                    <li><a href="/product/productGroup?productCategory=크로스백">크로스백</a></li>
+                    <li><a href="/product/productGroup?productCategory=숄더백">숄더백</a></li>
+                    <li><a href="/product/productGroup?productCategory=클러치">클러치</a></li>
+                    <li><a href="/product/productGroup?productCategory=지갑">지갑</a></li>
+                    <li><a href="/product/productGroup?productCategory=백팩">백팩</a></li>
                 </ul>
             </li>
             <li>
